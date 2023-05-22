@@ -103,11 +103,12 @@ jobs:
                     haxelib install seedyrng
                               haxelib install json2object
                                haxelib install haxeui-core
-haxelib install haxeui-flixel
+
           haxelib install hscriptPos
           haxelib install uniontypes
           haxelib install faxe
           haxelib install random
+          haxelib install haxeui-flixel
           haxelib list
         shell: cmd
       - name: Create Version Tag
