@@ -1,0 +1,9 @@
+{   //put your custom icon data in here!
+//example:
+    //"face": {
+    //    "frames": [0, 1, 0],
+    //    "width": 150,
+    //    "height": 150,
+    //    "frameNames": ["","",""]
+    //}
+}
