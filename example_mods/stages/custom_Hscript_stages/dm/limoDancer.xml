@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="limoDancer.png">
+	<!-- Created with Adobe Animate version 20.0.1.19255 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="bg dancer sketch PINK0000" x="0" y="0" width="331" height="420"/>
+	<SubTexture name="bg dancer sketch PINK0001" x="0" y="0" width="331" height="420"/>
+	<SubTexture name="bg dancer sketch PINK0002" x="331" y="0" width="331" height="420"/>
+	<SubTexture name="bg dancer sketch PINK0003" x="331" y="0" width="331" height="420"/>
+	<SubTexture name="bg dancer sketch PINK0004" x="662" y="0" width="331" height="420"/>
+	<SubTexture name="bg dancer sketch PINK0005" x="662" y="0" width="331" height="420"/>
+	<SubTexture name="bg dancer sketch PINK0006" x="331" y="0" width="331" height="420"/>
+	<SubTexture name="bg dancer sketch PINK0007" x="331" y="0" width="331" height="420"/>
+	<SubTexture name="bg dancer sketch PINK0008" x="0" y="0" width="331" height="420"/>
+	<SubTexture name="bg dancer sketch PINK0009" x="0" y="0" width="331" height="420"/>
+</TextureAtlas>
