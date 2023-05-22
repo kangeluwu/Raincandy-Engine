@@ -19,6 +19,7 @@ jobs:
   buildWindows:
     runs-on: windows-latest
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2.3.0
@@ -29,10 +30,8 @@ jobs:
       # Runs a set of commands using the runners shell
         - name: Install Haxelib
         run: |
-          sudo apt-get install libvlc-dev
-          sudo apt-get install libvlccore-dev
-          haxelib setup ~/haxelib
-          haxelib install hxcpp > /dev/null
+          haxelib setup C:/haxelib
+          haxelib install hxcpp > nul
           haxelib install lime
           haxelib install openfl
           haxelib --never install flixel
@@ -44,13 +43,13 @@ jobs:
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install hxCodec
-          haxelib install seedyrng
-          haxelib install random
           haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
           haxelib install hscript
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
+          haxelib install seedyrng
+          haxelib install random
           haxelib list
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
