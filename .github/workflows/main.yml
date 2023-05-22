@@ -33,7 +33,7 @@ jobs:
         run: |
           sudo apt-get install libvlc-dev
           sudo apt-get install libvlccore-dev
-          haxelib setup ~/haxelib
+          haxelib setup ~/haxelibhaxeui-core
           haxelib install hxcpp > /dev/null
           haxelib install lime
           haxelib install openfl
@@ -41,6 +41,10 @@ jobs:
           haxelib run lime setup flixel
           haxelib run lime setup
           haxelib install flixel-tools
+          haxelib install json2object
+          haxelib install hscriptPos
+          haxelib install uniontypes
+          haxelib install faxe
           haxelib install flixel-ui
           haxelib install flixel-addons
           haxelib install tjson
@@ -95,6 +99,10 @@ jobs:
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
                     haxelib install seedyrng
+                              haxelib install json2object
+          haxelib install hscriptPos
+          haxelib install uniontypes
+          haxelib install faxe
           haxelib install random
           haxelib list
         shell: cmd
@@ -139,6 +147,10 @@ jobs:
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
                     haxelib install seedyrng
+                              haxelib install json2object
+          haxelib install hscriptPos
+          haxelib install uniontypes
+          haxelib install faxe
           haxelib install random
           haxelib list
       - name: Create Version Tag
