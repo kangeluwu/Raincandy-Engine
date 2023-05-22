@@ -57,6 +57,7 @@ jobs:
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
                     haxelib install seedyrng
+                    haxelib install haxeui-flixel
           haxelib install random
           haxelib list
       - name: Create Version Tag
@@ -102,6 +103,7 @@ jobs:
                     haxelib install seedyrng
                               haxelib install json2object
                                haxelib install haxeui-core
+haxelib install haxeui-flixel
           haxelib install hscriptPos
           haxelib install uniontypes
           haxelib install faxe
@@ -155,6 +157,7 @@ jobs:
           haxelib install uniontypes
           haxelib install faxe
           haxelib install random
+          haxelib install haxeui-flixel
           haxelib list
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
