@@ -14,7 +14,14 @@ hscript
 flixel-ui
 tjson
 json2object
+flixel-tools
 uniontypes
+flixel-addons
+tjson
+hxjsonast
+hxCodec(if you want)
+linc_luajit
+discord_rpc
 hxcpp-debug-server
 ```
 
