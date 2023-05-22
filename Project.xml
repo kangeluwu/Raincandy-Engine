@@ -109,6 +109,7 @@
 	</section>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 	<!-- <template path='mods' /> -->
+	<assets path="plugins" if="windows"/>
 	<assets path="dlls/" rename='' if="windows"/>
 	<!-- assets path="CHANGELOG.md" rename='changelog.txt' -->
 

@@ -45,6 +45,7 @@ jobs:
           haxelib install hscriptPos
           haxelib install uniontypes
           haxelib install faxe
+           haxelib install haxeui-core
           haxelib install flixel-ui
           haxelib install flixel-addons
           haxelib install tjson
@@ -100,6 +101,7 @@ jobs:
           haxelib install hxcpp-debug-server
                     haxelib install seedyrng
                               haxelib install json2object
+                               haxelib install haxeui-core
           haxelib install hscriptPos
           haxelib install uniontypes
           haxelib install faxe
@@ -148,6 +150,7 @@ jobs:
           haxelib install hxcpp-debug-server
                     haxelib install seedyrng
                               haxelib install json2object
+           haxelib install haxeui-core
           haxelib install hscriptPos
           haxelib install uniontypes
           haxelib install faxe
