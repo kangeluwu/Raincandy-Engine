@@ -4,7 +4,7 @@ This engine kinda like modding plus & psych in one engine(used psych as default)
 And modding plus stuffs are mod supports lmao
 
 ## Installation:
-First you must have [Haxe 4.2.3](https://haxe.org/download/), seriously, stop using 4.1.5, it misses some stuff dude.
+First you must have [Haxe 4.2.5](https://haxe.org/download/), seriously, stop using 4.1.5, it misses some stuff dude.
 Other installations you'd need is the additional libraries, a fully updated list will be in `Project.xml` in the project root, but here are the one's I'm using as of writing.
 
 ```
