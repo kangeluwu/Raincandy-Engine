@@ -1,0 +1,16 @@
+{
+  //weekState中true代表可游玩的周，false代表可观看的周，从第0周开始计数
+  //videoLink中每一行从左往右分别为第1天，第2天，第3天和整周的视频链接，即使是可游玩的周，也需要填写四个链接来占位
+  "dayNums": [1, 4, 3, 3, 3, 3, 3],
+  "weekState": [false, true, false, false, false, false, false],
+  "isFull": [true, false, false, false, false, false, false],
+  "videoLink": [
+    ["https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831"],
+    ["https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831"],
+    ["https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831"],
+    ["https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831"],
+    ["https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831"],
+    ["https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831"],
+    ["https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831", "https://space.bilibili.com/130080831"]
+  ]
+}

@@ -1,0 +1,92 @@
+{
+    "dad": {
+        "frames": [0, 0, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "bf": {
+        "frames": [0, 1, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "bf-pixel": {
+        "frames": [0, 0, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "gf-pixel": {
+        "frames": [0, 0, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "senpai-pixel": {
+        "frames": [0, 0, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "gf": {
+        "frames": [0, 0, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "mom": {
+        "frames": [0, 1, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "tankman": {
+        "frames": [0, 1, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "spooky": {
+        "frames": [0, 1, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },   
+    "bf-old": {
+        "frames": [0, 1, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    }, 
+    "spirit-pixel": {
+        "frames": [0, 0, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "parents": {
+        "frames": [0, 1, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "pico": {
+        "frames": [0, 1, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "monster": {
+        "frames": [0, 1, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    },    
+    "face": {
+        "frames": [0, 1, 0],
+        "width": 150,
+        "height": 150,
+        "frameNames": ["","",""]
+    }
+}

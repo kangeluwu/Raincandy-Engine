@@ -1,0 +1,142 @@
+var camFollow;
+var camFollowPos;
+var stageSuffix = "";
+var updateCamera = false;
+function create() 
+{
+		
+	PlayState.instance.callAllHScript('onGameOverStart', []);
+}
+
+function startDead(x, y, camX, camY, isPlayer)
+{
+	addHaxeLibrary('OptionsState','options');
+	Conductor.songPosition = 0;
+
+		boyfriend = new Character(x, y, characterName, isPlayer);
+		boyfriend.x += boyfriend.positionArray[0];
+		boyfriend.y += boyfriend.positionArray[1];
+		boyfriend.beingControlled = true;
+		add(boyfriend);
+
+		camFollow = new FlxPoint(boyfriend.getGraphicMidpoint().x, boyfriend.getGraphicMidpoint().y);
+
+		FlixG.sound.play(Paths.sound(deathSoundName));
+		Conductor.changeBPM(100);
+		// FlixG.camera.followLerp = 1;
+		// FlixG.camera.focusOn(FlxPoint.get(FlixG.width / 2, FlixG.height / 2));
+		FlixG.camera.scroll.set();
+		FlixG.camera.target = null;
+
+		boyfriend.playAnim('firstDeath');
+
+		camFollowPos = new FlxObject(0, 0, 1, 1);
+		camFollowPos.setPosition(FlixG.camera.scroll.x + (FlixG.camera.width / 2), FlixG.camera.scroll.y + (FlixG.camera.height / 2));
+		add(camFollowPos);
+		PlayState.instance.callAllHScript('inGameOver', [x, y, camX, camY, isPlayer]);
+		Main.fpsVar.x = 10;
+}
+var isFollowingAlready = false;
+function update(elapsed)
+{
+
+	if(updateCamera) {
+		var lerpVal = CoolUtil.boundTo(elapsed * 0.6, 0, 1);
+		camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
+	}
+
+	if (controls.ACCEPT && allowDeath)
+	{
+		endBullshit();
+	}
+
+	if (controls.BACK)
+	{
+		FlixG.sound.music.stop();
+		PlayState.deathCounter = 0;
+		PlayState.seenCutscene = false;
+		OptionsState.isFromPlayState = false;
+		WeekData.loadTheFirstEnabledMod();
+		if (PlayState.isStoryMode)
+			MusicBeatState.switchState(new StoryMenuState());
+		else
+			MusicBeatState.switchState(new FreeplayState());
+
+		FlixG.sound.playMusic(Paths.music('freakyMenu'));
+		PlayState.instance.callOnLuas('onGameOverConfirm', [false]);
+		PlayState.instance.callAllHScript('onGameOverExit', []);
+	}
+
+	if (boyfriend != null && boyfriend.animation.curAnim.name == 'firstDeath')
+	{
+		if(boyfriend.animation.curAnim.curFrame >= 12 && !isFollowingAlready)
+		{
+			var lockOn = 0;
+			FlixG.camera.follow(camFollowPos, lockOn, 1);
+			updateCamera = true;
+			isFollowingAlready = true;
+		}
+
+		if (boyfriend.animation.curAnim.curFrame >= boyfriend.animation.curAnim.frames.length - 1 && !playingDeathSound)
+		{
+			isDead = true;
+			if (PlayState.SONG.stage == 'tank')
+			{
+				playingDeathSound = true;
+				coolStartDeath(0.2);
+				
+				var exclude = [];
+				//if(!ClientPrefs.cursing) exclude = [1, 3, 8, 13, 17, 21];
+
+				FlixG.sound.play(Paths.sound('jeffGameover/jeffGameover-' + FlixG.random.int(1, 25, exclude)), 1, false, null, true, function() {
+					if(!isEnding)
+					{
+						FlixG.sound.music.fadeIn(0.2, 1, 4);
+					}
+				});
+			}
+			else if (!customing)
+			{
+				coolStartDeath();
+			}
+			boyfriend.startedDeath = true;
+		}
+	}
+
+	if (FlixG.sound.music.playing)
+	{
+		Conductor.songPosition = FlixG.sound.music.time;
+	}
+	PlayState.instance.callOnLuas('onUpdatePost', [elapsed]);
+
+}
+
+function beatHit()
+{
+}
+
+function stepHit()
+{
+}
+
+var isEnding = false;
+
+function endBullshit()
+{
+	if (!isEnding)
+	{
+		isEnding = true;
+		boyfriend.playAnim('deathConfirm', true);
+		FlixG.sound.music.stop();
+		FlixG.sound.play(Paths.music(endSoundName));
+		new FlxTimer().start(0.7, function(tmr)
+		{
+			FlixG.camera.fade(0xFF000000, 2, false, function()
+			{
+				MusicBeatState.resetState();
+			});
+		});
+		PlayState.instance.callOnLuas('onGameOverConfirm', [true]);
+		PlayState.instance.callAllHScript("onGameOverConfirm", []);
+	}
+}

@@ -1,0 +1,15 @@
+function start(song) {
+    1 = new FlxSprite(0, 0).loadGraphic('windose_data/stages/custom_Hscript_stages/idk/dude.png');
+    1.antialiasing = true;
+    addSprite(1, BEHIND_ALL);
+
+    FlxG.camera.visible = true;
+    camHUD.visible = false;
+
+                        new FlxTimer().start(5.0, function(tmr) {
+            removeSprite(1);
+            startCountdown();
+                        });
+    
+
+}

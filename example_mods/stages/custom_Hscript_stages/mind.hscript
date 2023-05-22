@@ -1,0 +1,55 @@
+function start(song) {
+    var bg = new FlxSprite(-600, -200).loadGraphic(hscriptPath + 'wall.png');
+    bg.scrollFactor.set(1.0, 1.0);
+    bg.antialiasing = true;
+    addSprite(bg, BEHIND_ALL);
+    tv = new MetroSprite(200, -100,true);
+    tv.frames = FlxAtlasFrames.fromSparrow(hscriptPath + 'tv.png', hscriptPath + 'tv.xml');
+    tv.animation.addByPrefix("idle", "Tormentor Static", 24, true);
+    tv.animation.play("idle");
+	tv.setGraphicSize(Std.int(tv.width * 1));
+	tv.scrollFactor.set(1, 1);
+	tv.antialiasing = true;
+	tv.updateHitbox();
+	addSprite(tv, BEHIND_ALL);
+    setDefaultZoom(0.9);
+}
+
+
+function beatHit(beat)
+{
+
+}
+
+function update(elapsed)
+{
+}
+
+function stepHit(step)
+{
+}
+
+function playerTwoTurn()
+{
+}
+
+function playerTwoMiss()
+{
+}
+
+function playerTwoSing()
+{
+}
+
+function playerOneTurn()
+{
+}
+
+function playerOneMiss()
+{
+}
+
+function playerOneSing()
+{
+}
+
