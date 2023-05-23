@@ -2141,6 +2141,25 @@ function camerabgAlphaShits(cam:FlxCamera)
 		}
 
 		Conductor.safeZoneOffset = (ClientPrefs.safeFrames / 60) * 1000;
+		if (ClientPrefs.middleScroll)
+			{
+				if (opponentPlayer){
+					for (i in 0...opponentStrums.members.length) {
+						opponentStrums.members[i].x += 580;
+						}
+						for (i in 0...playerStrums.members.length) {
+						playerStrums.members[i].x += 600;
+						if(i <= 1) {
+						playerStrums.members[i].x -= 65;
+						}
+						}      
+						for (i in 0...strumLineNotes.members.length) {
+							strumLineNotes.members[i].x += 50;
+							} 
+
+				}
+			}
+
 		callOnLuas('onCreatePost', []);
 		callAllHScript('onCreatePost', [SONG.song]);
 		super.create();
@@ -3786,7 +3805,7 @@ if (!dadChar.beingControlled)
 			else if (opponentPlayer){
 				if (!swagNote.mustPress)
 				{
-					swagNote.x += FlxG.width / 2; // general offset
+					swagNote.x -= FlxG.width / 2; // general offset
 				}
 				else if(ClientPrefs.middleScroll)
 				{
