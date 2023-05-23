@@ -20,16 +20,17 @@ function create()
     FlixG.mouse.visible = true;
     addHaxeLibrary('LoadingState');
     addHaxeLibrary('OptionsState','options');
+    addHaxeLibrary('MasterEditorMenu','editors');
     if (!FlixG.sound.music.playing)
         {
             FlixG.sound.playMusic(Paths.music('freakyMenu'),0);
         }
 
-    if (!modsAllow) 
+    if (!modsAllow || ClientPrefs.classicStyle) 
         optionShit.remove('mods');
-    if (!achiAllow) 
+    if (!achiAllow || ClientPrefs.classicStyle) 
         optionShit.remove('awards');
-    if (switchTarget)
+    if (switchTarget || ClientPrefs.classicStyle)
         optionShit.remove('donate');
 
 
@@ -86,11 +87,15 @@ function create()
     {
         var offset = 108 - (Math.max(optionShit.length, 4) - 4) * 80;
         var menuItem = new FlxSprite(0, (i * 140)  + offset);
+        if (!ClientPrefs.classicStyle){
         menuItem.x = (FlxG.width / 2 ) - 220;
+
         if (i == 0)
         menuItem.x -= 70;
+
         if (i == 2)
             menuItem.x += 50;
+    }
 
         menuItem.scale.x = scale;
         menuItem.scale.y = scale;
@@ -99,6 +104,8 @@ function create()
         menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
         menuItem.animation.play('idle');
         menuItem.ID = i;
+        if (ClientPrefs.classicStyle)
+        menuItem.screenCenter(X);
         menuItems.add(menuItem);
         var scr = (optionShit.length - 4) * 0.135;
         if(optionShit.length < 6) scr = 0;
@@ -118,14 +125,17 @@ function create()
 		MainMenuState.RCEVersion = funniVerison[1];
 
 		gameVersion = funniVerison[2];
+        if (!ClientPrefs.classicStyle){
 		var versionShit = new FlxText(12, FlixG.height - 44, 0, engineName + MainMenuState.RCEVersion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, OGcolor, "left", FlxTextBorderStyle.OUTLINE, BlackColor);
 		add(versionShit);
+    }
 		var versionShit = new FlxText(12, FlixG.height - 24, 0, "v" + gameVersion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, OGcolor, "left", FlxTextBorderStyle.OUTLINE, BlackColor);
 		add(versionShit);
+
     changeItem(0);
     if (achiAllow){
 		Achievements.loadAchievements();

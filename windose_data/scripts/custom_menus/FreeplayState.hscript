@@ -22,6 +22,7 @@ var curPlaying = false;
 var colorTween;
 function create()
 {
+	FlixG.mouse.visible = true;
 	addHaxeLibrary('LoadingState');
 	addHaxeLibrary('Song');
 	togglePersistUpdate(true);
@@ -148,6 +149,10 @@ var size = 16;
 		text.setFormat(Paths.font("vcr.ttf"), size, OGcolor, 'right');
 		text.scrollFactor.set();
 		add(text);
+		if (ClientPrefs.classicStyle){
+			textBG.alpha = 0;
+			text.alpha = 0;
+		}
 }
 function closeSubState() {
 	changeSelection(0, false);
@@ -190,7 +195,10 @@ function update(elapsed)
 			ratingSplit[1] += '0';
 		}
 
-		scoreText.text = 'PERSONAL BEST: ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
+		if (!ClientPrefs.classicStyle)
+			scoreText.text = 'PERSONAL BEST: ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
+			else
+			scoreText.text = 'PERSONAL BEST:' + lerpScore;
 		positionHighscore();
 
 		var upP = controls.UI_UP_P;
@@ -238,6 +246,13 @@ function update(elapsed)
 				changeSelection(-shiftMult * FlixG.mouse.wheel, false);
 				changeDiff(0);
 			}
+			if (FlixG.mouse.justPressed)
+				{
+					if (FlixG.mouse.overlaps(grpSongs.members[curSelected]))
+					{
+						enter();
+					}
+				}
 		}
 
 		if (controls.UI_LEFT_P)
@@ -262,35 +277,47 @@ function update(elapsed)
 			togglePersistUpdate(false);
 			openSubState(new GameplayChangersSubstate());
 		}
-		else if(space)
-		{
-			if(instPlaying != curSelected)
+		else if(space || ClientPrefs.classicStyle)
 			{
-				if (preload){
-					destroyFreeplayVocals();
-				FlixG.sound.music.volume = 0;
-				Paths.currentModDirectory = songs[curSelected].folder;
-				var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
-				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-				if (PlayState.SONG.needsVoices)
-					FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
-				else
-					FreeplayState.vocals = new FlxSound();
-
-				FlixG.sound.list.add(FreeplayState.vocals);
-				FlixG.sound.playMusic(Paths.inst(PlayState.SONG.song), 0.7);
-				FreeplayState.vocals.play();
-				FreeplayState.vocals.persist = true;
-				FreeplayState.vocals.looped = true;
-				FreeplayState.vocals.volume = 0.7;
-				instPlaying = curSelected;
-}
+				if(instPlaying != curSelected)
+				{
+					if (preload){
+						destroyFreeplayVocals();
+					FlixG.sound.music.volume = 0;
+					Paths.currentModDirectory = songs[curSelected].folder;
+					var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+					PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+					
+					if (PlayState.SONG.needsVoices && !ClientPrefs.classicStyle)
+						FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+					else
+						FreeplayState.vocals = new FlxSound();
+	
+					FlixG.sound.list.add(FreeplayState.vocals);
+					FlixG.sound.playMusic(Paths.inst(PlayState.SONG.song), 0.7);
+					FreeplayState.vocals.play();
+					FreeplayState.vocals.persist = true;
+					FreeplayState.vocals.looped = true;
+					FreeplayState.vocals.volume = 0.7;
+					instPlaying = curSelected;
+	}
+				}
 			}
-		}
-
-		else if (accepted)
-		{
-			togglePersistUpdate(false);
+			if(!space && controls.RESET)
+			{
+				togglePersistUpdate(false);
+				openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
+				FlixG.sound.play(Paths.sound('scrollMenu'));
+			}
+			if (!space && accepted)
+			{
+				enter();
+			}
+}
+function enter()
+	{
+		FlixG.mouse.visible = false;
+		togglePersistUpdate(false);
 			var songLowercase = Paths.formatToSongPath(songs[curSelected].songName);
 			var poop = Highscore.formatSong(songLowercase, curDifficulty);
 			/*#if MODS_ALLOWED
@@ -315,26 +342,20 @@ function update(elapsed)
 			}
 
 			if (FlixG.keys.pressed.SHIFT){
-				LoadingState.loadAndSwitchState(new ChartingState());
+				LoadingState.loadAndSwitchState(new ChartingState(), true);
 			}else{
 				if (!ClientPrefs.skipChartTypeMenu){
+					togglePersistUpdate(false);
 					openSubState(new ChartTypeMenu());
 				}
-				else
+				else{
 					LoadingState.loadAndSwitchState(new PlayState(), true);
 						FlixG.sound.music.volume = 0;
+				}
 			}
 					
 			destroyFreeplayVocals();
-		}
-		else if(controls.RESET)
-		{
-			togglePersistUpdate(false);
-			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
-			FlixG.sound.play(Paths.sound('scrollMenu'));
-		}
-}
-
+	}
 function changeDiff(change)
 {
 	curDifficulty += change;
