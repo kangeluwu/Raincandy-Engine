@@ -101,31 +101,12 @@ class FreeplayStateBackup extends MusicBeatState
 				addSong(songArray[0], 0, songArray[1], Std.parseInt(songArray[2]));
 			}
 		}*/
-		#if !IS_CORRUPTION
+N
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
 		bg.screenCenter();
-		#else
-		bg =  new FlxSprite();
-		bg.loadGraphic(Paths.image('freeplayBG'));
 
-		bg.antialiasing = ClientPrefs.globalAntialiasing;
-		add(bg);
-		bg.screenCenter();
-
-		soulSpr = new FlxSprite();
-		soulSpr.loadGraphic(Paths.image('freeplaySOUL'));
-		soulSpr.scrollFactor.set();
-		soulSpr.x = FlxG.width;
-		soulSpr.antialiasing = true;
-		add(soulSpr);
-
-		new FlxTimer().start(0.5, function(tmr)
-			{
-				FlxTween.tween(soulSpr, {x: soulSpr.x - soulSpr.width}, 1.5, {ease: FlxEase.cubeOut});
-			});
-		#end
 
 
 
@@ -180,10 +161,10 @@ class FreeplayStateBackup extends MusicBeatState
 		add(scoreText);
 
 		if(curSelected >= songs.length) curSelected = 0;
-		#if !IS_CORRUPTION
+		
 		bg.color = songs[curSelected].color;
 		intendedColor = bg.color;
-#end
+
 		if(lastDifficultyName == '')
 		{
 			lastDifficultyName = CoolUtil.defaultDifficulty;
@@ -245,11 +226,7 @@ class FreeplayStateBackup extends MusicBeatState
 
 	function weekIsLocked(name:String):Bool {
 		var leWeek:WeekData = WeekData.weeksLoaded.get(name);
-		#if IS_CORRUPTION
-		return (!leWeek.startUnlocked && leWeek.weekBefore.length > 0 && (!StoryMenuStateCorr.weekCompleted.exists(leWeek.weekBefore) || !StoryMenuStateCorr.weekCompleted.get(leWeek.weekBefore)));
-		#else
 		return (!leWeek.startUnlocked && leWeek.weekBefore.length > 0 && (!StoryMenuState.weekCompleted.exists(leWeek.weekBefore) || !StoryMenuState.weekCompleted.get(leWeek.weekBefore)));
-		#end
 	}
 
 	/*public function addWeek(songs:Array<String>, weekNum:Int, weekColor:Int, ?songCharacters:Array<String>)
@@ -350,11 +327,10 @@ class FreeplayStateBackup extends MusicBeatState
 		if (controls.BACK)
 		{
 			persistentUpdate = false;
-			#if !IS_CORRUPTION
+			
 			if(colorTween != null) {
 				colorTween.cancel();
 			}
-			#end
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			MusicBeatState.switchState(new MainMenuState());
 		}
@@ -411,11 +387,10 @@ class FreeplayStateBackup extends MusicBeatState
 			PlayState.storyDifficulty = curDifficulty;
 
 			trace('CURRENT WEEK: ' + WeekData.getWeekFileName());
-			#if !IS_CORRUPTION
+		
 			if(colorTween != null) {
 				colorTween.cancel();
 			}
-			#end
 			if (FlxG.keys.pressed.SHIFT){
 				LoadingState.loadAndSwitchState(new ChartingState());
 			}else{
@@ -472,7 +447,7 @@ class FreeplayStateBackup extends MusicBeatState
 			curSelected = songs.length - 1;
 		if (curSelected >= songs.length)
 			curSelected = 0;
-		#if !IS_CORRUPTION
+
 		var newColor:Int = songs[curSelected].color;
 		if(newColor != intendedColor) {
 			if(colorTween != null) {
@@ -485,7 +460,7 @@ class FreeplayStateBackup extends MusicBeatState
 				}
 			});
 		}
-#end
+
 		// selector.y = (70 * curSelected) + 30;
 
 		#if !switch
