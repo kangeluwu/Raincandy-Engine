@@ -2144,16 +2144,16 @@ function camerabgAlphaShits(cam:FlxCamera)
 		if (ClientPrefs.middleScroll)
 			{
 				if (opponentPlayer){
-					for (i in 0...opponentStrums.members.length) {
+					for (i in 0...opponentStrums.length) {
 						opponentStrums.members[i].x += 580;
 						}
-						for (i in 0...playerStrums.members.length) {
+						for (i in 0...playerStrums.length) {
 						playerStrums.members[i].x += 600;
 						if(i <= 1) {
 						playerStrums.members[i].x -= 65;
 						}
 						}      
-						for (i in 0...strumLineNotes.members.length) {
+						for (i in 0...strumLineNotes.length) {
 							strumLineNotes.members[i].x += 50;
 							} 
 
@@ -2300,7 +2300,7 @@ if (!dadChar.beingControlled)
 				}
 				else if (!type){
 					opponentPlayer = false;
-				health = 2 + health;
+				health = healthChange;
 				for (note in notes) note.oppMode = false;
 				for (note in unspawnNotes) note.oppMode = false;
 				for (dadChar in dadMap.iterator()) {
@@ -6545,7 +6545,7 @@ public var curNoteHitHealth:Float = 0;
 					case 'sick':
 						note.ratingHealAmount = 1;
 				}
-				curNoteHitHealth = (opponentPlayer ? -1 : 1) * note.hitHealth * note.ratingHealAmount * healthGain;
+				curNoteHitHealth = (opponentPlayer ? -1 : 1) * note.hitHealth * (!note.isSustainNote ? note.ratingHealAmount * healthGain :  healthGain);
 				health += curNoteHitHealth;
 				if(!note.noAnimation) {
 					var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))] + altAnim;
