@@ -41,7 +41,7 @@ import DialogueBoxPsych;
 import hscript.Parser;
 import hscript.Interp;
 #end
-
+import StringTools;
 #if desktop
 import Discord;
 #end
@@ -1116,8 +1116,8 @@ class FunkinLua {
 			var penisExam:Dynamic = tweenShit(tag, vars);
 			if(penisExam != null) {
 				var color:Int = Std.parseInt(targetColor);
-				if(!targetColor.startsWith('0x')) color = Std.parseInt('0xff' + targetColor);
-
+				if(!targetColor.startsWith('0x')) color = Std.parseInt('0x' + targetColor);
+				if(targetColor.length >= 10) color =  Std.parseInt('0x' + targetColor.substr(4,targetColor.length));
 				var curColor:FlxColor = penisExam.color;
 				curColor.alphaFloat = penisExam.alpha;
 				PlayState.instance.modchartTweens.set(tag, FlxTween.color(penisExam, duration, curColor, color, {ease: getFlxEaseByString(ease),
@@ -1345,7 +1345,8 @@ class FunkinLua {
 		});
 
 		Lua_helper.add_callback(lua, "getColorFromHex", function(color:String) {
-			if(!color.startsWith('0x')) color = '0xff' + color;
+			if(!color.startsWith('0x')) color = '0x' + color;
+			if(color.length >= 10) color = '0x' + color.substr(4,color.length);
 			return Std.parseInt(color);
 		});
 
@@ -1403,7 +1404,6 @@ class FunkinLua {
 				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_P');
 				case 'up': key = PlayState.instance.getControl('NOTE_UP_P');
 				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_P');
-				case 'middle': key = PlayState.instance.getControl('NOTE_MIDDLE_P');
 				case 'accept': key = PlayState.instance.getControl('ACCEPT');
 				case 'back': key = PlayState.instance.getControl('BACK');
 				case 'pause': key = PlayState.instance.getControl('PAUSE');
@@ -1419,7 +1419,6 @@ class FunkinLua {
 				case 'down': key = PlayState.instance.getControl('NOTE_DOWN');
 				case 'up': key = PlayState.instance.getControl('NOTE_UP');
 				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT');
-				case 'middle': key = PlayState.instance.getControl('NOTE_MIDDLE');
 				case 'space': key = FlxG.keys.pressed.SPACE;//an extra key for convinience
 			}
 			return key;
@@ -1431,7 +1430,6 @@ class FunkinLua {
 				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_R');
 				case 'up': key = PlayState.instance.getControl('NOTE_UP_R');
 				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_R');
-				case 'middle': key = PlayState.instance.getControl('NOTE_MIDDLE_R');
 				case 'space': key = FlxG.keys.justReleased.SPACE;//an extra key for convinience
 			}
 			return key;
@@ -1497,15 +1495,11 @@ class FunkinLua {
 				CustomFadeTransition.nextCamera = null;
 
 			if(PlayState.isStoryMode)
-				#if IS_CORRUPTION
-			MusicBeatState.switchState(new StoryMenuStateCorr());
-			#else
 			MusicBeatState.switchState(new StoryMenuState());
-			#end
 			else
 				MusicBeatState.switchState(new FreeplayState());
 
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			FlxG.sound.playMusic(Paths.music('freakyMenu1'));
 			PlayState.changedDifficulty = false;
 			PlayState.chartingMode = false;
 			PlayState.instance.transitioning = true;
@@ -1570,12 +1564,14 @@ class FunkinLua {
 
 		Lua_helper.add_callback(lua, "cameraFlash", function(camera:String, color:String, duration:Float,forced:Bool) {
 			var colorNum:Int = Std.parseInt(color);
-			if(!color.startsWith('0x')) colorNum = Std.parseInt('0xff' + color);
+			if(!color.startsWith('0x')) colorNum = Std.parseInt('0x' + color);
+			if(color.length >= 10) colorNum =  Std.parseInt('0x' + color.substr(4,color.length));
 			cameraFromString(camera).flash(colorNum, duration,null,forced);
 		});
 		Lua_helper.add_callback(lua, "cameraFade", function(camera:String, color:String, duration:Float,forced:Bool) {
 			var colorNum:Int = Std.parseInt(color);
-			if(!color.startsWith('0x')) colorNum = Std.parseInt('0xff' + color);
+			if(!color.startsWith('0x')) colorNum = Std.parseInt('0x' + color);
+			if(color.length >= 10) colorNum =  Std.parseInt('0x' + color.substr(4,color.length));
 			cameraFromString(camera).fade(colorNum, duration,false,null,forced);
 		});
 		Lua_helper.add_callback(lua, "setRatingPercent", function(value:Float) {
@@ -1734,8 +1730,8 @@ class FunkinLua {
 
 		Lua_helper.add_callback(lua, "makeGraphic", function(obj:String, width:Int, height:Int, color:String) {
 			var colorNum:Int = Std.parseInt(color);
-			if(!color.startsWith('0x')) colorNum = Std.parseInt('0xff' + color);
-
+			if(!color.startsWith('0x')) colorNum = Std.parseInt('0x' + color);
+			if(color.length >= 10) colorNum =  Std.parseInt('0x' + color.substr(4,color.length));
 			var spr:FlxSprite = PlayState.instance.getLuaObject(obj,false);
 			if(spr!=null) {
 				PlayState.instance.getLuaObject(obj,false).makeGraphic(width, height, colorNum);
@@ -2017,19 +2013,22 @@ class FunkinLua {
 
 		Lua_helper.add_callback(lua, "setHealthBarColors", function(leftHex:String, rightHex:String) {
 			var left:FlxColor = Std.parseInt(leftHex);
-			if(!leftHex.startsWith('0x')) left = Std.parseInt('0xff' + leftHex);
+			if(!leftHex.startsWith('0x')) left = Std.parseInt('0x' + leftHex);
+			if(leftHex.length >= 10) left =  Std.parseInt('0x' + leftHex.substr(4,leftHex.length));
 			var right:FlxColor = Std.parseInt(rightHex);
-			if(!rightHex.startsWith('0x')) right = Std.parseInt('0xff' + rightHex);
+			if(!rightHex.startsWith('0x')) right = Std.parseInt('0x' + rightHex);
+			if(rightHex.length >= 10) right =  Std.parseInt('0x' + rightHex.substr(4,rightHex.length));
 
 			PlayState.instance.healthBar.createFilledBar(left, right);
 			PlayState.instance.healthBar.updateBar();
 		});
 		Lua_helper.add_callback(lua, "setTimeBarColors", function(leftHex:String, rightHex:String) {
 			var left:FlxColor = Std.parseInt(leftHex);
-			if(!leftHex.startsWith('0x')) left = Std.parseInt('0xff' + leftHex);
+			if(!leftHex.startsWith('0x')) left = Std.parseInt('0x' + leftHex);
+			if(leftHex.length >= 10) left =  Std.parseInt('0x' + leftHex.substr(4,leftHex.length));
 			var right:FlxColor = Std.parseInt(rightHex);
-			if(!rightHex.startsWith('0x')) right = Std.parseInt('0xff' + rightHex);
-
+			if(!rightHex.startsWith('0x')) right = Std.parseInt('0x' + rightHex);
+			if(rightHex.length >= 10) right =  Std.parseInt('0x' + rightHex.substr(4,rightHex.length));
 			PlayState.instance.timeBar.createFilledBar(right, left);
 			PlayState.instance.timeBar.updateBar();
 		});
@@ -2372,8 +2371,8 @@ class FunkinLua {
 			if(obj != null)
 			{
 				var colorNum:Int = Std.parseInt(color);
-				if(!color.startsWith('0x')) colorNum = Std.parseInt('0xff' + color);
-
+				if(!color.startsWith('0x')) colorNum = Std.parseInt('0x' + color);
+				if(color.length >= 10) colorNum =  Std.parseInt('0x' + color.substr(4,color.length));
 				obj.borderSize = size;
 				obj.borderColor = colorNum;
 			}
@@ -2383,8 +2382,8 @@ class FunkinLua {
 			if(obj != null)
 			{
 				var colorNum:Int = Std.parseInt(color);
-				if(!color.startsWith('0x')) colorNum = Std.parseInt('0xff' + color);
-
+				if(!color.startsWith('0x')) colorNum = Std.parseInt('0x' + color);
+				if(color.length >= 10) colorNum =  Std.parseInt('0x' + color.substr(4,color.length));
 				obj.color = colorNum;
 			}
 		});
@@ -2529,21 +2528,22 @@ class FunkinLua {
 			{
 				return true;
 			}
-			return FileSystem.exists(Paths.getPath('windose_data/$filename', TEXT));
+			return FileSystem.exists(Paths.getPath('corrupted_assets/$filename', TEXT));
 			#else
 			if(absolute)
 			{
 				return Assets.exists(filename);
 			}
-			return Assets.exists(Paths.getPath('windose_data/$filename', TEXT));
+			return Assets.exists(Paths.getPath('corrupted_assets/$filename', TEXT));
 			#end
 		});
 		Lua_helper.add_callback(lua, "saveFile", function(path:String, content:String, ?absolute:Bool = false)
 		{
-			try {
+			try {#if !public
 				if(!absolute)
 					File.saveContent(Paths.mods(path), content);
 				else
+					#end
 					File.saveContent(path, content);
 
 				return true;
@@ -2651,8 +2651,8 @@ class FunkinLua {
 			luaTrace("luaSpriteMakeGraphic is deprecated! Use makeGraphic instead", false, true);
 			if(PlayState.instance.modchartSprites.exists(tag)) {
 				var colorNum:Int = Std.parseInt(color);
-				if(!color.startsWith('0x')) colorNum = Std.parseInt('0xff' + color);
-
+				if(!color.startsWith('0x')) colorNum = Std.parseInt('0x' + color);
+				if(color.length >= 10) colorNum =  Std.parseInt('0x' + color.substr(4,color.length));
 				PlayState.instance.modchartSprites.get(tag).makeGraphic(width, height, colorNum);
 			}
 		});
@@ -2789,11 +2789,8 @@ class FunkinLua {
 			haxeInterp.variables.set('Alphabet', Alphabet);
 			haxeInterp.variables.set('StringTools', StringTools);
 			haxeInterp.variables.set("difficulty", PlayState.storyDifficulty);
-			#if IS_CORRUPTION
-			haxeInterp.variables.set("StoryMenuState", StoryMenuStateCorr);
-		#else
+
 		haxeInterp.variables.set("StoryMenuState", StoryMenuState);
-		#end
 		haxeInterp.variables.set("FreeplayState", FreeplayState);
 		haxeInterp.variables.set("GameOverSubstate", GameOverSubstate);
 		haxeInterp.variables.set("MainMenuState", MainMenuState);
@@ -2881,7 +2878,7 @@ class FunkinLua {
 	{
 
 
-		#if sys
+		#if (sys && MODS_ALLOWED)
 		if(PlayState.instance.runtimeShaders.exists(name))
 		{
 			luaTrace('Shader $name was already initialized!');
