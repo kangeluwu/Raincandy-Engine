@@ -40,12 +40,6 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool',
 			true);
 		addOption(option);
-		var option:Option = new Option('Show Combo Breaks',
-			"If checked, Whether to display any combo breaks by flashing the screen.",
-			'showComboBreaks',
-			'bool',
-			true);
-		addOption(option);
 		
 		var option:Option = new Option('Hide HUD',
 			'If checked, hides most HUD elements.',

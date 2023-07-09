@@ -4586,7 +4586,7 @@ function eventPushed(event:EventNote) {
 			}
 		}
 
-		if (generatedMusic && !endingSong && !isCameraOnForcedPos)
+		if (!inCutscene && generatedMusic && !endingSong && !isCameraOnForcedPos)
 			{
 				moveCameraSection();
 			}
