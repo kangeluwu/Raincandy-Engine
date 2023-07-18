@@ -2477,10 +2477,12 @@ if (!dadChar.beingControlled)
 	public function getLuaObject(tag:String, text:Bool=true):FlxSprite {
 		if(modchartSprites.exists(tag)) return modchartSprites.get(tag);
 		if(text && modchartTexts.exists(tag)) return modchartTexts.get(tag);
+		if(variables.exists(tag)) return variables.get(tag);
 		return null;
 	}
 	public function getLuaCharacter(tag:String):ModchartCharacter {
 		if(modchartCharacters.exists(tag)) return modchartCharacters.get(tag);
+		if(variables.exists(tag)) return variables.get(tag);
 		return null;
 	}
 	function startCharacterPos(char:Character, ?gfCheck:Bool = false) {
@@ -6871,15 +6873,15 @@ public var curNoteHitHealth:Float = 0;
 			lua.stop();
 		}
 		luaArray = [];
-
+		if(FunkinLua.hscript != null) FunkinLua.hscript = null;
 		if(!ClientPrefs.controllerMode)
 		{
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		}
-		#if hscript
-		FunkinLua.haxeInterp = null;
-		#end
+		
+
+		
 		super.destroy();
 	}
 
