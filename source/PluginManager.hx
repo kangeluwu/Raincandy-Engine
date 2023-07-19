@@ -91,6 +91,7 @@ class PluginManager {
 		interp.variables.set("TitleState", TitleState);
 		interp.variables.set("makeRangeArray", CoolUtil.numberArray);
 		interp.variables.set("FNFAssets", FNFAssets);
+        interp.variables.set("Paths", Paths);
         interp.variables.set("CoolUtil", CoolUtil);
         interp.variables.set("Main", Main);
         interp.variables.set("AtlasFrameMaker", AtlasFrameMaker);
@@ -159,7 +160,7 @@ class PluginManager {
        // interp.variables.set("MP4Handler", MP4Handler);
         interp.variables.set("FlxVideo", FlxVideo);
 #end
-
+interp.variables.set("Paths", Paths);
 		// : )
 		interp.variables.set("FlxG", HscriptGlobals);
 		interp.variables.set("FlxTimer", flixel.util.FlxTimer);

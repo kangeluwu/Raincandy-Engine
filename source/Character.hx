@@ -83,7 +83,8 @@ class Character extends FlxSprite
 	public var hasGun:Bool = false;
 	public var healthIcon:String = 'face';
 	public var animationsArray:Array<AnimArray> = [];
-
+	public var followCamX:Float = 0;
+	public var followCamY:Float = 0;
 	public var positionArray:Array<Float> = [0, 0];
 	public var cameraPosition:Array<Float> = [0, 0];
 
@@ -352,10 +353,13 @@ callInterp("init", [this]);
 		loadMappedAnims();
 		playAnim("shoot1");
 		}
+		followCamX = positionArray[0];
+		followCamY = positionArray[1];
 	}
 
 	override function update(elapsed:Float)
 	{
+		
 		if(!debugMode && animation.curAnim != null)
 		{
 			if(heyTimer > 0)
@@ -577,7 +581,7 @@ callInterp("init", [this]);
 		interp.variables.set('FlxGraphic', FlxGraphic);
 		interp.variables.set("hscriptPath", path + char + '/');
 		interp.variables.set("charName", char);
-		interp.variables.set("Paths", Paths);
+		
 		interp.variables.set("FunkinLua", FunkinLua);
 		interp.variables.set("currentPlayState", PlayState.instance);
 		interp.variables.set("PlayState", PlayState);
@@ -586,10 +590,12 @@ callInterp("init", [this]);
 		interp.variables.set("MainMenuState", MainMenuState);
 		interp.variables.set("ChartingState", ChartingState);
 		interp.variables.set("StoryMenuState", StoryMenuState);
+		if (PlayState.SONG != null){
 		interp.variables.set("curSong", PlayState.SONG.song);
 		interp.variables.set("curStep", PlayState.instance.curStep);
 		interp.variables.set("curBeat", PlayState.instance.curBeat);
 		interp.variables.set("curSection", PlayState.instance.curSection);
+		}
 		interp.variables.set("pi", Math.PI);
 	
 	    interp.variables.set("Math", Math);
