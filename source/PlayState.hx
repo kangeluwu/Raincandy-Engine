@@ -392,7 +392,8 @@ class PlayState extends MusicBeatState
     //Hscript shits
 	var isHscript:Bool = false;
 	public var hscriptgfhide:Bool = false;
-
+	var disibleIconMoving:Bool = false;
+	public var iconMovingType = 'Left';
 	public var disabledchangecolor:Bool = false;
 	public var hideFUCKINGhealthBarBG:Bool = false;
 	
@@ -2337,6 +2338,33 @@ if (!dadChar.beingControlled)
 
 		healthBar.updateBar();
 	}
+	public function changeHealthStuffsDirections(barDire:String = 'Left'){
+		iconMovingType = barDire;
+		switch (barDire){
+			case 'Left': setBarDirections('healthBar','left_to_right');
+			case 'Right': setBarDirections('healthBar','right_to_left');
+		}
+	}
+	public function setBarDirections(barType:String = 'healthBar',barDire:String = 'left_to_right') {
+		var curbar = Reflect.getProperty(this, barType);
+
+		curbar.fillDirection = directionsFromString(barDire);
+		curbar.updateBar();
+		
+	}
+	public function directionsFromString(direction:String):FlxBarFillDirection
+		{
+		switch (direction.trim()){
+		case 'right_to_left':	return RIGHT_TO_LEFT;
+		case 'top_to_bottom':	return TOP_TO_BOTTOM;
+		case 'bottom_to_top':	return BOTTOM_TO_TOP;
+		case 'horizontal_inside_out':	return HORIZONTAL_INSIDE_OUT;
+		case 'horizontal_outside_in':	return HORIZONTAL_OUTSIDE_IN;
+		case 'vertical_inside_out':	return VERTICAL_INSIDE_OUT;
+		case 'vertical_out_inside':	return VERTICAL_OUTSIDE_IN;
+		}
+			return LEFT_TO_RIGHT;
+		}
 	public function addOtherCharacters(x:Int,y:Int,curMap:String,newCharacters:String,?displayLayer:Int = 0) {
 		if(!otherCharactersMap.exists(curMap)) otherCharactersMap.set(curMap,new Map<String, Character>());
 			if(!otherCharactersGroups.exists(newCharacters)) {otherCharactersGroups.set(newCharacters,new FlxSpriteGroup(x,y));
@@ -4440,7 +4468,8 @@ function eventPushed(event:EventNote) {
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
 		var iconOffset:Int = 26;
-
+if (!disibleIconMoving){
+	if (iconMovingType == 'Left'){
 		iconP1.x = healthBar.x 
 		+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) 
 		+ (150 * iconP1.scale.x - 150) / 2 
@@ -4450,7 +4479,20 @@ function eventPushed(event:EventNote) {
 		+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) 
 		- (150 * iconP2.scale.x) / 2 
 		- iconOffset * 2;
+	}
+	else
+		{
+			iconP1.x = healthBar.x -(
+		(healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) 
+		+ (150 * iconP1.scale.x - 150) / 2 
+		- iconOffset);
 
+		iconP2.x = healthBar.x - (
+		(healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) 
+		- (150 * iconP2.scale.x) / 2 
+		- iconOffset * 2);
+		}
+}
 		if (health < 0)
 			health = 0;
 		if (!genocideMode)
