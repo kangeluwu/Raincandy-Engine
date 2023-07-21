@@ -1,3 +1,10 @@
+# REALLY IMPORTANTED WARNING
+The Lua had some problems with color,idrk what it is and it won't be fixed for a long time i'm soooooo sorry guys QAQ.
+
+
+
+
+
 # Friday Night Funkin' - Raincandy Engine
 My own Engine for friday night funkin!!!!1 yeah kinda werid i know
 
