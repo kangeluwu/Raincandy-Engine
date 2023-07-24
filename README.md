@@ -1,5 +1,5 @@
 # REALLY IMPORTANTED WARNING
-The Lua had some problems with color,idrk what it is and it won't be fixed for a long time i'm soooooo sorry guys QAQ.
+THIS IS OLD PSYCH(VERISON < 0.7)LMAO
 
 
 
