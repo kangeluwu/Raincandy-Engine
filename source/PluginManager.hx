@@ -27,8 +27,12 @@ import hscript.InterpEx;
 import hscript.Interp;
 import flixel.FlxG;
 #if VIDEOS_ALLOWED
-import FlxVideo;
-//import vlc.MP4Handler;
+
+#if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideo as FlxVideo;
+#elseif (hxCodec >= "2.6.1") import hxcodec.VideoHandler as FlxVideo;
+#elseif (hxCodec == "2.6.0") import VideoHandler as FlxVideo;
+#else import vlc.VideoHandler as FlxVideo; #end
+#if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideoSprite; #end
 #end
 #if mobile
 import flixel.group.FlxGroup;
@@ -119,6 +123,7 @@ interp.variables.set("mobile", false);
         #if VIDEOS_ALLOWED
        // interp.variables.set("MP4Handler", MP4Handler);
         interp.variables.set("FlxVideo", FlxVideo);
+        interp.variables.set("FlxVideoSprite", FlxVideoSprite);
 #end
 
 		// : )
@@ -186,6 +191,7 @@ interp.variables.set("mobile", false);
         #if VIDEOS_ALLOWED
        // interp.variables.set("MP4Handler", MP4Handler);
         interp.variables.set("FlxVideo", FlxVideo);
+        interp.variables.set("FlxVideoSprite", FlxVideoSprite);
 #end
 interp.variables.set("Paths", Paths);
 		// : )

@@ -89,7 +89,12 @@ import openfl.geom.Rectangle;
 import openfl.display.Sprite;
 import lime.tools.ApplicationData;
 #if VIDEOS_ALLOWED
-import FlxVideo;
+
+#if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideo as FlxVideo;
+#elseif (hxCodec >= "2.6.1") import hxcodec.VideoHandler as FlxVideo;
+#elseif (hxCodec == "2.6.0") import VideoHandler as FlxVideo;
+#else import vlc.VideoHandler as FlxVideo; #end
+
 #end
 import flixel.system.scaleModes.StageSizeScaleMode;
 import flixel.system.scaleModes.BaseScaleMode;
@@ -603,7 +608,9 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("customTimeBar", customTimeBar);	
 		interp.variables.set("curStep", 0);
 		interp.variables.set("curBeat", 0);
+		#if VIDEOS_ALLOWED
 		interp.variables.set("FlxVideo", FlxVideo);
+		#end
 		interp.variables.set("GreenScreenShader", GreenScreenShader);
 		interp.variables.set("FlxTypedGroup", FlxTypedGroup);
 		interp.variables.set("curSection", 0);
@@ -2541,46 +2548,58 @@ if (!dadChar.beingControlled)
 		char.y += char.positionArray[1];
 	}
 
-
-	public function startVideo(filename:String, ?finishfunk:Void->Void = null)
+	public function startVideo(name:String, ?finishfunk:Void->Void = null)
 		{
-			//原汁原味
 			#if VIDEOS_ALLOWED
-			var foundFile:Bool = false;
+			inCutscene = true;
 	
-			if(FNFAssets.exists(filename)) {
-				foundFile = true;
+			var filepath:String = Paths.video(name);
+			#if sys
+			if(!FileSystem.exists(filepath))
+			#else
+			if(!OpenFlAssets.exists(filepath))
+			#end
+			filepath = name;
+			#if sys
+			if(!FileSystem.exists(filepath))
+			#else
+			if(!OpenFlAssets.exists(filepath))
+			#end
+			{
+				FlxG.log.warn('Couldnt find video file: ' + name);
+				startAndEnd();
+				return;
 			}
 	
-			if(foundFile) {
-				inCutscene = true;
-				var bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-				bg.scrollFactor.set();
-				bg.cameras = [camHUD];
-				add(bg);
-	
-				var daVideo = new FlxVideo();
-				daVideo.playMP4(filename, false, null, false, false);
-				daVideo.allowSkip = true;
-	
-				daVideo.finishCallback = function() {
-					remove(bg);
-					bg.destroy();
+			var video:FlxVideo = new FlxVideo();
+				#if (hxCodec >= "3.0.0")
+				// Recent versions
+				video.play(filepath);
+				video.onEndReached.add(function()
+				{
+					video.dispose();
 					if (finishfunk == null)
 						startCountdown();
 					else
 						finishfunk();
+					return;
+				}, true);
+				#else
+				// Older versions
+				video.playVideo(filepath);
+				video.finishCallback = function()
+				{
+					if (finishfunk == null)
+						startCountdown();
+					else
+						finishfunk();
+					return;
 				}
-				return;
-			}
-			else
-			{
-				FlxG.log.warn('Couldnt find video file: ' + filename);
-				if (finishfunk == null)
-					startCountdown();
-				else
-					finishfunk();
-			}
+				#end
+			#else
+			FlxG.log.warn('Platform not supported!');
+			startAndEnd();
+			return;
 			#end
 		}
 	
