@@ -258,8 +258,17 @@ function update(elapsed)
     {
         FlxG.fullscreen = !FlxG.fullscreen;
     }
-
+  if(mobile){
+    for (touch in FlixG.touches.list)
+    {
+        if (touch.justPressed)
+        {
+            pressedEnter = true;
+        }
+    }
+}
     var pressedEnter =  FlxG.keys.justPressed.ENTER || controls.ACCEPT;
+
 	if (newTitle) {
         titleTimer += CoolUtil.boundTo(elapsed, 0, 1);
         if (titleTimer > 2) titleTimer -= 2;
@@ -280,7 +289,7 @@ function update(elapsed)
 			
 			if(pressedEnter)
 			{
-                trace('test');
+                
 				titleText.color = OGcolor;
 				titleText.alpha = 1;
 				

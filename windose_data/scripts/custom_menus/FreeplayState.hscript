@@ -139,8 +139,13 @@ for (i in 0...WeekData.weeksList.length) {
 var leText = "";
 var size = 16;
 		if (preload){
+			if (mobile){
+	 leText = "Press X to listen to the Song / Press C to open the Gameplay Changers Menu / Press Y to Reset your Score and Accuracy.";
+	 size = 16;}
+		else{
 		 leText = "Press SPACE to listen to the Song / Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
 		 size = 16;
+		}
 		}else{
 		 leText = "Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
 		 size = 18;
@@ -152,7 +157,11 @@ var size = 16;
 		if (ClientPrefs.classicStyle){
 			textBG.alpha = 0;
 			text.alpha = 0;
+			
 		}
+		if (mobile)
+		addVirtualPad(FlxDPadMode.FULL, FlxActionMode.A_B_C_X_Y_Z);
+
 }
 function closeSubState() {
 	changeSelection(0, false);

@@ -203,7 +203,7 @@ class NoteOffsetState extends MusicBeatState
 		dumbMap.set('nums', false);
 		dumbMap.set('rating', false);
 		dumbMap.set('combo', false);
-		#if android
+		#if mobile
 		addVirtualPad(LEFT_FULL, A_B_C);
 		addPadCamera();
 		#end

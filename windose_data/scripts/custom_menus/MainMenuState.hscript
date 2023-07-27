@@ -160,6 +160,9 @@ function create()
             remove(test);
         }
     });
+if (mobile)
+    addVirtualPad(FlxDPadMode.UP_DOWN, FlxActionMode.A_B_7);
+
 }
 function giveAchievement() {
     if (achiAllow){
@@ -218,7 +221,7 @@ function update(elapsed)
         {
             enter();
         }
-        else if (desktop && FlxG.keys.anyJustPressed(debugKeys))
+        else if ((desktop && FlxG.keys.anyJustPressed(debugKeys)) (mobile || _virtualpad.button7.justPressed))
         {
             selectedSomethin = true;
             MusicBeatState.switchState(new MasterEditorMenu());

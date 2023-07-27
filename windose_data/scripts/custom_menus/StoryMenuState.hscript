@@ -146,6 +146,9 @@ var num = 0;
 
 		changeWeek(0);
 		changeDifficulty(0);
+		if (mobile)
+		addVirtualPad(FlxDPadMode.FULL, FlxActionMode.A_B_X_Y);
+       
 }
 
 function closeSubState() {
