@@ -1,8 +1,12 @@
 #include <mutex>
 #include <iostream>
 #include <string>
-#include <StdInt.h>
+#include <stdInt.h>
+#if PLATFORM_LINUX
+//#include <windows.h> 
+#else
 #include <windows.h> 
+#endif
 
 using std::string;
 using namespace std;
