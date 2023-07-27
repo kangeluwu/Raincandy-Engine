@@ -203,6 +203,13 @@ function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	interp.variables.set("addPadCamera", addPadCamera);
 	interp.variables.set("addAndroidControls", addAndroidControls);
 	interp.variables.set("_virtualpad", _virtualpad);
+	
+	
+	#end
+	#if mobile 
+	interp.variables.set("damn", _virtualpad.button7.justPressed);
+	#else
+	interp.variables.set("damn", false);
 	#end
 	interp.variables.set("BlackColor", FlxColor.BLACK);
 	interp.variables.set("BlueColor", FlxColor.BLUE);

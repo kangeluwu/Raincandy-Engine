@@ -221,7 +221,7 @@ function update(elapsed)
         {
             enter();
         }
-        else if ((desktop && FlxG.keys.anyJustPressed(debugKeys)) (mobile || _virtualpad.button7.justPressed))
+        else if ((desktop && FlxG.keys.anyJustPressed(debugKeys)) || (mobile && damn))
         {
             selectedSomethin = true;
             MusicBeatState.switchState(new MasterEditorMenu());
