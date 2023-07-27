@@ -4,7 +4,7 @@ import flixel.FlxG;
 import openfl.system.Capabilities;
 import lime.app.Application;
 import openfl.Lib;
-#if (cpp)
+
 import cpp.NativeArray;
 import cpp.UInt8;
 import haxe.ValueException;
@@ -23,9 +23,9 @@ import vlc.LibVLC;
  * ...
  * @author Tommy S
  */
-#if (cpp)
+
 @:cppFileCode('#include "LibVLC.cpp"')
-#end
+
 class VlcBitmap extends Bitmap
 {
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -583,4 +583,4 @@ class VlcBitmap extends Bitmap
 
 	/////////////////////////////////////////////////////////////////////////////////////
 }
-#end
+

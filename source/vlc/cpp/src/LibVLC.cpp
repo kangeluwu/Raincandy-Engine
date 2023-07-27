@@ -1,10 +1,8 @@
 #include <mutex>
 #include <iostream>
 #include <string>
-#include <stdInt.h>
-#if PLATFORM_LINUX
-//#include <windows.h> 
-#else
+#include <StdInt.h>
+#if PLATFORM_WINDOWS
 #include <windows.h> 
 #endif
 
