@@ -233,7 +233,7 @@ jobs:
           haxelib install json2object
           haxelib install haxeui-core
           haxelib git extension-videoview https://github.com/mcagabe19-stuff/extension-videoview
-          haxelib install extension-androidtools
+          haxelib install extension-androidtools 1.4.0
           haxelib install uniontypes
         
           haxelib install random
