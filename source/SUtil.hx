@@ -1,7 +1,7 @@
 package;
 
 #if android
-import android.stuff.Permissions;
+import android.Permissions;
 import android.os.Build;
 import android.os.Environment;
 import android.widget.Toast;
