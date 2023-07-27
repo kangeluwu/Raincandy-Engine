@@ -48,11 +48,10 @@ import flixel.effects.FlxFlicker;
 import flixel.util.FlxAxes;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.frames.FlxFrame;
-#if desktop
+
 import Sys;
 import sys.FileSystem;
 import sys.io.File;
-#end
 
 #if sys
 

@@ -48,9 +48,8 @@ class OptionsState extends MusicBeatState
 				openSubState(new GameplayChangersSubstate());
 			case 'Controls':
 				#if mobile
-				removeVirtualPad();
-				
-				openSubState(new android.AndroidControlsMenu());
+				LoadingState.loadAndSwitchState(new android.AndroidControlsMenu());
+
 				#else 
 				openSubState(new options.ControlsSubState());
 					#end

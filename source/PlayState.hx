@@ -356,9 +356,10 @@ class PlayState extends MusicBeatState
 
 	public static var chartType:String = "standard";
 	public var genocideMode:Bool = false;
-	#if desktop
+
 	// Discord RPC variables
 	var storyDifficultyText:String = "";
+	#if desktop
 	var detailsText:String = "";
 	var detailsPausedText:String = "";
 	#end

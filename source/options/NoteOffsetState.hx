@@ -204,7 +204,7 @@ class NoteOffsetState extends MusicBeatState
 		dumbMap.set('rating', false);
 		dumbMap.set('combo', false);
 		#if mobile
-		addVirtualPad(LEFT_FULL, A_B_C);
+		addVirtualPad(FULL, A_B_C);
 		addPadCamera();
 		#end
 		super.create();
@@ -342,7 +342,7 @@ class NoteOffsetState extends MusicBeatState
 				}
 			}
 
-			if(controls.RESET #if mobile || virtualPad.buttonC.justPressed #end)
+			if(controls.RESET #if mobile || _virtualPad.buttonC.justPressed #end)
 			{
 				for (i in 0...ClientPrefs.comboOffset.length)
 				{
@@ -380,7 +380,7 @@ class NoteOffsetState extends MusicBeatState
 				updateNoteDelay();
 			}
 
-			if(controls.RESET #if mobile || virtualPad.buttonC.justPressed #end)
+			if(controls.RESET #if mobile || _virtualPad.buttonC.justPressed #end)
 			{
 				holdTime = 0;
 				barPercent = 0;
