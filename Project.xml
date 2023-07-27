@@ -41,10 +41,10 @@
 	<classpath name="source" />
 	
 	<!-- PSYCH ENGINE CUSTOMIZATION -->
-	<define name="MODS_ALLOWED" if="desktop" />
-	<define name="LUA_ALLOWED" if="desktop" />
+	<define name="MODS_ALLOWED"/>
+	<define name="LUA_ALLOWED" />
 	<define name="ACHIEVEMENTS_ALLOWED" />
-	<define name="VIDEOS_ALLOWED" if="web || windows" unless="32bits"/>
+	<define name="VIDEOS_ALLOWED" if="web || windows || mobile"/>
 	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
 	<define name="TITLE_SCREEN_EASTER_EGG" if="officialBuild"/> <!-- DELETE THE if="officialBuild" for enabling this on an unofficial build -->
 	<define name="CRASH_HANDLER" if="desktop release" />
@@ -104,13 +104,17 @@
 	<assets path="windose_data/week7"         library="week7"         exclude="*.ogg" if="web"/>
 	<assets path="windose_data/week7"         library="week7"         exclude="*.mp3" unless="web"/>
 	<assets path="windose_data/scripts"           library="scripts"       exclude="*.mp3" unless="web"/>
-	<section if="MODS_ALLOWED">
-		<assets path='example_mods' rename='mods' embed='false'/>
-	</section>
+
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 	<!-- <template path='mods' /> -->
-	<assets path="plugins" if="windows"/>
-	<assets path="dlls/" rename='' if="windows"/>
+	<assets path="plugins" />
+	<assets path="dlls/" rename=''/>
+		<section if="MODS_ALLOWED">
+		<assets path='example_mods' rename='mods' embed='false'/>
+	</section>
+		<section if="mobile">
+		<assets path='mobilePortStuffsIGuess' rename='windose_data/images' embed='false'/>
+		</section>
 	<!-- assets path="CHANGELOG.md" rename='changelog.txt' -->
 
 	<!-- NOTE FOR FUTURE SELF SINCE FONTS ARE ALWAYS FUCKY 

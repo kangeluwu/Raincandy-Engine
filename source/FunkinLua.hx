@@ -1500,8 +1500,8 @@ class FunkinLua {
 			}
 			PlayState.instance.addCharacterToList(name, charType);
 		});
-		Lua_helper.add_callback(lua, "precacheImage", function(name:String) {
-			Paths.returnGraphic(name);
+		Lua_helper.add_callback(lua, "precacheImage", function(name:String, allowGPU:Bool = true) {
+			Paths.returnGraphic(name, allowGPU);
 		});
 		Lua_helper.add_callback(lua, "precacheSound", function(name:String) {
 			CoolUtil.precacheSound(name);
@@ -2036,8 +2036,8 @@ class FunkinLua {
 			var right:FlxColor = Std.parseInt(rightHex);
 			if(!rightHex.startsWith('0x')) right = Std.parseInt('0xff' + rightHex);
 
-			PlayState.instance.healthBar.createFilledBar(left, right);
-			PlayState.instance.healthBar.updateBar();
+			PlayState.instance.healthBar.setColors(left, right);
+
 		});
 		Lua_helper.add_callback(lua, "setTimeBarColors", function(leftHex:String, rightHex:String) {
 			var left:FlxColor = Std.parseInt(leftHex);
@@ -2045,8 +2045,8 @@ class FunkinLua {
 			var right:FlxColor = Std.parseInt(rightHex);
 			if(!rightHex.startsWith('0x')) right = Std.parseInt('0xff' + rightHex);
 
-			PlayState.instance.timeBar.createFilledBar(right, left);
-			PlayState.instance.timeBar.updateBar();
+			PlayState.instance.timeBar.setColors(right, left);
+
 		});
 
 		Lua_helper.add_callback(lua, "setObjectCamera", function(obj:String, camera:String = '') {
@@ -2523,7 +2523,7 @@ class FunkinLua {
 			}
 		});
 
-		Lua_helper.add_callback(lua, "initSaveData", function(name:String, ?folder:String = 'psychenginemods') {
+		Lua_helper.add_callback(lua, "initSaveData", function(name:String, ?folder:String = 'raincandyenginemods') {
 			if(!PlayState.instance.modchartSaves.exists(name))
 			{
 				var save:FlxSave = new FlxSave();
@@ -2572,13 +2572,13 @@ class FunkinLua {
 			{
 				return true;
 			}
-			return FileSystem.exists(Paths.getPath('assets/$filename', TEXT));
+			return FileSystem.exists(Paths.getPath('windose_data/$filename', TEXT));
 			#else
 			if(absolute)
 			{
 				return Assets.exists(filename);
 			}
-			return Assets.exists(Paths.getPath('assets/$filename', TEXT));
+			return Assets.exists(Paths.getPath('windose_data/$filename', TEXT));
 			#end
 		});
 		Lua_helper.add_callback(lua, "saveFile", function(path:String, content:String, ?absolute:Bool = false)

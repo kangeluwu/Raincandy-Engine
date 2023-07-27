@@ -235,12 +235,12 @@ class PlayState extends MusicBeatState
 	public var health:Float = 1;
 	public var combo:Int = 0;
 
-	public var healthBarBG:AttachedSprite;
-	public var healthBar:FlxBar;
+	public var healthBarBG:FlxSprite;
+	public var healthBar:HealthBar;
 	var songPercent:Float = 0;
 
-	public var timeBarBG:AttachedSprite;
-	public var timeBar:FlxBar;
+	public var timeBarBG:FlxSprite;
+	public var timeBar:HealthBar;
 
 	public var ratingsData:Array<Rating> = [];
 	public var sicks:Int = 0;
@@ -597,6 +597,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 	    interp.variables.set("Math", Math);
 		interp.variables.set("Conductor", Conductor);
 		interp.variables.set("songData", SONG);
+		interp.variables.set("HealthBar", HealthBar);
 		interp.variables.set("customHealthBar", customHealthBar);	
 		interp.variables.set("customTimeBar", customTimeBar);	
 		interp.variables.set("curStep", 0);
@@ -1612,10 +1613,18 @@ function camerabgAlphaShits(cam:FlxCamera)
 			dialogueJson = DialogueBoxPsych.parseDialogue(file);
 		}
 
-		var file:String = Paths.txt(songName + '/' + songName + 'Dialogue'); //Checks for vanilla/Senpai dialogue
+		var file:String = Paths.modFolders('data' + songName + '/' + songName + 'Dialogue.txt'); //Checks for vanilla/Senpai dialogue
+		var vanillaCheckMod:Bool = false;
 		if (OpenFlAssets.exists(file)) {
+			vanillaCheckMod = true;	
 			dialogue = CoolUtil.coolTextFile(file);
 		}
+if (!vanillaCheckMod)
+	file = Paths.txt(songName + '/' + songName + 'Dialogue');
+if (OpenFlAssets.exists(file)) {
+		dialogue = CoolUtil.coolTextFile(file);
+}
+
 
 		var filename:Null<String> = null;
 	
@@ -1664,22 +1673,21 @@ function camerabgAlphaShits(cam:FlxCamera)
 		strumLine.scrollFactor.set();
 
 
-			timeBarBG = new AttachedSprite('custom_ui/' + uiSmelly.uses + '/'  + 'timeBar');
-			timeBarBG.screenCenter(X);
-		timeBarBG.scrollFactor.set();
-		timeBarBG.alpha = 0;
+		var	instanceTimeBarBG = new AttachedSprite('custom_ui/' + uiSmelly.uses + '/'  + 'timeBar');
+		instanceTimeBarBG.screenCenter(X);
+		instanceTimeBarBG.scrollFactor.set();
+		instanceTimeBarBG.alpha = 0;
 
-		timeBarBG.visible = showTime;
+		instanceTimeBarBG.visible = showTime;
 
-		timeBarBG.color = FlxColor.BLACK;
-		timeBarBG.xAdd = -4;
-		timeBarBG.yAdd = -4;
-		add(timeBarBG);
-
+		instanceTimeBarBG.color = FlxColor.BLACK;
+		instanceTimeBarBG.xAdd = -4;
+		instanceTimeBarBG.yAdd = -4;
+//preload？？？？
 		if (ClientPrefs.downScroll)
-			timeBarBG.y = FlxG.height * 0.9 + 45;
+			instanceTimeBarBG.y = FlxG.height * 0.9 + 45;
 
-		timeTxt = new FlxText(0, timeBarBG.y, 0, "", 16);
+		timeTxt = new FlxText(0, instanceTimeBarBG.y + 6, 0, "", 16);
 		timeTxt.setFormat(Paths.font(font), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		timeTxt.scrollFactor.set();
 		timeTxt.alpha = 0;
@@ -1702,16 +1710,17 @@ function camerabgAlphaShits(cam:FlxCamera)
 	
 		timeTxt.y += 4;
 	timeTxt.x -= timeTxt.width / 2;
-		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this,
-			'songPercent', 0, 1);
-		timeBar.scrollFactor.set();
-		timeBar.createFilledBar(0xFF808080, 0xFF00FF00);
-		timeBar.numDivisions = 800; //How much lag this causes?? Should i tone it down to idk, 400 or 200?
-		timeBar.alpha = 0;
-		timeBar.visible = showTime;
+
+			timeBar = new HealthBar(instanceTimeBarBG.x + 4, instanceTimeBarBG.y + 8, 'custom_ui/' + uiSmelly.uses + '/'  + 'timeBar', function() return songPercent, 0, 1);
+			timeBar.scrollFactor.set();
+			timeBar.screenCenter(X);
+			timeBar.alpha = 0;
+			timeBar.visible = showTime;
+			timeBar.setColors(0xFF00FF00, 0xFF808080);
 		add(timeBar);
+		timeBarBG = timeBar.bg;
 		add(timeTxt);
-		timeBarBG.sprTracker = timeBar;
+		//timeBarBG.sprTracker = timeBar;
 		playerComboBreak = new FlxTypedGroup<FlxSprite>();
 		opponentComboBreak = new FlxTypedGroup<FlxSprite>();
 		add(playerComboBreak);
@@ -1856,28 +1865,19 @@ function camerabgAlphaShits(cam:FlxCamera)
 		FlxG.fixedTimestep = false;
 		moveCameraSection();
 
-		healthBarBG = new AttachedSprite('custom_ui/' + uiSmelly.uses + '/'  + 'healthBar');		
-		healthBarBG.y = FlxG.height * 0.89;
-		healthBarBG.screenCenter(X);
-		healthBarBG.scrollFactor.set();
-		if(hideFUCKINGhealthBarBG) healthBarBG.visible = false;
-		else healthBarBG.visible = !ClientPrefs.hideHud;
-		healthBarBG.xAdd = -4;
-		healthBarBG.yAdd = -4;
-		add(healthBarBG);
-		if(ClientPrefs.downScroll) healthBarBG.y = 0.11 * FlxG.height;
+		
 
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
-			'health', 0, 2);
+
+		healthBar = new HealthBar(0, FlxG.height * (!ClientPrefs.downScroll ? 0.89 : 0.11), 'custom_ui/' + uiSmelly.uses + '/'  + 'healthBar', function() return health, 0, 2);
+if (!opponentPlayer)
+		healthBar.leftToRight = false;
+		healthBar.screenCenter(X);
 		healthBar.scrollFactor.set();
-		// healthBar
-		if (ClientPrefs.classicStyle)
-		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
-
 		healthBar.visible = !ClientPrefs.hideHud;
 		healthBar.alpha = ClientPrefs.healthBarAlpha;
+
 		add(healthBar);
-		healthBarBG.sprTracker = healthBar;
+		healthBarBG = healthBar.bg;		
 
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -1890,8 +1890,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		iconP2.visible = !ClientPrefs.hideHud;
 		iconP2.alpha = ClientPrefs.healthBarAlpha;
 		add(iconP2);
-		if (!ClientPrefs.classicStyle)
-		reloadHealthBarColors();
+
 
 		if (ClientPrefs.classicStyle){
 			scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
@@ -1946,20 +1945,32 @@ function camerabgAlphaShits(cam:FlxCamera)
 		grpNoteSplashes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
-		healthBarBG.cameras = [camHUD];
+	
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
 		//botplayTxt.cameras = [camHUD];
 		timeBar.cameras = [camHUD];
-		timeBarBG.cameras = [camHUD];
+	
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 		doofM.cameras = [camHUD];
+		if (ClientPrefs.classicStyle){
+			if (!healthBar.leftToRight)
+			healthBar.setColors(0xFFFF0000, 0xFF66FF33);
+		
+			else
+					healthBar.setColors(0xFF66FF33, 0xFFFF0000);
+		}else{
+			reloadHealthBarColors();
+		}
+		
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
 		// UI_camera.zoom = 1;
-
+		#if mobile
+		addAndroidControls();
+		#end
 		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
 
@@ -2283,11 +2294,11 @@ function camerabgAlphaShits(cam:FlxCamera)
 		{
 			uiSmelly = Reflect.field(Judgement.uiJson, type);
 		}
-		public function changeMode(type:Bool,?healthChange:Int = 1)
+		public function changeMode(type:Bool)
 			{
 				if (type){
 					opponentPlayer = true;
-				health = 2 - healthChange;
+				
 				for (note in notes) note.oppMode = true;
 				for (dadChar in dadMap.iterator()) {
 if (!dadChar.beingControlled)
@@ -2301,7 +2312,7 @@ if (!dadChar.beingControlled)
 				}
 				else if (!type){
 					opponentPlayer = false;
-				health = healthChange;
+				
 				for (note in notes) note.oppMode = false;
 				for (note in unspawnNotes) note.oppMode = false;
 				for (dadChar in dadMap.iterator()) {
@@ -2332,13 +2343,17 @@ if (!dadChar.beingControlled)
 		{
 			return FlxColor.fromRGB(red, green, blue,alpha);
 		}
+		var colors:Array<FlxColor> = [];
 	public function reloadHealthBarColors() {
-		healthBar.createFilledBar(FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]),
-			FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2]));
-
-		healthBar.updateBar();
+		if (!healthBar.leftToRight)
+			healthBar.setColors(FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]),
+		FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2]));
+		else
+			healthBar.setColors(FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2]),
+		FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]));
+			
 	}
-	public function changeHealthStuffsDirections(barDire:String = 'Left'){
+/*	public function changeHealthStuffsDirections(barDire:String = 'Left'){
 		iconMovingType = barDire;
 		switch (barDire){
 			case 'Left': setBarDirections('healthBar','left_to_right');
@@ -2351,7 +2366,9 @@ if (!dadChar.beingControlled)
 		curbar.fillDirection = directionsFromString(barDire);
 		curbar.updateBar();
 		
-	}
+	}older*/
+	
+	
 	public function directionsFromString(direction:String):FlxBarFillDirection
 		{
 		switch (direction.trim()){
@@ -3170,7 +3187,9 @@ if (!dadChar.beingControlled)
 		callAllHScript('onStartCountdown', []);
 		if(ret != FunkinLua.Function_Stop) {
 			if (skipCountdown || startOnTime > 0) skipArrowStartTween = true;
-
+			#if mobile 
+			androidc.visible = true;
+			#end
 			generateStaticArrows(0);
 			generateStaticArrows(1);
 
@@ -4469,20 +4488,15 @@ function eventPushed(event:EventNote) {
 		iconP2.updateHitbox();
 		var iconOffset:Int = 26;
 if (!disibleIconMoving){
-	if (iconMovingType == 'Left'){
-		iconP1.x = healthBar.x 
-		+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) 
-		+ (150 * iconP1.scale.x - 150) / 2 
-		- iconOffset;
+if (iconMovingType == 'Left'){
+			iconP1.x = healthBar.barCenter + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
+			iconP2.x = healthBar.barCenter - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
+}else{
+	iconP1.x = healthBar.barCenter - (150 * iconP1.scale.x - 150) / 2 - iconOffset * 5;
+	iconP2.x = healthBar.barCenter + (150 * iconP2.scale.x) / 2 - iconOffset * 4;
 
-		iconP2.x = healthBar.x 
-		+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) 
-		- (150 * iconP2.scale.x) / 2 
-		- iconOffset * 2;
-	}
-	else
-		{
-			iconP1.x = healthBar.x -(
+}
+			/*iconP1.x = healthBar.x -(
 		(healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) 
 		+ (150 * iconP1.scale.x - 150) / 2 
 		- iconOffset);
@@ -4490,8 +4504,8 @@ if (!disibleIconMoving){
 		iconP2.x = healthBar.x - (
 		(healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) 
 		- (150 * iconP2.scale.x) / 2 
-		- iconOffset * 2);
-		}
+		- iconOfset * 2);*/
+		
 }
 		if (health < 0)
 			health = 0;
@@ -4501,30 +4515,36 @@ if (!disibleIconMoving){
 				health = 2;
 
 			} else {
-			var p2ToUse:Float = healthBar.x + (healthBar.width * (FlxMath.remapToRange((health / 2 * 100), 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
+			var p2ToUse:Float = healthBar.barCenter - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 			if (iconP2.x - iconP2.width / 2 < healthBar.x && iconP2.x > p2ToUse)
 			{
-				healthBarBG.offset.x = iconP2.x - p2ToUse;
 				healthBar.offset.x = iconP2.x - p2ToUse;
 			} else {
-				healthBarBG.offset.x = 0;
+				
 				healthBar.offset.x = 0;
 			}
-			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange((health / 2 * 100), 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
+			iconP1.x = healthBar.x + 
+			(healthBar.width * (FlxMath.remapToRange((health / 2 * 100), 0, 100, 100, 0) * 0.01)) 
+			+ (150 * iconP1.scale.x - 150) / 2 - iconOffset;
 			iconP2.x = p2ToUse;
 			if (health > 3)
 				health = 3;
 			}
 
-
+var iconP1s = iconP1;
+var iconP2s = iconP2;
+if (opponentPlayer){
+	iconP1s = iconP2;
+ iconP2s = iconP1;
+}
 			if (healthBar.percent < 20)
 				{
-					iconP1.iconState = Dying;
-					iconP2.iconState = Winning;
+					iconP1s.iconState = Dying;
+					iconP2s.iconState = Winning;
 				}
 				else if ((!genocideMode && healthBar.percent > 80) || (genocideMode && (health / 2 * 100) > 100)) {
-					iconP2.iconState = Dying;
-					iconP1.iconState = Winning;
+					iconP2s.iconState = Dying;
+					iconP1s.iconState = Winning;
 				}
 				else {
 					iconP2.iconState = Normal;
@@ -4604,9 +4624,7 @@ if (!disibleIconMoving){
 		// RESET = Quick Game Over Screen
 		if (!ClientPrefs.noReset && controls.RESET && canReset && !inCutscene && startedCountdown && !endingSong)
 		{
-			if (opponentPlayer)
-				health = 2;
-			else
+			
 			health = 0;
 			trace("RESET = True");
 		}
@@ -4860,7 +4878,7 @@ if (!disibleIconMoving){
 	public var isDead:Bool = false; //Don't mess with this on Lua!!!
 	public static var gameOverChar:String;
 	function doDeathCheck(?skipHealthCheck:Bool = false) {
-		if (((skipHealthCheck && instakillOnMiss) || (health <= 0 && !opponentPlayer) || (health >= 2 && opponentPlayer)) && !practiceMode && !isDead)
+		if (((skipHealthCheck && instakillOnMiss) || health <= 0) && !practiceMode && !isDead)
 		{
 			
 
@@ -5616,12 +5634,12 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 		if(!startingSong) {
 			notes.forEach(function(daNote:Note) {
 				if(daNote.strumTime < songLength - Conductor.safeZoneOffset) {
-					health -=  (opponentPlayer ? -1 : 1) * 0.05 * healthLoss;
+					health -=  1 * 0.05 * healthLoss;
 				}
 			});
 			for (daNote in unspawnNotes) {
 				if(daNote.strumTime < songLength - Conductor.safeZoneOffset) {
-					health -= (opponentPlayer ? -1 : 1) * 0.05 * healthLoss;
+					health -= 1 * 0.05 * healthLoss;
 				}
 			}
 
@@ -5630,7 +5648,9 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 			}
 		}
 
-		timeBarBG.visible = false;
+		#if mobile 
+			androidc.visible = false;
+		#end
 		timeBar.visible = false;
 		timeTxt.visible = false;
 		canPause = false;
@@ -5765,7 +5785,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 					Main.fpsVar.x = 10;
 				options.OptionsState.isFromPlayState = false;
 				MusicBeatState.switchState(new FreeplayState());
-				FlxG.sound.playMusic(Paths.music(ClientPrefs.menuMusic));
+				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				changedDifficulty = false;
 			}
 			transitioning = true;
@@ -6299,9 +6319,7 @@ currentTimingShown.cameras = [camHUD];
 			}
 		});
 		combo = 0;
-		if (opponentPlayer)
-			health += daNote.missHealth * healthLoss;
-		else
+		
 			health -= daNote.missHealth * healthLoss;
 
 
@@ -6369,9 +6387,7 @@ currentTimingShown.cameras = [camHUD];
 		if (!actingOn.stunned)
 		{
 
-			if (opponentPlayer)
-				health += 0.05 * healthLoss;
-			else
+			
 				health -= 0.05 * healthLoss;
 			if(instakillOnMiss)
 			{
@@ -6502,9 +6518,9 @@ currentTimingShown.cameras = [camHUD];
 
 		note.hitByOpponent = true;
 
-		if (note.drainNote && ((health >= 0.05 && !opponentPlayer) || (health <= 2 - 0.05 && opponentPlayer)))
+		if (note.drainNote && health >= 0.05)
 			{
-            health -=  (opponentPlayer ? -1 : 1) *0.05;
+            health -=  1 *0.05;
 			}
 		callOnLuas('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
 		callAllHScript('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote, note]);
@@ -6589,7 +6605,7 @@ public var curNoteHitHealth:Float = 0;
 					case 'sick':
 						note.ratingHealAmount = 1;
 				}
-				curNoteHitHealth = (opponentPlayer ? -1 : 1) * note.hitHealth * (!note.isSustainNote ? note.ratingHealAmount * healthGain :  healthGain);
+				curNoteHitHealth = 1 * note.hitHealth * (!note.isSustainNote ? note.ratingHealAmount * healthGain :  healthGain);
 				health += curNoteHitHealth;
 				if(!note.noAnimation) {
 					var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))] + altAnim;

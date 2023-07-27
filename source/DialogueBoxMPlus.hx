@@ -104,8 +104,11 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 		setUp();
 		
 		if (curMusic != null || curMusic != ''){
-		FlxG.sound.playMusic(FNFAssets.getSound('windose_data/images/custom_dialogs/dialogMusic/' + curMusic+'.ogg'), 0);
-
+			#if MODS_ALLOWED
+		FlxG.sound.playMusic(FNFAssets.getSound(Paths.isModPath('images/custom_dialogs/dialogMusic/' + curMusic+'.ogg')), 0);
+		#else
+		FlxG.sound.playMusic(FNFAssets.getSound(Paths.getLibraryPath('images/custom_dialogs/dialogMusic/' + curMusic+'.ogg')), 0);
+		#end
 		FlxG.sound.music.fadeIn(1, 0, 0.8 * curVolume / 100);
 		}
 		bgFade = new FlxSprite(-200,
@@ -142,8 +145,14 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 		portrait.visible = false;
 
 		box = new FlxSprite(-20, 45);
-		box.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('windose_data/images/custom_dialogs/dialogBoxes/$curBox.png'),
+		#if MODS_ALLOWED
+		box.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(Paths.isModPath('images/custom_dialogs/dialogBoxes/$curBox.png')),
+		FNFAssets.getText(Paths.isModPath('images/custom_dialogs/dialogBoxes/$curBox.xml')));
+		
+			#else
+			box.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('windose_data/images/custom_dialogs/dialogBoxes/$curBox.png'),
 			FNFAssets.getText('windose_data/images/custom_dialogs/dialogBoxes/$curBox.xml'));
+			#end
 		box.animation.addByPrefix('open', 'open', 24, false);
 		box.animation.addByPrefix('normal', 'normal', 24, true);
 		box.animation.play('open');
@@ -159,15 +168,23 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 
 		if (curBox != null)
 		{
+			#if MODS_ALLOWED
+			var data:String = FNFAssets.getText(Paths.isModPath('images/custom_dialogs/dialogBoxes/' + curBox + '.txt'));
+			#else
 			var data:String = FNFAssets.getJson('windose_data/images/custom_dialogs/dialogBoxes/' + curBox);
+			#end
 			_dialogue = CoolUtil.parseJson(data);
 		}
 
 		box.y += _dialogue.addY;
 
 		portrait.screenCenter(Y);
-
+		#if MODS_ALLOWED
+		handSelect = new FlxSprite(1240, 680).loadGraphic(FNFAssets.getBitmapData(Paths.isModPath('images/custom_dialogs/dialogHands/$handSprite.png')));
+		#else
 		handSelect = new FlxSprite(1240, 680).loadGraphic(FNFAssets.getBitmapData('windose_data/images/custom_dialogs/dialogHands/$handSprite.png'));
+		#end
+		
 		handSelect.setGraphicSize(Std.int(100));
 		handSelect.updateHitbox();
 		handSelect.x -= handSelect.width;
@@ -182,7 +199,13 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 		swagDialogue = new FlxTypeText(240, 480, Std.int(FlxG.width * 0.6), "", curFontScale);
 		swagDialogue.font = curFont;
 		swagDialogue.color = dialogueColor;
-		swagDialogue.sounds = [FlxG.sound.load(FNFAssets.getSound('windose_data/images/custom_dialogs/dialogSounds/$curSound.ogg'), 0.6)];
+		swagDialogue.sounds = [FlxG.sound.load(
+			#if MODS_ALLOWED
+		FNFAssets.getSound(Paths.isModPath('images/custom_dialogs/dialogSounds/$curSound.ogg'))
+		#else
+		FNFAssets.getSound('windose_data/images/custom_dialogs/dialogSounds/$curSound.ogg')
+		#end		
+, 0.6)];
 		add(swagDialogue);
 
 		dialogue = new Alphabet(0, 80, "", false, true);
@@ -248,11 +271,29 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 			startDialogue();
 			dialogueStarted = true;
 		}
-		if (FlxG.keys.justPressed.ANY && dialogueStarted == true)
+		#if mobile
+		var justTouched:Bool = false;
+
+for (touch in FlxG.touches.list)
+{
+	if (touch.justPressed)
+	{
+		justTouched = true;
+	}
+}
+#end
+
+		if (#if mobile ( #end FlxG.keys.justPressed.ANY #if mobile || justTouched )#end && dialogueStarted == true)
 		{
 			remove(dialogue);
 
-			FlxG.sound.play(FNFAssets.getSound('windose_data/images/custom_dialogs/dialogClicks/$clickSound.ogg'), 0.8);
+			FlxG.sound.play(	
+				#if MODS_ALLOWED
+				FNFAssets.getSound(Paths.isModPath('images/custom_dialogs/dialogClicks/$clickSound.ogg'))
+				#else
+				FNFAssets.getSound('windose_data/images/custom_dialogs/dialogClicks/$clickSound.ogg')
+				#end	
+			, 0.8);
 
 			if (dialogueFile.info[1] == null && dialogueFile.info[0] != null)
 			{
@@ -326,8 +367,15 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 		});
 		remove(portrait);
 		portrait = new FlxSprite(-20, 40);
-		portrait.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('windose_data/images/dialogue/$curCharacter.png'),
+		#if MODS_ALLOWED
+		portrait.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(Paths.isModPath('images/dialogue/$curCharacter.png')),
+		FNFAssets.getText(Paths.isModPath('images/dialogue/$curCharacter.xml')));
+		
+			#else
+			portrait.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('windose_data/images/dialogue/$curCharacter.png'),
 			FNFAssets.getText('windose_data/images/dialogue/$curCharacter.xml'));
+			#end
+
 		portrait.animation.addByPrefix(curEmotion, curEmotion, 24, false);
 		portrait.setGraphicSize(Std.int(portrait.width * 0.9));
 		portrait.updateHitbox();
@@ -380,9 +428,14 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 		{
 			remove(box);
 			box = new FlxSprite(-20, 45);
-
-			box.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('windose_data/images/custom_dialogs/dialogBoxes/$curBox.png'),
+			#if MODS_ALLOWED
+			box.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(Paths.isModPath('images/custom_dialogs/dialogBoxes/$curBox.png')),
+			FNFAssets.getText(Paths.isModPath('images/custom_dialogs/dialogBoxes/$curBox.xml')));
+			
+				#else
+				box.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('windose_data/images/custom_dialogs/dialogBoxes/$curBox.png'),
 				FNFAssets.getText('windose_data/images/custom_dialogs/dialogBoxes/$curBox.xml'));
+				#end
 			box.animation.addByPrefix('open', 'open', 24, false);
 			box.animation.addByPrefix('normal', 'normal', 24, true);
 
@@ -395,7 +448,11 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 			box.screenCenter(X);
 			box.y = 710 - box.height;
 
+			#if MODS_ALLOWED
+			var data:String = FNFAssets.getText(Paths.isModPath('images/custom_dialogs/dialogBoxes/' + curBox + '.txt'));
+			#else
 			var data:String = FNFAssets.getJson('windose_data/images/custom_dialogs/dialogBoxes/' + curBox);
+			#end
 			_dialogue = Json.parse(data);
 
 			box.y += _dialogue.addY;
@@ -408,7 +465,12 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 		dropText.font = swagDialogue.font = curFont;
 		dropText.size = swagDialogue.size = curFontScale;
 
-		swagDialogue.sounds = swagDialogue.sounds = [FlxG.sound.load(FNFAssets.getSound('windose_data/images/custom_dialogs/dialogSounds/$curSound.ogg'), 0.6)];
+		swagDialogue.sounds = swagDialogue.sounds = [FlxG.sound.load(
+			#if MODS_ALLOWED
+		FNFAssets.getSound(Paths.isModPath('images/custom_dialogs/dialogSounds/$curSound.ogg'))
+		#else
+		FNFAssets.getSound('windose_data/images/custom_dialogs/dialogSounds/$curSound.ogg')
+		#end		, 0.6)];
 
 		dropText.color = shadowColor;
 		swagDialogue.color = dialogueColor;
@@ -421,7 +483,11 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 			new FlxTimer().start(curSpeed * timeCut, function(tmr:FlxTimer)
 			{
 				dialogueFile.info.remove(dialogueFile.info[0]);
-				FlxG.sound.play('windose_data/images/custom_dialogs/dialogClicks/$clickSound.ogg', 0.8);
+				FlxG.sound.play(#if MODS_ALLOWED
+					FNFAssets.getSound(Paths.isModPath('images/custom_dialogs/dialogClicks/$clickSound.ogg'))
+					#else
+					FNFAssets.getSound('windose_data/images/custom_dialogs/dialogClicks/$clickSound.ogg')
+					#end	, 0.8);
 				startDialogue();
 			}, 1);
 		}

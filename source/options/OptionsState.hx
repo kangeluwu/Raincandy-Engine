@@ -96,15 +96,18 @@ class OptionsState extends MusicBeatState
 		add(selectorLeft);
 		selectorRight = new Alphabet(0, 0, '<', true, false);
 		add(selectorRight);
-
+		#if mobile
+		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press C to customize your mobile controls', 16);
+		tipText.setFormat(Paths.font('vcr.ttf'), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		tipText.borderSize = 2.4;
+		tipText.scrollFactor.set();
+		add(tipText);
+		#end
 		changeSelection();
 		ClientPrefs.saveSettings();
-		#if IS_CORRUPTION
-	var tv = new FlxSprite().loadGraphic(FNFAssets.getBitmapData('windose_data/images/optionsFront.png'));
-	tv.antialiasing = ClientPrefs.globalAntialiasing;
-	tv.scrollFactor.set();
-	add(tv);
-	#end
+		#if mobile
+		addVirtualPad(UP_DOWN, A_B_C);
+		#end
 		super.create();
 	}
 
@@ -134,6 +137,11 @@ class OptionsState extends MusicBeatState
 		if (controls.ACCEPT) {
 			openSelectedSubstate(options[curSelected]);
 		}
+		#if mobile
+		if (controls.RESET) {
+			MusicBeatState.switchState(new android.AndroidControlsMenu());
+		}
+		#end
 	}
 	
 	function changeSelection(change:Int = 0) {

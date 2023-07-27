@@ -67,7 +67,11 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		option.displayFormat = '%v FPS';
 		option.onChange = onChangeFramerate;
 		#end
-
+		var option:Option = new Option('GPU Caching', //Name
+		"If checked, allows the GPU to be used for caching textures, decreasing RAM usage.\nDon't turn this on if you have a shitty Graphics Card.", //Description
+		'cacheOnGPU',
+		'bool');
+	addOption(option);
 		/*
 		var option:Option = new Option('Persistent Cached Data',
 			'If checked, images loaded will stay in memory\nuntil the game is closed, this increases memory usage,\nbut basically makes reloading times instant.',

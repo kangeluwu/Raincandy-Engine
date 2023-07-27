@@ -30,6 +30,12 @@ import flixel.FlxG;
 import FlxVideo;
 //import vlc.MP4Handler;
 #end
+#if mobile
+import flixel.group.FlxGroup;
+import android.FlxHitbox;
+import android.FlxVirtualPad;
+import flixel.ui.FlxButton;
+#end
 import hscript.Parser;
 import hscript.ParserEx;
 import hscript.ClassDeclEx;
@@ -115,6 +121,11 @@ class PluginManager {
 		interp.variables.set("Character", Character);
         interp.variables.set("FlxText", FlxText);
         interp.variables.set("FlxTextBorderStyle", FlxTextBorderStyle);
+        #if mobile
+        interp.variables.set("FlxActionMode", FlxActionMode);
+        interp.variables.set("FlxDPadMode", FlxDPadMode);
+        interp.variables.set("FlxVirtualPad", FlxVirtualPad);
+        #end
         interp.variables.set("FlxBackdrop", FlxBackdrop);
         interp.variables.set("privateAccess", privateAccess);
         interp.variables.set("FlxRect", FlxRect);

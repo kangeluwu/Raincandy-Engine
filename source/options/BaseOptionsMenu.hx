@@ -54,24 +54,13 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		#if desktop
 		DiscordClient.changePresence(rpcTitle, null);
 		#end
-		#if IS_CORRUPTION
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('optionsBack'));
-		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
-		menuBG.updateHitbox();
-		menuBG.screenCenter();
-		menuBG.antialiasing = ClientPrefs.globalAntialiasing;
-		var glitch:FlxSprite = new FlxSprite().loadGraphic(Paths.image('optionsGlitch'));
 		
-		add(menuBG);
-		add(glitch);
-	#else
-
 	var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 	bg.color = 0xFFea71fd;
 	bg.screenCenter();
 	bg.antialiasing = ClientPrefs.globalAntialiasing;
 	add(bg);
-	#end
+
 
 		// avoids lagspikes while scrolling through menus!
 
@@ -139,12 +128,10 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		changeSelection();
 		reloadCheckboxes();
-		#if IS_CORRUPTION
-	var tv = new FlxSprite().loadGraphic(FNFAssets.getBitmapData('windose_data/images/optionsFront.png'));
-	tv.antialiasing = ClientPrefs.globalAntialiasing;
-	tv.scrollFactor.set();
-	add(tv);
-	#end
+		#if mobile
+		addVirtualPad(FULL, A_B_C);
+		#end
+	
 	}
 
 	public function addOption(option:Option) {

@@ -1,6 +1,6 @@
 package;
 
-// NO NOT WEEK 7 THAT CAN FUCK OFF
+
 // A helper class to make supporting web easier
 #if sys
 import sys.FileSystem;
@@ -294,7 +294,7 @@ class FNFAssets {
 			fdString = s;
 		}
 		
-	public static function askToBrowseForPath(?filter:String, ?title:String = "Select a chart"):Future<String>
+	public static function askToBrowseForPath(?filter:String, ?title:String = "Select a Stuff"):Future<String>
 		{
 			fdString = null;
 			fd = new FileDialog();
@@ -345,12 +345,25 @@ class FNFAssets {
 		{
 			return getSound(path);
 		}
-	 public static function getGraphicData(id:String):Null<FlxGraphic>
+	 public static function getGraphicData(id:String,?allowGPU:Bool = true):Null<FlxGraphic>
 		{
 			if(FileSystem.exists(id)) {
 				if(!currentTrackedAssets.exists(id)) {
 					var newBitmap:BitmapData = BitmapData.fromFile(id);
+					if (newBitmap != null){
+					if (allowGPU && ClientPrefs.cacheOnGPU)
+						{
+							var texture:openfl.display3D.textures.RectangleTexture = FlxG.stage.context3D.createRectangleTexture(newBitmap.width, newBitmap.height, BGRA, true);
+							texture.uploadFromBitmapData(newBitmap);
+							newBitmap.image.data = null;
+							newBitmap.dispose();
+							newBitmap.disposeImage();
+							newBitmap = BitmapData.fromTexture(texture);
+						}
+					}
 					var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(newBitmap, false, id);
+					newGraphic.persist = true;
+			        newGraphic.destroyOnNoUse = false;
 					currentTrackedAssets.set(id, newGraphic);
 				}
 				return currentTrackedAssets.get(id);

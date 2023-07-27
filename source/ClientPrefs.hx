@@ -7,6 +7,7 @@ import flixel.graphics.FlxGraphic;
 import Controls;
 
 class ClientPrefs {
+	public static var cacheOnGPU:Bool = true; //From Stilic
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
 	public static var skipSplash:Bool = false;
@@ -105,6 +106,7 @@ class ClientPrefs {
 	}
 
 	public static function saveSettings() {
+		FlxG.save.data.cacheOnGPU = cacheOnGPU;
 		FlxG.save.data.showComboBreaks = showComboBreaks;
 		FlxG.save.data.downScroll = downScroll;
 		FlxG.save.data.skipChartTypeMenu = skipChartTypeMenu;
@@ -176,6 +178,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.middleScroll != null) {
 			middleScroll = FlxG.save.data.middleScroll;
+		}
+		if(FlxG.save.data.cacheOnGPU != null) {
+			cacheOnGPU = FlxG.save.data.cacheOnGPU;
 		}
 		if(FlxG.save.data.msDisabled != null) {
 			msDisabled = FlxG.save.data.msDisabled;

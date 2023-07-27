@@ -95,6 +95,11 @@ var luaallowed = true;
 #else
 var luaallowed = false;
 #end
+#if mobile
+var mobile = true;
+#else
+var mobile = false;
+#end
 #if sys
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
 	public function createRuntimeShader(name:String):FlxRuntimeShader
@@ -268,6 +273,13 @@ public function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	interp.variables.set("debugTarget", debugTarget);
 	interp.variables.set("CoolUtil", CoolUtil);
 	interp.variables.set("vocals", vocals);
+	interp.variables.set("mobile", mobile);
+	#if mobile
+	interp.variables.set("addVirtualPad", addVirtualPad);
+	interp.variables.set("removeVirtualPad", removeVirtualPad);
+	interp.variables.set("addPadCamera", addPadCamera);
+	interp.variables.set("addAndroidControls", addAndroidControls);
+	#end
 	interp.variables.set("linuxTarget", linuxTarget);
 	interp.variables.set("achiAllow", achiAllow);
 	interp.variables.set("Json", Json);

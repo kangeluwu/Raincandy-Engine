@@ -188,6 +188,11 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("DialogueBox", DialogueBox);
 		interp.variables.set("StoryMenuState", StoryMenuState);
 		interp.variables.set("FreeplayState", FreeplayState);
+		#if mobile
+		interp.variables.set("addVirtualPad", addVirtualPad);
+		interp.variables.set("removeVirtualPad", removeVirtualPad);
+		interp.variables.set("addPadCamera", addPadCamera);
+		#end
 		interp.variables.set("CreditsState", CreditsState);
 
 		interp.variables.set("Controls", Controls);

@@ -270,6 +270,7 @@ var voicesStuff:String = '';
 				cutsceneType: "none",
 				uiType: 'normal',
 				speed: 1,
+				composter: '',
 				stage: 'stage',
 				validScore: false
 			};
@@ -468,6 +469,9 @@ var voicesStuff:String = '';
 		add(zoomTxt);
 
 		updateGrid();
+		#if mobile
+		addVirtualPad(FULL, A_B);
+        #end
 		super.create();
 
 	}
@@ -481,6 +485,9 @@ var voicesStuff:String = '';
 	var noteSkinInputText:FlxUIInputText;
 	var noteSplashesInputText:FlxUIInputText;
 	var stageDropDown:FlxUIDropDownMenuCustom;
+
+	var noteTypeInput:FlxUIInputText;
+	var noteTypeChangeput:FlxUIInputText;
 	function addSongUI():Void
 	{
 		UI_songTitle = new FlxUIInputText(10, 10, 70, _song.song, 8);
@@ -647,6 +654,22 @@ var voicesStuff:String = '';
 
 		if(stages.length < 1) stages.push('stage');
 
+		noteTypeInput = new FlxUIInputText(10, stepperSpeed.y + 35, 150, '', 8);
+		blockPressWhileTypingOn.push(noteTypeInput);
+
+		noteTypeChangeput = new FlxUIInputText(noteTypeInput.x, noteTypeInput.y + 35, 150, '', 8);
+		blockPressWhileTypingOn.push(noteTypeChangeput);
+
+		var changeNoteTypeButton:FlxButton = new FlxButton(noteTypeChangeput.x, noteTypeChangeput.y + 20, 'Change Note Types', function()
+			{
+				FlxG.sound.play(Paths.sound('confirmPoko'));
+				openSubState(new Prompt('This action will clear current some progress.\n\nProceed?', 0, function(){changeNoteType(noteTypeInput.text,noteTypeChangeput.text);
+
+			}, null,ignoreWarnings));
+
+			});
+
+
 		var skin = PlayState.SONG.arrowSkin;
 		if(skin == null) skin = '';
 		noteSkinInputText = new FlxUIInputText(10, stepperSpeed.y + 45 + 40 + 50, 150, skin, 8);
@@ -678,11 +701,16 @@ var voicesStuff:String = '';
 		tab_group_song.add(reloadNotesButton);
 		tab_group_song.add(noteSkinInputText);
 		tab_group_song.add(noteSplashesInputText);
+		tab_group_song.add(changeNoteTypeButton);
+		tab_group_song.add(noteTypeInput);
+		tab_group_song.add(noteTypeChangeput);
 		tab_group_song.add(new FlxText(stepperBPM.x, stepperBPM.y - 15, 0, 'Song BPM:'));
 		tab_group_song.add(new FlxText(stepperSpeed.x, stepperSpeed.y - 15, 0, 'Song Speed:'));
-
+		tab_group_song.add(new FlxText(noteTypeInput.x, noteTypeInput.y - 15, 0, 'The Note Type to change:'));
+		tab_group_song.add(new FlxText(noteTypeChangeput.x, noteTypeChangeput.y - 15, 0, 'The Note Type Want to change:'));
 		tab_group_song.add(new FlxText(noteSkinInputText.x, noteSkinInputText.y - 15, 0, 'Note Texture:'));
 		tab_group_song.add(new FlxText(noteSplashesInputText.x, noteSplashesInputText.y - 15, 0, 'Note Splashes Texture:'));
+	
 
 	
 		UI_box.addGroup(tab_group_song);
@@ -1671,7 +1699,23 @@ case 'Alt Anim Note':
 		}
 		return daPos;
 	}
-
+	function lol(lmao:Int,s:Int = 0):Float
+		{
+			var daBPM:Float = _song.bpm;
+			var daPos:Float = 0;
+			for (i in 0...lmao+s)
+			{
+				if(_song.notes[i] != null)
+				{
+					if (_song.notes[i].changeBPM)
+					{
+						daBPM = _song.notes[i].bpm;
+					}
+					daPos += getSectionBeats(i) * (1000 * 60 / daBPM);
+				}
+			}
+			return daPos;
+		}
 	var lastConductorPos:Float;
 	var colorSine:Float = 0;
 	override function update(elapsed:Float)
@@ -2877,7 +2921,113 @@ case 'Alt Anim Note':
 			}
 		}
 	}
+	function updateNoteidk():Void
+		{
+			curRenderedNotes.clear();
+			curRenderedSustains.clear();
+			curRenderedNoteType.clear();
+			nextRenderedNotes.clear();
+			nextRenderedSustains.clear();
+			for (daSection in 0..._song.notes.length)
+				{
+					if (_song.notes[daSection].changeBPM && _song.notes[daSection].bpm > 0)
+						{
+							Conductor.changeBPM(_song.notes[daSection].bpm);
+							//trace('BPM of this section:');
+						}
+						else
+						{
+							// get last bpm
+							var daBPM:Float = _song.bpm;
+							for (i in 0...daSection)
+								if (_song.notes[i].changeBPM)
+									daBPM = _song.notes[i].bpm;
+							Conductor.changeBPM(daBPM);
+						}
 
+						
+			var beats:Float = getSectionBeats(daSection);
+			for (i in _song.notes[daSection].sectionNotes)
+			{
+				var note:Note = setupNoteData(i, false);
+				curRenderedNotes.add(note);
+				if (note.sustainLength > 0)
+				{
+					curRenderedSustains.add(setupSusNote(note, beats));
+				}
+	
+				if(i[3] != null && note.noteType != null && note.noteType.length > 0) {
+					var typeInt:Null<Int> = noteTypeMap.get(i[3]);
+					var theType:String = '' + typeInt;
+					if(typeInt == null) theType = '?';
+	
+					var daText:AttachedFlxText = new AttachedFlxText(0, 0, 100, theType, 24);
+					daText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+					daText.xAdd = -32;
+					daText.yAdd = 6;
+					daText.borderSize = 1;
+					curRenderedNoteType.add(daText);
+					daText.sprTracker = note;
+				}
+				note.mustPress = _song.notes[daSection].mustHitSection;
+				if(i[1] % 8 > 3) note.mustPress = !note.mustPress;
+			}
+	
+		
+			var beats:Float = getSectionBeats(1);
+			if(daSection < _song.notes.length-1) {
+				for (i in _song.notes[daSection+1].sectionNotes)
+				{
+					var note:Note = setupNoteData(i, true);
+					note.alpha = 0.6;
+					nextRenderedNotes.add(note);
+					if (note.sustainLength > 0)
+					{
+						nextRenderedSustains.add(setupSusNote(note, beats));
+					}
+				}
+			}
+	
+		}
+		// CURRENT EVENTS
+		var startThing:Float = sectionStartTime();
+		var endThing:Float = sectionStartTime(1);
+		for (i in _song.events)
+		{
+			if(endThing > i[0] && i[0] >= startThing)
+			{
+				var note:Note = setupNoteData(i, false);
+				curRenderedNotes.add(note);
+
+				var text:String = 'Event: ' + note.eventName + ' (' + Math.floor(note.strumTime) + ' ms)' 
+				+ '\nValue 1: ' + note.eventVal1 
+				+ '\nValue 2: ' + note.eventVal2
+				+ '\nValue 3: ' + note.eventVal3;
+				if(note.eventLength > 1) text = note.eventLength + ' Events:\n' + note.eventName;
+
+				var daText:AttachedFlxText = new AttachedFlxText(0, 0, 400, text, 8);
+				daText.setFormat(Paths.font("vcr.ttf"), 8, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE_FAST, FlxColor.BLACK);
+				daText.xAdd = -410;
+				daText.borderSize = 1;
+				if(note.eventLength > 1) daText.yAdd += 8;
+				curRenderedNoteType.add(daText);
+				daText.sprTracker = note;
+				//trace('test: ' + i[0], 'startThing: ' + startThing, 'endThing: ' + endThing);
+			}
+		}
+// NEXT EVENTS
+var startThing:Float = sectionStartTime(1);
+var endThing:Float = sectionStartTime(2);
+for (i in _song.events)
+{
+	if(endThing > i[0] && i[0] >= startThing)
+	{
+		var note:Note = setupNoteData(i, true);
+		note.alpha = 0.6;
+		nextRenderedNotes.add(note);
+	}
+}
+		}
 	function setupNoteData(i:Array<Dynamic>, isNextSection:Bool):Note
 	{
 		var daNoteInfo = i[1];
@@ -3062,6 +3212,7 @@ case 'Alt Anim Note':
 			addNote(cs, d, style);
 		}
 	}
+
 	function clearSong():Void
 	{
 		for (daSection in 0..._song.notes.length)
@@ -3070,6 +3221,18 @@ case 'Alt Anim Note':
 		}
 
 		updateGrid();
+	}
+	function changeNoteType(noteType1:String,noteType2:String):Void
+		{
+		for (daSection in 0..._song.notes.length)
+			{
+				for (i in _song.notes[daSection].sectionNotes){
+				if (i[3] == noteType1){
+					i[3] = noteType2;
+				}
+			}
+		}
+		updateNoteidk();
 	}
 	function changeKeyType(change:Int) {
 		noteType += change;

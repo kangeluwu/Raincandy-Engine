@@ -53,7 +53,9 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-
+		#if mobile
+		SUtil.uncaughtErrorHandler();
+		#end
 		if (stage != null)
 		{
 			init();
@@ -87,7 +89,10 @@ class Main extends Sprite
 			gameWidth = Math.ceil(stageWidth / zoom);
 			gameHeight = Math.ceil(stageHeight / zoom);
 		}
-	
+		#if mobile
+		SUtil.check();
+		#end
+
 		ClientPrefs.loadDefaultKeys();
 		skipSplash = ClientPrefs.skipSplash;
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));

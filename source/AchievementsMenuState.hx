@@ -71,7 +71,9 @@ class AchievementsMenuState extends MusicBeatState
 		descText.borderSize = 2.4;
 		add(descText);
 		changeSelection();
-
+		#if mobile
+		addVirtualPad(UP_DOWN, A_B);
+		#end
 		super.create();
 	}
 

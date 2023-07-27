@@ -29,6 +29,7 @@ typedef SwagSong =
 	var arrowSkin:String;
 	var splashSkin:String;
 	var validScore:Bool;
+	var composter:String;
 	//var mania:Null<Int>;
 }
 
@@ -36,6 +37,7 @@ class Song
 {
 	public var uiType:String = 'normal';
 	public var song:String;
+	public var composter:String = null;
 	public var notes:Array<SwagSection>;
 	public var events:Array<Dynamic>;
 	public var bpm:Float;
@@ -145,13 +147,13 @@ class Song
 			songJson.stage = switch (songJson.song.toLowerCase()) {
 				case 'spookeez' | 'monster' | 'south':
 					'spooky';
-				case 'philly nice' | 'pico' | 'blammed':
+				case 'philly-nice' | 'philly nice' | 'pico' | 'blammed':
 					'philly';
-				case 'milf' | 'high' | 'satin panties':
+				case 'milf' | 'high' | 'satin panties'| 'satin-panties':
 					'limo';
 				case 'cocoa' | 'eggnog':
 					'mall';
-				case 'winter horrorland':
+				case 'winter horrorland' | 'winter-horrorland':
 					'mallEvil';
 				case 'senpai' | 'roses':
 					'school';
@@ -199,7 +201,7 @@ class Song
 					songJson.cutsceneType = 'monster';
 				case 'thorns':
 					songJson.cutsceneType = 'spirit';
-				case 'winter-horrorland':
+				case 'winter horrorland' | 'winter-horrorland':
 					songJson.cutsceneType = 'winter-horrorland';
 					case 'ugh':
 						songJson.cutsceneType = 'ugh';
@@ -209,6 +211,22 @@ class Song
 						songJson.cutsceneType = 'stress';
 				default:
 					songJson.cutsceneType = 'none';
+			}
+		}
+		if (songJson.composter == null) {
+			switch (songJson.song.toLowerCase()) {
+				case 'monster' | 'winter horrorland' | 'winter-horrorland':
+					songJson.composter = 'bassetfilms';
+				case 'bopeebo' | 'fresh' | 'dad battle' | 'dadbattle' | 'dad-battle' |
+				'spookeez' | 'south' | 
+				'philly-nice' | 'philly nice' | 'pico' | 'blammed' |
+				'milf' | 'high' | 'satin panties'| 'satin-panties' |
+				'cocoa' | 'eggnog' |
+				'senpai' | 'roses' | 'thorns' | 
+				'ugh' | 'stress' | 'guns':
+					songJson.composter = 'Kawai Sprite';
+					default:
+					songJson.composter = 'IDK';
 			}
 		}
 		return songJson;

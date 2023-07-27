@@ -200,6 +200,12 @@ public function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	interp.variables.set("achiAllow", achiAllow);
 	interp.variables.set("Json", Json);
 	interp.variables.set("Date", Date);
+	#if mobile
+	interp.variables.set("addVirtualPad", addVirtualPad);
+	interp.variables.set("removeVirtualPad", removeVirtualPad);
+	interp.variables.set("addPadCamera", addPadCamera);
+	interp.variables.set("addAndroidControls", addAndroidControls);
+	#end
 	interp.variables.set("StoryMenuState", StoryMenuState);
 	interp.variables.set("FreeplayState", FreeplayState);
 	interp.variables.set("switchTarget", switchTarget);

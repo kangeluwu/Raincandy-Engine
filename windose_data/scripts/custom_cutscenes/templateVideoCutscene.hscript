@@ -5,7 +5,7 @@ bg = new FlxSprite(-300, -200).makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFF
 bg.cameras = [camHUD];
 add(bg);
     bgvideo = new FlxVideo();
-    bgvideo.playMP4('corupted_assets/videos/AllureCutscene.mp4', false, bg);
+    bgvideo.playMP4('corupted_windose_data/videos/AllureCutscene.mp4', false, bg);
     bgvideo.fadeToBlack = true;
     bgvideo.finishCallback = startGame;
 }

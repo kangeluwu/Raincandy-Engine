@@ -375,7 +375,9 @@ class ModsMenuState extends MusicBeatState
 		FlxG.sound.play(Paths.sound('scrollMenu'));
 
 		FlxG.mouse.visible = true;
-
+		#if mobile
+		addVirtualPad(UP_DOWN, B);
+		#end
 		super.create();
 	}
 
