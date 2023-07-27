@@ -96,6 +96,11 @@ class PluginManager {
 		interp.variables.set("FlxMath", flixel.math.FlxMath);
 		interp.variables.set("TitleState", TitleState);
         #if mobile
+        interp.variables.set("FlxActionMode", FlxActionMode);
+        interp.variables.set("FlxDPadMode", FlxDPadMode);
+        interp.variables.set("FlxVirtualPad", FlxVirtualPad);
+        #end
+        #if mobile
         interp.variables.set("mobile", true);
 #else
 interp.variables.set("mobile", false);
@@ -132,7 +137,11 @@ interp.variables.set("mobile", false);
         interp.variables.set("FlxDPadMode", FlxDPadMode);
         interp.variables.set("FlxVirtualPad", FlxVirtualPad);
         #end
-        interp.variables.set("mobile", mobile);
+        #if mobile
+        interp.variables.set("mobile", true);
+#else
+interp.variables.set("mobile", false);
+#end
         interp.variables.set("FlxBackdrop", FlxBackdrop);
         interp.variables.set("privateAccess", privateAccess);
         interp.variables.set("FlxRect", FlxRect);

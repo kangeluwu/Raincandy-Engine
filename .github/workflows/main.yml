@@ -57,7 +57,7 @@ jobs:
 
 
           haxelib install uniontypes
-          haxelib install faxe
+    
           haxelib install random
           haxelib install haxeui-flixel
           haxelib list
@@ -107,7 +107,7 @@ jobs:
 
 
           haxelib install uniontypes
-          haxelib install faxe
+         
           haxelib install random
           haxelib install haxeui-flixel
           haxelib list
@@ -158,7 +158,7 @@ jobs:
 
 
           haxelib install uniontypes
-          haxelib install faxe
+
           haxelib install random
           haxelib install haxeui-flixel
           haxelib list
@@ -213,7 +213,6 @@ jobs:
         run: |
           haxelib setup ~/haxelib
           haxelib install hxcpp 4.2.1 > /dev/null --quiet
-          haxelib install hmm --quiet
           haxelib install lime
           haxelib install openfl
           haxelib install flixel 4.11.0
@@ -236,7 +235,7 @@ jobs:
 
 
           haxelib install uniontypes
-          haxelib install faxe
+        
           haxelib install random
           haxelib install haxeui-flixel
           haxelib list
