@@ -35,7 +35,7 @@ class MusicBeatState extends FlxUIState
 	inline function get_controlsPlayerTwo():Controls
 		return PlayerSettings.player2.controls;
 	#if mobile
-	var _virtualpad:FlxVirtualPad;
+	public var _virtualpad:FlxVirtualPad;
 	var androidc:AndroidControls;
 	var trackedinputsUI:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];
