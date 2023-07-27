@@ -39,9 +39,9 @@ class FlxVideo {
 	var player:Video;
 	#end
 
-	#if desktop
+	
 	public static var vlcBitmap:VlcBitmap;
-	#end
+
 
 	public function new() {
 		/*super();
