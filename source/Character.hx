@@ -34,6 +34,14 @@ import openfl.Lib;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
+#if VIDEOS_ALLOWED
+
+#if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideo as FlxVideo;
+#elseif (hxCodec >= "2.6.1") import hxcodec.VideoHandler as FlxVideo;
+#elseif (hxCodec == "2.6.0") import VideoHandler as FlxVideo;
+#else import vlc.VideoHandler as FlxVideo; #end
+
+#end
 typedef CharacterFile = {
 	var crossColor:FlxColor;
 	var animations:Array<AnimArray>;
