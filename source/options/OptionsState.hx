@@ -37,32 +37,36 @@ class OptionsState extends MusicBeatState
 	function openSelectedSubstate(label:String) {
 		switch(label) {
 			case 'Note Colors':
-				#if android
+				#if mobile
 				removeVirtualPad();
 				#end
 				openSubState(new options.NotesSubState());
 			case 'Change Gameplay stuffs':
-				#if android
+				#if mobile
 				removeVirtualPad();
 				#end
 				openSubState(new GameplayChangersSubstate());
 			case 'Controls':
-				#if android
+				#if mobile
 				removeVirtualPad();
-				#end
+				
+				openSubState(new android.AndroidControlsMenu());
+				#else 
 				openSubState(new options.ControlsSubState());
+					#end
+				
 			case 'Graphics':
-				#if android
+				#if mobile
 				removeVirtualPad();
 				#end
 				openSubState(new options.GraphicsSettingsSubState());
 			case 'Visuals and UI':
-				#if android
+				#if mobile
 				removeVirtualPad();
 				#end
 				openSubState(new options.VisualsUISubState());
 			case 'Gameplay':
-				#if android
+				#if mobile
 				removeVirtualPad();
 				#end
 				openSubState(new options.GameplaySettingsSubState());

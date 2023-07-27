@@ -202,6 +202,7 @@ function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	interp.variables.set("removeVirtualPad", removeVirtualPad);
 	interp.variables.set("addPadCamera", addPadCamera);
 	interp.variables.set("addAndroidControls", addAndroidControls);
+	interp.variables.set("_virtualpad", _virtualpad);
 	#end
 	interp.variables.set("BlackColor", FlxColor.BLACK);
 	interp.variables.set("BlueColor", FlxColor.BLUE);
@@ -211,7 +212,7 @@ function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	interp.variables.set("YellowColor", FlxColor.YELLOW);
 	interp.variables.set("CyanColor", FlxColor.CYAN);
 	interp.variables.set("FlxObject", FlxObject);
-	interp.variables.set("_virtualpad", _virtualpad);
+	
 	interp.variables.set("FlxCamera", FlxCamera);
 	interp.variables.set("FlxTransitionableState", FlxTransitionableState);
 	interp.variables.set("MainMenuState", MainMenuState);

@@ -1,5 +1,5 @@
 package;
-
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSubState;
@@ -187,6 +187,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		var interp = PluginManager.createSimpleInterp();
 		// set vars
 		interp.variables.set("Sys", Sys);
+		
 		interp.variables.set("controls", controls);
 		interp.variables.set("FlxRuntimeShader", FlxRuntimeShader);
 interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
@@ -213,6 +214,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("FlxPoint", FlxPoint);
 		interp.variables.set("WeekData", WeekData);
 		interp.variables.set("CreditsState", CreditsState);
+		interp.variables.set("FlxCamera", FlxCamera);
 		interp.variables.set("Controls", Controls);
 		interp.variables.set("flixelSave", FlxG.save);
 		interp.variables.set("Math", Math);
@@ -232,8 +234,16 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("allowDeath", allowDeath);
 		interp.variables.set("isDead", isDead);
 		interp.variables.set("customing", other);
+		#if mobile
+		interp.variables.set("addVirtualPad", addVirtualPad);
+		interp.variables.set("removeVirtualPad", removeVirtualPad);
+		interp.variables.set("addPadCamera", addPadCamera);
+
+		interp.variables.set("_virtualpad", _virtualpad);
+		#end
 		interp.variables.set("characterName", characterName);
 		interp.variables.set("deathSoundName", deathSoundName);
+		interp.variables.set("camerabgAlphaShits", camerabgAlphaShits);
 		interp.variables.set("loopSoundName", loopSoundName);
 		interp.variables.set("endSoundName", endSoundName);
 		interp.variables.set("GameOverSubstate", GameOverSubstate);
@@ -363,6 +373,9 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 	{
 		FlxG.sound.playMusic(Paths.music(loopSoundName), volume);
 	}
-
+	function camerabgAlphaShits(cam:FlxCamera)
+		{
+			cam.bgColor.alpha = 0;
+		}
 	
 }

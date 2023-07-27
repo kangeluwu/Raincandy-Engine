@@ -179,6 +179,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("insert", insert);
 		interp.variables.set("pi", Math.PI);
 		interp.variables.set("ClientPrefs", ClientPrefs);
+		interp.variables.set("FlxCamera", FlxCamera);
 		interp.variables.set("FlxStringUtil", FlxStringUtil);
 		interp.variables.set("curMusicName", Main.curMusicName);
 		interp.variables.set("Highscore", Highscore);
@@ -192,6 +193,8 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("addVirtualPad", addVirtualPad);
 		interp.variables.set("removeVirtualPad", removeVirtualPad);
 		interp.variables.set("addPadCamera", addPadCamera);
+		interp.variables.set("_virtualpad", _virtualpad);
+		interp.variables.set("camerabgAlphaShits", camerabgAlphaShits);
 		#end
 		interp.variables.set("CreditsState", CreditsState);
 
@@ -294,5 +297,8 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 			MusicBeatState.resetState();
 		}
 	}
-
+	function camerabgAlphaShits(cam:FlxCamera)
+		{
+			cam.bgColor.alpha = 0;
+		}
 }

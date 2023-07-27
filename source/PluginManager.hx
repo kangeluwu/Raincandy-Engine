@@ -69,7 +69,11 @@ class PluginManager {
      * This is what has all the default things for hscript.
      * @see https://github.com/TheDrawingCoder-Gamer/Funkin/wiki/HScript-Commands
      * @return Interp
-     */
+     */#if mobile
+var mobile = true;
+#else
+var mobile = false;
+#end
     public static function createSimpleInterp():Interp {
         var reterp = new Interp();
         reterp = addVarsToInterp(reterp);
@@ -95,6 +99,7 @@ class PluginManager {
 		interp.variables.set("FlxAngle", flixel.math.FlxAngle);
 		interp.variables.set("FlxMath", flixel.math.FlxMath);
 		interp.variables.set("TitleState", TitleState);
+        interp.variables.set("mobile", mobile);
 		interp.variables.set("makeRangeArray", CoolUtil.numberArray);
 		interp.variables.set("FNFAssets", FNFAssets);
         interp.variables.set("Paths", Paths);
@@ -126,6 +131,7 @@ class PluginManager {
         interp.variables.set("FlxDPadMode", FlxDPadMode);
         interp.variables.set("FlxVirtualPad", FlxVirtualPad);
         #end
+        interp.variables.set("mobile", mobile);
         interp.variables.set("FlxBackdrop", FlxBackdrop);
         interp.variables.set("privateAccess", privateAccess);
         interp.variables.set("FlxRect", FlxRect);
