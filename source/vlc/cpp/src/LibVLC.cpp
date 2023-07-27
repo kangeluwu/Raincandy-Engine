@@ -1,7 +1,7 @@
 #include <mutex>
 #include <iostream>
 #include <string>
-#include <StdInt.h>
+#include <stdInt.h>
 #if PLATFORM_WINDOWS
 #include <windows.h> 
 #endif
