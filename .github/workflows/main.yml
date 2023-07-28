@@ -224,7 +224,7 @@ jobs:
                   haxelib install tjson
                   haxelib install hxjsonast
                   haxelib install hxCodec 3.0.2
-                  haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
+                  haxelib git linc_luajit https://github.com/Sirox228/linc_luajit
                   haxelib install hscript
                   haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
                   haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
@@ -292,7 +292,7 @@ jobs:
               - name: Upload Artifact
                 uses: actions/upload-artifact@main
                 with:
-                  name: ata
+                  name: androidBuild
                   path: export/release/android/bin/app/build/outputs/apk/debug
                   if-no-files-found: warn
         

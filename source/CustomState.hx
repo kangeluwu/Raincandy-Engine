@@ -364,8 +364,9 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("FileParser", FileParser);
 
 		interp.variables.set("FlxUIDropDownMenuCustom", FlxUIDropDownMenuCustom);
-
+#if VIDEOS_ALLOWED
 		interp.variables.set("FlxVideo", FlxVideo);
+#end
 		interp.variables.set("GameOverSubstate", GameOverSubstate);
 		interp.variables.set("PauseSubState", PauseSubState);
 
