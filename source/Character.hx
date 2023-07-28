@@ -139,8 +139,8 @@ class Character extends FlxSprite
 		antialiasing = ClientPrefs.globalAntialiasing;
 		var library:String = null;
 		var hscriptChars:Array<Array<String>> = [];
-		if (FNFAssets.exists(Paths.getLibraryPath("hscriptCharList.txt")))
-			hscriptChars.push(CoolUtil.coolTextFile(Paths.getLibraryPath("hscriptCharList.txt")));
+		if (FNFAssets.exists(SUtil.getPath() + Paths.getLibraryPath("hscriptCharList.txt")))
+			hscriptChars.push(CoolUtil.coolTextFile(SUtil.getPath() + Paths.getLibraryPath("hscriptCharList.txt")));
 		if (FNFAssets.exists(Paths.modFolders("hscriptCharList.txt")))
 			hscriptChars.push(CoolUtil.coolTextFile(Paths.modFolders("hscriptCharList.txt")));
 
@@ -155,10 +155,10 @@ case chars: var interppath:String = '';
 if(FNFAssets.exists(Paths.modFolders('characters/') + curCharacter, Hscript)) {
 	interppath = Paths.modFolders('characters/');
 } else {
-	interppath = Paths.getPreloadPath('characters/');
+	interppath = SUtil.getPath() + Paths.getPreloadPath('characters/');
 }
 #else
-interppath = Paths.getPreloadPath('characters/');
+interppath = SUtil.getPath() + Paths.getPreloadPath('characters/');
 #end
 
 if (FNFAssets.exists(interppath + curCharacter, Hscript)){
@@ -302,10 +302,10 @@ callInterp("init", [this]);
 		if(FNFAssets.exists(Paths.modFolders('characters/') + curCharacter, Hscript)) {
 			interppath = Paths.modFolders('characters/');
 		} else {
-			interppath = Paths.getPreloadPath('characters/');
+			interppath = SUtil.getPath() + Paths.getPreloadPath('characters/');
 		}
 		#else
-		interppath = Paths.getPreloadPath('characters/');
+		interppath = SUtil.getPath() + Paths.getPreloadPath('characters/');
 		#end
 
 		if (FNFAssets.exists(interppath + curCharacter, Hscript)){
@@ -575,7 +575,7 @@ callInterp("init", [this]);
 		if(FNFAssets.exists(Paths.modFolders('characters/') + char, Hscript)) {
 			path = Paths.modFolders('characters/');
 		} else {
-			path = Paths.getPreloadPath('characters/');
+			path = SUtil.getPath() + Paths.getPreloadPath('characters/');
 		}
 		#else
 		path = Paths.getPreloadPath('characters/');

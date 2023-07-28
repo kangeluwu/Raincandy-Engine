@@ -265,7 +265,7 @@ catch (e)
 public function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	trace("opening a haxe state (because we are cool :))");
 	var parser = new ParserEx();
-	var program = parser.parseString(FNFAssets.getHscript(path + filename));
+	var program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 	var interp = PluginManager.createSimpleInterp();
 	// set vars
 	interp.variables.set("preload", preload);
@@ -342,7 +342,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 	interp.variables.set("insert", insert);
 	interp.variables.set("pi", Math.PI);
 	interp.variables.set("curMusicName", Main.curMusicName);
-	interp.variables.set("hscriptPath", path);
+	interp.variables.set("hscriptPath", SUtil.getPath() + path);
 	interp.variables.set('callAllHscript', function(func_name:String, args:Array<Dynamic>) {
 		return callAllHScript(func_name, args);
 	});

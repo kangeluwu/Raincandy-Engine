@@ -82,7 +82,7 @@ class HealthIcon extends FlxSprite
 		if(this.char != char) {
 			
 			
-		    var iconJson:Dynamic = CoolUtil.parseJson(FNFAssets.getJson("windose_data/images/icons/icons"));
+		    var iconJson:Dynamic = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "windose_data/images/icons/icons"));
 			var iconmodJson:Dynamic = CoolUtil.parseJson(FNFAssets.getJson(Paths.modFolders("images/icons/icons")));
 			var iconStrings:Array<String> = [];
 			var iconFrames:Array<Int> = [];
@@ -121,7 +121,7 @@ class HealthIcon extends FlxSprite
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-' + char; //Older versions of psych engine's support
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-face'; //Prevents crash from missing icon
 			var xml:String = name + '.xml';
-			if(FNFAssets.exists('windose_data/images/' + xml) || FNFAssets.exists(Paths.modFolders('images/' + xml)))
+			if(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + xml) || FNFAssets.exists(Paths.modFolders('images/' + xml)))
 				{
 					isAnimated = true;
 					frames = Paths.getSparrowAtlas(name);

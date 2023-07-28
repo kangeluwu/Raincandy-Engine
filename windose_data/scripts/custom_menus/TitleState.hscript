@@ -232,7 +232,7 @@ var animFrames = [];
 
 function getIntroTextShit()
 {
-    var fullText = FNFAssets.getText(Paths.txt('introText'));
+    var fullText = FNFAssets.getText(SUtil.getPath() + Paths.txt('introText'));
 
     var firstArray = fullText.split('\n');
     var swagGoodArray = [[]];
@@ -273,7 +273,7 @@ function update(elapsed)
         titleTimer += CoolUtil.boundTo(elapsed, 0, 1);
         if (titleTimer > 2) titleTimer -= 2;
     }
-    if (!transitioning && skippedIntro)
+    if (TitleState.initialized && !transitioning && skippedIntro)
 		{
 			if (newTitle && !pressedEnter)
 			{

@@ -47,7 +47,7 @@ function create()
     togglePersistUpdate(true);
     togglePersistentDraw(true);
     var yScroll = Math.max(0.25 - (0.05 * (optionShit.length - 4)), 0.1);
-    var bg = new FlxSprite(-80).loadGraphic(FNFAssets.getBitmapData('windose_data/images/menuBG.png'));
+    var bg = new FlxSprite(-80).loadGraphic(FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/menuBG.png'));
     bg.scrollFactor.x = 0;
     bg.scrollFactor.y = yScroll;
     bg.setGraphicSize(Std.int(bg.width * 1.175));
@@ -66,7 +66,7 @@ function create()
     add(camFollow);
     add(camFollowPos);
 
-    magenta = new FlxSprite(-80).loadGraphic(FNFAssets.getBitmapData('windose_data/images/menuDesat.png'));
+    magenta = new FlxSprite(-80).loadGraphic(FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/menuDesat.png'));
     magenta.scrollFactor.x = 0;
     magenta.scrollFactor.y = yScroll;
     magenta.setGraphicSize(Std.int(magenta.width * 1.175));

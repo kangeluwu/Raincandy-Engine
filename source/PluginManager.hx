@@ -452,7 +452,7 @@ class HscriptSoundFrontEndWrapper {
     }
     public function load(?EmbeddedSound:FlxSoundAsset, Volume = 1.0, Looped = false, ?Group, AutoDestroy = false, AutoPlay = false, ?URL, ?OnComplete) {
         if ((EmbeddedSound is String)) {
-            var sound = FNFAssets.getSound(EmbeddedSound);
+            var sound = FNFAssets.getSound(SUtil.getPath() + EmbeddedSound);
             return wrapping.load(sound, Volume, Looped, Group, AutoDestroy, AutoPlay, URL, OnComplete);
         }
         return wrapping.load(EmbeddedSound, Volume, Looped, Group, AutoDestroy, AutoPlay, URL, OnComplete);
@@ -462,7 +462,7 @@ class HscriptSoundFrontEndWrapper {
     }
     public function play(EmbeddedSound:FlxSoundAsset, Volume = 1.0, Looped = false, ?Group, AutoDestroy = true, ?OnComplete) {
         if ((EmbeddedSound is String)) {
-            var sound = FNFAssets.getSound(EmbeddedSound);
+            var sound = FNFAssets.getSound(SUtil.getPath() + EmbeddedSound);
             return wrapping.play(sound, Volume, Looped, Group, AutoDestroy, OnComplete);
         }
         return wrapping.play(EmbeddedSound, Volume, Looped, Group, AutoDestroy, OnComplete);

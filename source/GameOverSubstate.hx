@@ -183,7 +183,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	function makeHaxeState(usehaxe:String, path:String, filename:String) {
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
-		var program = parser.parseString(FNFAssets.getHscript(path + filename));
+		var program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 		var interp = PluginManager.createSimpleInterp();
 		// set vars
 		interp.variables.set("Sys", Sys);

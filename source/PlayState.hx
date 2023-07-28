@@ -500,7 +500,7 @@ class PlayState extends MusicBeatState
 		try
 			{
 				for (key in hscriptStates.keys())
-				hscriptStates.get(key).addModule(FNFAssets.getText(paths + name));
+				hscriptStates.get(key).addModule(FNFAssets.getText(SUtil.getPath() + paths + name));
 	}
 	catch (e)
 	{
@@ -510,7 +510,7 @@ class PlayState extends MusicBeatState
 	public function setHaxeModule(paths:String,name:String, usehaxe:String) {
 		try
 			{
-				hscriptStates.get(usehaxe).addModule(FNFAssets.getText(paths + name));
+				hscriptStates.get(usehaxe).addModule(FNFAssets.getText(SUtil.getPath() + paths + name));
 	}
 	catch (e)
 	{
@@ -528,11 +528,11 @@ function camerabgAlphaShits(cam:FlxCamera)
 		var program;
 		parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 		if (isArray){
-			program = parser.parseString(FNFAssets.getText(path + filename));
+			program = parser.parseString(FNFAssets.getText(SUtil.getPath() + path + filename));
 			
 		}	
 		else{
-			program = parser.parseString(FNFAssets.getHscript(path + filename));
+			program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 		}	
 	
 
@@ -651,7 +651,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("endsWith", endsWith);
 		interp.variables.set("downscroll", ClientPrefs.downScroll);
 		interp.variables.set("middleScroll", ClientPrefs.middleScroll);
-		interp.variables.set("hscriptPath", path);
+		interp.variables.set("hscriptPath", SUtil.getPath() + path);
 		interp.variables.set("health", health);
 		interp.variables.set("scoreTxt", scoreTxt);
  //funny colors0xFF6F0707
@@ -855,7 +855,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 	{
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
-		var program = parser.parseModule(FNFAssets.getHscript(path + filename));
+		var program = parser.parseModule(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 		trace("set stuff");
 		exInterp.registerModule(program);
 
@@ -1636,17 +1636,17 @@ if (OpenFlAssets.exists(file)) {
 
 		var filename:Null<String> = null;
 	
-		if (FNFAssets.exists('windose_data/data/' + SONG.song.toLowerCase() + '/dialog.txt'))
+		if (FNFAssets.exists(SUtil.getPath() + 'windose_data/data/' + SONG.song.toLowerCase() + '/dialog.txt'))
 			{
-				filename = 'windose_data/data/' + SONG.song.toLowerCase() + '/dialog.txt';
+				filename = SUtil.getPath() + 'windose_data/data/' + SONG.song.toLowerCase() + '/dialog.txt';
 			}
-			else if (FNFAssets.exists('mods/data/' + SONG.song.toLowerCase() + '/dialog.txt'))
+			else if (FNFAssets.exists(SUtil.getPath() + 'mods/data/' + SONG.song.toLowerCase() + '/dialog.txt'))
 				{
-					filename = 'mods/data/' + SONG.song.toLowerCase() + '/dialog.txt';
+					filename = SUtil.getPath() + 'mods/data/' + SONG.song.toLowerCase() + '/dialog.txt';
 				}
-				else if ((Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0) && FNFAssets.exists('mods/'+ Paths.currentModDirectory +'/data/' + SONG.song.toLowerCase() + '/dialog.txt'))
+				else if ((Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0) && FNFAssets.exists(SUtil.getPath() + 'mods/'+ Paths.currentModDirectory +'/data/' + SONG.song.toLowerCase() + '/dialog.txt'))
 					{
-						filename = 'mods/'+ Paths.currentModDirectory +'/data/' + SONG.song.toLowerCase() + '/dialog.txt';
+						filename = SUtil.getPath() + 'mods/'+ Paths.currentModDirectory +'/data/' + SONG.song.toLowerCase() + '/dialog.txt';
 					}
 			var goodDialog:String;
 			if (filename != null) {
@@ -3342,8 +3342,8 @@ if (!dadChar.beingControlled)
 						FlxG.sound.play(intro3Sound, 0.6);
 					case 1:
 						countdownReady = new FlxSprite().loadGraphic(
-							FNFAssets.exists('windose_data/shared/images/' + introAlts[0] + '.png') ? 
-							FNFAssets.getBitmapData('windose_data/shared/images/' + introAlts[0] + '.png') :
+							FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + introAlts[0] + '.png') ? 
+							FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + introAlts[0] + '.png') :
 							FNFAssets.getBitmapData(Paths.modFolders('images/' + introAlts[0] + '.png'))
 							);
 						countdownReady.cameras = [camHUD];
@@ -3367,8 +3367,8 @@ if (!dadChar.beingControlled)
 						FlxG.sound.play(intro2Sound, 0.6);
 					case 2:
 						countdownSet = new FlxSprite().loadGraphic(
-							FNFAssets.exists('windose_data/shared/images/' + introAlts[1] + '.png') ? 
-						FNFAssets.getBitmapData('windose_data/shared/images/' + introAlts[1] + '.png') :
+							FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + introAlts[1] + '.png') ? 
+						FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + introAlts[1] + '.png') :
 						FNFAssets.getBitmapData(Paths.modFolders('images/' + introAlts[1] + '.png')));
 						countdownSet.cameras = [camHUD];
 						countdownSet.scrollFactor.set();
@@ -3390,8 +3390,8 @@ if (!dadChar.beingControlled)
 						FlxG.sound.play(intro1Sound, 0.6);
 					case 3:
 						countdownGo = new FlxSprite().loadGraphic(
-							FNFAssets.exists('windose_data/shared/images/' + introAlts[2] + '.png') ? 
-							FNFAssets.getBitmapData('windose_data/shared/images/' + introAlts[2] + '.png') :
+							FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + introAlts[2] + '.png') ? 
+							FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + introAlts[2] + '.png') :
 							FNFAssets.getBitmapData(Paths.modFolders('images/' + introAlts[2] + '.png')));
 						countdownGo.cameras = [camHUD];
 						countdownGo.scrollFactor.set();
@@ -5909,8 +5909,8 @@ coolText.x = FlxG.width * 0.55;
 		}
 
 		rating.loadGraphic(
-			FNFAssets.exists('windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' + daRating.image + backShitPart2 + '.png') ? 
-							FNFAssets.getBitmapData('windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' + daRating.image + backShitPart2 + '.png') :
+			FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' + daRating.image + backShitPart2 + '.png') ? 
+							FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' + daRating.image + backShitPart2 + '.png') :
 							FNFAssets.getBitmapData(Paths.modFolders('images/custom_ui/' + uiSmelly.uses + '/' + daRating.image + backShitPart2 + '.png')));
 		rating.screenCenter();
 		rating.x = coolText.x - 40;
@@ -5923,8 +5923,8 @@ coolText.x = FlxG.width * 0.55;
 		rating.y -= ClientPrefs.comboOffset[1];
 
 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(
-			FNFAssets.exists('windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' + 'combo' + backShitPart2 + '.png') ? 
-			FNFAssets.getBitmapData('windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' +'combo' + backShitPart2 + '.png') :
+			FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' + 'combo' + backShitPart2 + '.png') ? 
+			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' +'combo' + backShitPart2 + '.png') :
 			FNFAssets.getBitmapData(Paths.modFolders('images/custom_ui/' + uiSmelly.uses + '/' + 'combo' + backShitPart2 + '.png')));
 		comboSpr.screenCenter();
 		comboSpr.x = coolText.x;
@@ -6023,8 +6023,8 @@ coolText.x = FlxG.width * 0.55;
 		for (i in seperatedScore)
 		{
 			var numScore:FlxSprite = new FlxSprite().loadGraphic(
-				FNFAssets.exists('windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' + 'num' + Std.int(i) + backShitPart2 + '.png') ? 
-				FNFAssets.getBitmapData('windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' +'num' + Std.int(i) + backShitPart2 + '.png') :
+				FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' + 'num' + Std.int(i) + backShitPart2 + '.png') ? 
+				FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/custom_ui/' + uiSmelly.uses + '/' +'num' + Std.int(i) + backShitPart2 + '.png') :
 				FNFAssets.getBitmapData(Paths.modFolders('images/custom_ui/' + uiSmelly.uses + '/' + 'num' + Std.int(i) + backShitPart2 + '.png')));
 			numScore.screenCenter();
 			numScore.x = coolText.x + (43 * daLoop) - 90;

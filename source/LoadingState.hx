@@ -153,7 +153,7 @@ class LoadingState extends MusicBeatState
 		{
 			if (FNFAssets.exists(SUtil.getPath()+scriptPath + scriptName + '.hscript'))
 			{
-				CustomState.customStateScriptPath = scriptPath;
+				CustomState.customStateScriptPath = SUtil.getPath() + scriptPath;
 				CustomState.customStateScriptName = scriptName;
 				MusicBeatState.switchState(getNextState(new CustomState(), stopMusic));
 			}

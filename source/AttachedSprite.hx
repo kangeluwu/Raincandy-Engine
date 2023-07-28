@@ -23,25 +23,25 @@ class AttachedSprite extends FlxSprite
 		
 		if(anim != null) {
 			frames = FlxAtlasFrames.fromSparrow(
-			(FNFAssets.exists('windose_data/images/' + file + '.png') || FNFAssets.exists('windose_data/shared/images/' + file + '.png')) ? 
-			(FNFAssets.exists('windose_data/images/' + file + '.png') ? 
-			FNFAssets.getBitmapData('windose_data/images/' + file + '.png') : 
-			FNFAssets.getBitmapData('windose_data/shared/images/' + file + '.png')):
+			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.png') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + file + '.png')) ? 
+			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.png') ? 
+			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/' + file + '.png') : 
+			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + file + '.png')):
 			FNFAssets.getBitmapData(Paths.modFolders('images/' + file + '.png')), 
 
-			(FNFAssets.exists('windose_data/images/' + file + '.xml') || FNFAssets.exists('windose_data/shared/images/' + file + '.xml')) ? 
-			(FNFAssets.exists('windose_data/images/' + file + '.xml') ? 
-			FNFAssets.getText('windose_data/images/' + file + '.xml') : 
-			FNFAssets.getText('windose_data/shared/images/' + file + '.xml')) :
+			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.xml') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + file + '.xml')) ? 
+			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.xml') ? 
+			FNFAssets.getText(SUtil.getPath() + 'windose_data/images/' + file + '.xml') : 
+			FNFAssets.getText('SUtil.getPath() + windose_data/shared/images/' + file + '.xml')) :
 			FNFAssets.getText(Paths.modFolders('images/' + file + '.xml')));
 			animation.addByPrefix('idle', anim, 24, loop);
 			animation.play('idle');
 		} else if(file != null) {
 			loadGraphic(
-				(FNFAssets.exists('windose_data/images/' + file + '.png') || FNFAssets.exists('windose_data/shared/images/' + file + '.png')) ? 
-				(FNFAssets.exists('windose_data/images/' + file + '.png') ? 
-				FNFAssets.getBitmapData('windose_data/images/' + file + '.png') : 
-				FNFAssets.getBitmapData('windose_data/shared/images/' + file + '.png')):
+				(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.png') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + file + '.png')) ? 
+				(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.png') ? 
+				FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/' + file + '.png') : 
+				FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + file + '.png')):
 			FNFAssets.getBitmapData(Paths.modFolders('images/' + file + '.png')));
 		}
 		antialiasing = ClientPrefs.globalAntialiasing;

@@ -81,7 +81,7 @@ class Note extends FlxSprite
 	function makeHaxeNote(usehaxe:String, path:String, filename:String) {
 		trace("opening a haxe note (because we are cool :))");
 		var parser = new ParserEx();
-		var program = parser.parseString(FNFAssets.getHscript(path + filename));
+		var program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 		var interp = PluginManager.createSimpleInterp();
 		// set vars
 		interp.variables.set("Sys", Sys);
@@ -400,10 +400,10 @@ class Note extends FlxSprite
 if(FNFAssets.exists(Paths.modFolders('custom_notetypes/') + noteType, Hscript)) {
 	interppath = Paths.modFolders('custom_notetypes/');
 } else {
-	interppath = Paths.getPreloadPath('custom_notetypes/');
+	interppath = SUtil.getPath() + Paths.getPreloadPath('custom_notetypes/');
 }
 #else
-interppath = Paths.getPreloadPath('custom_notetypes/');
+interppath = SUtil.getPath() + Paths.getPreloadPath('custom_notetypes/');
 #end
 
 if (FNFAssets.exists(interppath + noteType, Hscript)){

@@ -276,7 +276,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("insert", insert);
 		interp.variables.set("pi", Math.PI);
 		interp.variables.set("curMusicName", Main.curMusicName);
-		interp.variables.set("hscriptPath", path);
+		interp.variables.set("hscriptPath", SUtil.getPath() + path);
 		interp.variables.set('callAllHscript', function(func_name:String, args:Array<Dynamic>) {
 			return callAllHScript(func_name, args);
 		});

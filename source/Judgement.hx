@@ -13,9 +13,9 @@ class Judgement extends FlxSprite {
 		var modpaths:String = Paths.modFolders('images/custom_ui/');
 			// assume that it does have it and pray
 			// if this is set it should already exist so not my problem :hueh:
-			if (PlayState.isPixelStage && FNFAssets.exists(paths + curUItype.uses + '/$Judged-pixel.png'))
+			if (PlayState.isPixelStage && FNFAssets.exists(SUtil.getPath() + paths + curUItype.uses + '/$Judged-pixel.png'))
 			{
-				var lord = FNFAssets.getBitmapData(paths + curUItype.uses + '/$Judged-pixel.png');
+				var lord = FNFAssets.getBitmapData(SUtil.getPath() + paths + curUItype.uses + '/$Judged-pixel.png');
 				loadGraphic(lord);
 				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 				updateHitbox();
@@ -36,7 +36,7 @@ class Judgement extends FlxSprite {
 				}
 				else
 					{
-						var lord = FNFAssets.getBitmapData(paths + curUItype.uses + '/$Judged.png');
+						var lord = FNFAssets.getBitmapData(SUtil.getPath() + paths + curUItype.uses + '/$Judged.png');
 						loadGraphic(lord);
 					}
         

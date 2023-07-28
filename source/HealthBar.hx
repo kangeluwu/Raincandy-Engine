@@ -31,10 +31,10 @@ class HealthBar extends FlxSpriteGroup
 		setBounds(boundX, boundY);
 		
 		bg = new FlxSprite().loadGraphic(
-			(FNFAssets.exists('windose_data/images/' + image + '.png') || FNFAssets.exists('windose_data/shared/images/' + image + '.png')) ? 
-			(FNFAssets.exists('windose_data/images/' + image + '.png') ? 
-			FNFAssets.getBitmapData('windose_data/images/' + image + '.png') : 
-			FNFAssets.getBitmapData('windose_data/shared/images/' + image + '.png')):
+			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + image + '.png') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + image + '.png')) ? 
+			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + image + '.png') ? 
+			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/' + image + '.png') : 
+			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + image + '.png')):
 		FNFAssets.getBitmapData(Paths.modFolders('images/' + image + '.png')));
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		barWidth = Std.int(bg.width - 10);

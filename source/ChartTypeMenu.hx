@@ -55,8 +55,8 @@ class ChartTypeMenu extends MusicBeatSubstate
         menuItems = new FlxTypedGroup<FlxSprite>();
         add(menuItems);
         
-        var texImage = FNFAssets.getBitmapData('windose_data/images/chartTypes.png');
-        var texXml = FNFAssets.getText('windose_data/images/chartTypes.xml');
+        var texImage = FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/chartTypes.png');
+        var texXml = FNFAssets.getText(SUtil.getPath() + 'windose_data/images/chartTypes.xml');
 		for (i in 0...optionShit.length)
 		{
 			var menuItem:FlxSprite = new FlxSprite(-250, 30);

@@ -339,7 +339,7 @@ class Paths
 			if(FileSystem.exists(mods(currentModDirectory + '/' + key)) || FileSystem.exists(mods(key))) {
 				return modFolders(key);
 			}
-			return getLibraryPath(key);
+			return SUtil.getPath() + getLibraryPath(key);
 
 		}
 		#end
