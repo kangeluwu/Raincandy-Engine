@@ -524,7 +524,7 @@ class DialogueEditorState extends MusicBeatState
 		var data:String = Json.stringify(dialogueFile, "\t");
 		if (data.length > 0)
 		{#if mobile
-			SUtil.saveContent(characterName, data, ".json");
+			SUtil.saveContent("dialogue", data, ".json");
 			#else
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
