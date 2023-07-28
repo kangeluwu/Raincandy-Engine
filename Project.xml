@@ -30,7 +30,7 @@
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" vsync="false"/>
 
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false"/>
+	<window if="mobile" orientation="landscape" fullscreen="true" width="1280" height="720" resizable="false"/>
 
 	<!--Switch-specific-->
 	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
@@ -234,7 +234,7 @@
 	<!--中国人民和日本人民是一致的，只有一个敌人，
         就是日本帝国主义和中国的民族败类  
 	                                                  毛泽东
-						    1941年5月15日-->
+						                        1941年5月15日-->
 
 	<!--台湾从来都是中国领土不可分割的一部分，这是无可辩驳的历史和法理事实-->
 	
