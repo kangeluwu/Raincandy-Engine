@@ -1299,12 +1299,15 @@ class CharacterEditorState extends MusicBeatState
 		var data:String = Json.stringify(json, "\t");
 
 		if (data.length > 0)
-		{
+		{    #if mobile
+			SUtil.saveContent(daAnim, data,".json");
+			#else
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 			_file.save(data, daAnim + ".json");
+			#end
 		}
 	}
 

@@ -538,12 +538,15 @@ class WeekEditorState extends MusicBeatState
 	public static function saveWeek(weekFile:WeekFile) {
 		var data:String = Json.stringify(weekFile, "\t");
 		if (data.length > 0)
-		{
+		{                        #if mobile
+			SUtil.saveContent(weekFileName, data, ".json");
+			#else
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 			_file.save(data, weekFileName + ".json");
+			#end
 		}
 	}
 	
