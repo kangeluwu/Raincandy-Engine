@@ -105,11 +105,6 @@ class PluginManager {
         interp.variables.set("FlxDPadMode", FlxDPadMode);
         interp.variables.set("FlxVirtualPad", FlxVirtualPad);
         #end
-        #if mobile
-        interp.variables.set("mobile", true);
-#else
-interp.variables.set("mobile", false);
-#end
 
 		interp.variables.set("makeRangeArray", CoolUtil.numberArray);
 		interp.variables.set("FNFAssets", FNFAssets);
