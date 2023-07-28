@@ -234,7 +234,7 @@ class SUtil
 		SUtil.applicationAlert('Done :)!', 'Data Saved to Clipboard Successfully!');
 	}
 
-	public static public function copyContent(copyPath:String, savePath:String) {
+	static public function copyContent(copyPath:String, savePath:String) {
 		if (!FileSystem.exists(savePath)){
 			var bytes = OpenFlAssets.getBytes(copyPath);
 			File.saveBytes(savePath, bytes);
