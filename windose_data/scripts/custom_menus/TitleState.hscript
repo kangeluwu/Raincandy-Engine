@@ -149,14 +149,14 @@ function startIntro()
 
     titleText = new FlxSprite(titleJSON.startx, titleJSON.starty);
     if (desktop && modsallowed){
-    var path = "mods/" + Paths.currentModDirectory + "/images/titleEnter.png";
+    var path =  SUtil.getPath() + "mods/" + Paths.currentModDirectory + "/images/titleEnter.png";
     //trace(path, FileSystem.exists(path));
     if (!FNFAssets.exists(path)){
-        path = "mods/images/titleEnter.png";
+        path =  SUtil.getPath() + "mods/images/titleEnter.png";
     }
     //trace(path, FileSystem.exists(path));
     if (!FNFAssets.exists(path)){
-        path = "windose_data/images/titleEnter.png";
+        path =  SUtil.getPath() + "windose_data/images/titleEnter.png";
     }
     //trace(path, FileSystem.exists(path));
     titleText.frames = FlxAtlasFrames.fromSparrow(BitmapData.fromFile(path),File.getContent(StringTools.replace(path,".png",".xml")));
@@ -258,17 +258,17 @@ function update(elapsed)
     {
         FlxG.fullscreen = !FlxG.fullscreen;
     }
-  if(mobile){
-    for (touch in FlixG.touches.list)
-    {
-        if (touch.justPressed)
+
+    var pressedEnter =  FlxG.keys.justPressed.ENTER || controls.ACCEPT;
+    if(mobile){
+        for (touch in FlixG.touches.list)
         {
-            pressedEnter = true;
+            if (touch.justPressed)
+            {
+                pressedEnter = true;
+            }
         }
     }
-}
-    var pressedEnter =  FlxG.keys.justPressed.ENTER || controls.ACCEPT;
-
 	if (newTitle) {
         titleTimer += CoolUtil.boundTo(elapsed, 0, 1);
         if (titleTimer > 2) titleTimer -= 2;

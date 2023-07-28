@@ -151,7 +151,7 @@ class LoadingState extends MusicBeatState
 	}
 	public static function loadAndSwitchCustomState(scriptName:String, scriptPath:String = 'windose_data/scripts/custom_menus/', stopMusic:Bool = false)
 		{
-			if (FNFAssets.exists(scriptPath + scriptName + '.hscript'))
+			if (FNFAssets.exists(SUtil.getPath()+scriptPath + scriptName + '.hscript'))
 			{
 				CustomState.customStateScriptPath = scriptPath;
 				CustomState.customStateScriptName = scriptName;
