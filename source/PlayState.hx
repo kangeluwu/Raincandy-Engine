@@ -876,7 +876,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		#if MODS_ALLOWED
 		var modsJson = CoolUtil.parseJson(FNFAssets.getText(Paths.modFolders('stages/custom_Hscript_stages/custom_stages.json')));
 		#end
-		var stageJson = CoolUtil.parseJson(FNFAssets.getText(Paths.getPreloadPath('stages/custom_Hscript_stages/custom_stages.json')));
+		var stageJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + Paths.getPreloadPath('stages/custom_Hscript_stages/custom_stages.json')));
 		Paths.clearStoredMemory();
 		options.OptionsState.isFromPlayState = true;
 		// for lua
@@ -889,7 +889,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 			(FNFAssets.exists(Paths.modFolders('images/custom_ui/ui.json')) 
 		&& !Reflect.hasField(Judgement.uiJson, SONG.uiType))
 			 )			 #end
-		Judgement.uiJson = CoolUtil.parseJson(FNFAssets.getText(Paths.getPreloadPath('shared/images/custom_ui/ui.json')));
+		Judgement.uiJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + Paths.getPreloadPath('shared/images/custom_ui/ui.json')));
 
 		uiSmelly = Reflect.field(Judgement.uiJson, SONG.uiType);
 		
@@ -1464,7 +1464,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		// "GLOBAL" SCRIPTS
 		#if LUA_ALLOWED
 		var filesPushed:Array<String> = [];
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('scripts/')];
+		var foldersToCheck:Array<String> = [SUtil.getPath() + Paths.getPreloadPath('scripts/')];
 
 		#if MODS_ALLOWED
 		foldersToCheck.insert(0, Paths.mods('scripts/'));
@@ -1499,7 +1499,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 			luaFile = Paths.modFolders(luaFile);
 			doPush = true;
 		} else {
-			luaFile = Paths.getPreloadPath(luaFile);
+			luaFile = SUtil.getPath() + Paths.getPreloadPath(luaFile);
 			if(FileSystem.exists(luaFile)) {
 				doPush = true;
 			}
@@ -1758,7 +1758,7 @@ if (OpenFlAssets.exists(file)) {
 
 		
 		var eventhaxefilesPushed:Array<String> = [];
-		var eventhaxefoldersToCheck:Array<String> = [Paths.getPreloadPath('custom_events/')];
+		var eventhaxefoldersToCheck:Array<String> = [SUtil.getPath() + Paths.getPreloadPath('custom_events/')];
 
 		#if MODS_ALLOWED
 		eventhaxefoldersToCheck.insert(0, Paths.mods('custom_events/'));
@@ -1800,14 +1800,14 @@ if (OpenFlAssets.exists(file)) {
 			}
 			else
 			{
-				luaToLoad = Paths.getPreloadPath('custom_notetypes/' + notetype + '.lua');
+				luaToLoad = SUtil.getPath() + Paths.getPreloadPath('custom_notetypes/' + notetype + '.lua');
 				if(FileSystem.exists(luaToLoad))
 				{
 					luaArray.push(new FunkinLua(luaToLoad));
 				}
 			}
 			#elseif sys
-			var luaToLoad:String = Paths.getPreloadPath('custom_notetypes/' + notetype + '.lua');
+			var luaToLoad:String = SUtil.getPath() + Paths.getPreloadPath('custom_notetypes/' + notetype + '.lua');
 			if(OpenFlAssets.exists(luaToLoad))
 			{
 				luaArray.push(new FunkinLua(luaToLoad));
@@ -1824,14 +1824,14 @@ if (OpenFlAssets.exists(file)) {
 			}
 			else
 			{
-				luaToLoad = Paths.getPreloadPath('custom_events/' + event + '.lua');
+				luaToLoad = SUtil.getPath() + Paths.getPreloadPath('custom_events/' + event + '.lua');
 				if(FileSystem.exists(luaToLoad))
 				{
 					luaArray.push(new FunkinLua(luaToLoad));
 				}
 			}
 			#elseif sys
-			var luaToLoad:String = Paths.getPreloadPath('custom_events/' + event + '.lua');
+			var luaToLoad:String = SUtil.getPath() + Paths.getPreloadPath('custom_events/' + event + '.lua');
 			if(OpenFlAssets.exists(luaToLoad))
 			{
 				luaArray.push(new FunkinLua(luaToLoad));
@@ -1993,7 +1993,7 @@ if (!opponentPlayer)
 			else #end if (FNFAssets.exists((Paths.getHscriptStagePath(Reflect.field(stageJson, curStage))), Hscript))
 				{
 	
-			makeHaxeState("stages", Paths.getPreloadPath('stages/custom_Hscript_stages/') + curStage + "/", "../"+Reflect.field(stageJson, curStage));
+			makeHaxeState("stages", SUtil.getPath() + Paths.getPreloadPath('stages/custom_Hscript_stages/') + curStage + "/", "../"+Reflect.field(stageJson, curStage));
 	
 				
 			
@@ -2001,7 +2001,7 @@ if (!opponentPlayer)
 		// SONG SPECIFIC SCRIPTS
 		#if LUA_ALLOWED
 		var filesPushed:Array<String> = [];
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('data/' + Paths.formatToSongPath(SONG.song) + '/')];
+		var foldersToCheck:Array<String> = [SUtil.getPath() + Paths.getPreloadPath('data/' + Paths.formatToSongPath(SONG.song) + '/')];
 
 		#if MODS_ALLOWED
 		foldersToCheck.insert(0, Paths.mods('data/' + Paths.formatToSongPath(SONG.song) + '/'));
@@ -2029,7 +2029,7 @@ if (!opponentPlayer)
 		#end
 	
 		var haxefilesPushed:Array<String> = [];
-		var haxefoldersToCheck:Array<String> = [Paths.getPreloadPath('scripts/')];
+		var haxefoldersToCheck:Array<String> = [SUtil.getPath() + Paths.getPreloadPath('scripts/')];
 
 		#if MODS_ALLOWED
 		haxefoldersToCheck.insert(0, Paths.mods('scripts/'));
@@ -2204,7 +2204,7 @@ if (!opponentPlayer)
 				case 'hscript':
 					Paths.hscript(key);
 			    case 'idkAssets':
-					Paths.getPreloadPath(key);
+					SUtil.getPath() + Paths.getPreloadPath(key);
 				case 'idkModAssets':
 					Paths.modFolders(key);	
 					//???
@@ -2243,7 +2243,7 @@ if (!opponentPlayer)
 			return true;
 		}
 
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('shaders/'),Paths.mods('shaders/')];
+		var foldersToCheck:Array<String> = [ SUtil.getPath() + Paths.getPreloadPath('shaders/'),Paths.mods('shaders/')];
 		if(Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0)
 			foldersToCheck.insert(0, Paths.mods(Paths.currentModDirectory + '/shaders/'));
 
@@ -2471,13 +2471,13 @@ if (!dadChar.beingControlled)
 			hscriptFile = Paths.modFolders(hscriptFile);
 			doPush = true;
 		} else {
-			hscriptFile = Paths.getPreloadPath(hscriptFile);
+			hscriptFile =  SUtil.getPath() + Paths.getPreloadPath(hscriptFile);
 			if(FileSystem.exists(hscriptFile)) {
 				doPush = true;
 			}
 		}
 		#else
-		hscriptFile = Paths.getPreloadPath(hscriptFile);
+		hscriptFile = SUtil.getPath() +  Paths.getPreloadPath(hscriptFile);
 		if(Assets.exists(hscriptFile)) {
 			doPush = true;
 		}
@@ -2504,13 +2504,13 @@ if (!dadChar.beingControlled)
 			luaFile = Paths.modFolders(luaFile);
 			doPush = true;
 		} else {
-			luaFile = Paths.getPreloadPath(luaFile);
+			luaFile = SUtil.getPath() +  Paths.getPreloadPath(luaFile);
 			if(FileSystem.exists(luaFile)) {
 				doPush = true;
 			}
 		}
 		#else
-		luaFile = Paths.getPreloadPath(luaFile);
+		luaFile =  SUtil.getPath() + Paths.getPreloadPath(luaFile);
 		if(Assets.exists(luaFile)) {
 			doPush = true;
 		}
@@ -2723,7 +2723,7 @@ if (!dadChar.beingControlled)
 					}
 				}
 	function customIntro(?dialogueBox:DialogueBoxMPlus) {
-		var goodJson = CoolUtil.parseJson(FNFAssets.getText(Paths.getPreloadPath('scripts/custom_cutscenes/cutscenes.json')));
+		var goodJson = CoolUtil.parseJson(FNFAssets.getText( SUtil.getPath() + Paths.getPreloadPath('scripts/custom_cutscenes/cutscenes.json')));
 		#if MODS_ALLOWED var modJson = CoolUtil.parseJson(FNFAssets.getText(Paths.modFolders('scripts/custom_cutscenes/cutscenes.json')));#end
 
 		if (!Reflect.hasField(goodJson, SONG.cutsceneType) #if MODS_ALLOWED && FNFAssets.exists(Paths.modFolders('scripts/custom_cutscenes/cutscenes.json')) && !Reflect.hasField(modJson, SONG.cutsceneType )#end) {
@@ -2733,7 +2733,7 @@ if (!dadChar.beingControlled)
 		inCutscene = true;
 		if (Reflect.hasField(goodJson, SONG.cutsceneType))
 			{
-				makeHaxeState("cutscene", Paths.getPreloadPath('scripts/custom_cutscenes/')+SONG.cutsceneType+'/', "../"+Reflect.field(goodJson, SONG.cutsceneType));
+				makeHaxeState("cutscene",  SUtil.getPath() + Paths.getPreloadPath('scripts/custom_cutscenes/')+SONG.cutsceneType+'/', "../"+Reflect.field(goodJson, SONG.cutsceneType));
 			} 
 			#if MODS_ALLOWED
 		if (FNFAssets.exists(Paths.modFolders('scripts/custom_cutscenes/cutscenes.json')) && Reflect.hasField(modJson, SONG.cutsceneType))
@@ -3173,7 +3173,7 @@ if (!dadChar.beingControlled)
 
 		inCutscene = false;
 		var haxefilesPushed2:Array<String> = [];
-		var haxefoldersToCheck2:Array<String> = [Paths.getPreloadPath('data/' + Paths.formatToSongPath(SONG.song) + '/')];
+		var haxefoldersToCheck2:Array<String> = [ SUtil.getPath() + Paths.getPreloadPath('data/' + Paths.formatToSongPath(SONG.song) + '/')];
 
 		#if MODS_ALLOWED
 		haxefoldersToCheck2.insert(0, Paths.mods('data/' + Paths.formatToSongPath(SONG.song) + '/'));
@@ -3317,7 +3317,7 @@ if (!dadChar.beingControlled)
 				var intro2Sound:Sound;
 				var intro1Sound:Sound;
 				var introGoSound:Sound;
-				if (FNFAssets.exists(Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro3' + introSoundsSuffix + '.ogg'))) {
+				if (FNFAssets.exists( SUtil.getPath() + Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro3' + introSoundsSuffix + '.ogg'))) {
 					intro3Sound = FNFAssets.getSound(Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro3' + introSoundsSuffix + '.ogg'));
 					intro2Sound = FNFAssets.getSound(Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro2' + introSoundsSuffix + '.ogg'));
 					intro1Sound = FNFAssets.getSound(Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro1' + introSoundsSuffix + '.ogg'));

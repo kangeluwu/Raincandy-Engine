@@ -46,6 +46,10 @@ class FNFAssets {
      * @return String The file content. 
      */
     public static function getText(id:String):String {
+		#if mobile
+		if (!id.startsWith(SUtil.getPath()))
+			id = SUtil.getPath()+id;
+		#end
         #if sys
             // if there a library strip it out..
             // future proofing ftw
@@ -146,6 +150,10 @@ class FNFAssets {
 	}
 	public static function getBytes(id:String):Bytes
 	{
+		#if mobile
+		if (!id.startsWith(SUtil.getPath()))
+			id = SUtil.getPath()+id;
+		#end
 		#if sys
 		// if there a library strip it out..
 		// future proofing ftw
@@ -181,6 +189,10 @@ class FNFAssets {
 			case Hscript: 
 				return existsAmbig([id], CoolUtil.HSCRIPT_EXT) != '';
 			default: 
+				#if mobile
+		if (!id.startsWith(SUtil.getPath()))
+			id = SUtil.getPath()+id;
+		#end
 				if (!isInScope(id))
 					return false;
 				#if sys
@@ -200,7 +212,8 @@ class FNFAssets {
 	 * Check if a file is in the cwd. Used to prevent sussy bakas from being sussy
 	 * @param id 
 	 */
-	public static function isInScope(id:String) {
+	public static function isInScope(id:String) 
+		{
 		#if sys
 		if (Assets.exists(id))
 			return true;
@@ -217,6 +230,10 @@ class FNFAssets {
      * @return BitmapData the data of the file.
      */
     public static function getBitmapData(id:String, ?useCache:Bool=true):BitmapData {
+		#if mobile
+		if (!id.startsWith(SUtil.getPath()))
+			id = SUtil.getPath()+id;
+		#end
         #if sys
 			if (!isInScope(id))
 				throw "Tried to access a file that is out of scope.";
@@ -242,6 +259,10 @@ class FNFAssets {
 	 * @return Sound The sound file.
      */
     public static function getSound(id:String, ?useCache:Bool=true):Sound {
+		#if mobile
+		if (!id.startsWith(SUtil.getPath()))
+			id = SUtil.getPath()+id;
+		#end
         #if sys
 			if (!isInScope(id))
 				throw "Tried to access a file that is out of scope.";
@@ -273,7 +294,11 @@ class FNFAssets {
 			if (!isInScope(id))
 				throw "Tried to access a file that is out of scope.";
 			try {
+				#if mobile
+				SUtil.saveContent(id, data);
+				#else
 				File.saveContent(id, data);
+				#end
 			}	catch(e:Any) {
 				throw "Couldn't save to "+ id +". Is it in use?";
 			}
@@ -321,6 +346,10 @@ class FNFAssets {
 	
 	public static function saveBytes(id:String, data:Bytes)
 	{
+		#if mobile
+		if (!id.startsWith(SUtil.getPath()))
+			id = SUtil.getPath()+id;
+		#end
 		#if sys
 		if (!isInScope(id))
 			throw "Tried to access a file that is out of scope.";
@@ -347,6 +376,10 @@ class FNFAssets {
 		}
 	 public static function getGraphicData(id:String,?allowGPU:Bool = true):Null<FlxGraphic>
 		{
+			#if mobile
+		if (!id.startsWith(SUtil.getPath()))
+			id = SUtil.getPath()+id;
+		#end
 			if(FileSystem.exists(id)) {
 				if(!currentTrackedAssets.exists(id)) {
 					var newBitmap:BitmapData = BitmapData.fromFile(id);

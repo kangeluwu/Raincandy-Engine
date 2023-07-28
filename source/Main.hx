@@ -53,9 +53,7 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-		#if mobile
-		SUtil.uncaughtErrorHandler();
-		#end
+	
 		if (stage != null)
 		{
 			init();
@@ -90,7 +88,7 @@ class Main extends Sprite
 			gameHeight = Math.ceil(stageHeight / zoom);
 		}
 		#if mobile
-		SUtil.check();
+		SUtil.doTheCheck();
 		#end
 
 		ClientPrefs.loadDefaultKeys();

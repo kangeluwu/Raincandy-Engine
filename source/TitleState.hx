@@ -235,6 +235,7 @@ var titleEaster = false;
 		interp.variables.set("FlxRuntimeShader", FlxRuntimeShader);
 interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("Paths", Paths);
+
 		interp.variables.set("watermark", watermark);
 		interp.variables.set("OGcolor", FlxColor.WHITE);
 		interp.variables.set("BlackColor", FlxColor.BLACK);
