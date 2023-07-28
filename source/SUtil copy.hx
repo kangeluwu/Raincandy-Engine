@@ -23,7 +23,7 @@ using StringTools;
  * ...
  * @author Mihai Alexandru (M.A. Jigsaw)
  */
-class SUtil
+class SUtil//(CopyedVerisonRealIBackedUpThisOneLMFAO)
 {
 	/**
 	 * A simple function that checks for storage permissions and game files/folders
@@ -61,16 +61,14 @@ class SUtil
 			if (!FileSystem.exists(SUtil.getPath() + 'windose_data'))
 				FileSystem.createDirectory(SUtil.getPath() + 'windose_data');
 
-			if (!FileSystem.exists(SUtil.getPath() + "crash")){
-				FileSystem.createDirectory(SUtil.getPath() + "crash");
+			if (!FileSystem.exists(SUtil.getPath() + 'windose_data/cutscenes'))
+				FileSystem.createDirectory(SUtil.getPath() + 'windose_data/cutscenes');
+
+			for (cutscene in Assets.list().filter(list -> list.contains('windose_data/cutscenes')))
+			{
+				if (cutscene.endsWith('.mp4')) // im lazy to put all video formats XD
+					SUtil.copyContent(cutscene, SUtil.getPath() + cutscene);
 			}
-			if (!FileSystem.exists(SUtil.getPath() + "saves")){
-				FileSystem.createDirectory(SUtil.getPath() + "saves");
-			}
-			if (!FileSystem.exists(SUtil.getPath() + "mods") && !FileSystem.exists(SUtil.getPath() + "windose_data")){
-				File.saveContent(SUtil.getPath() + "Paste the Assets and Mods folders here.txt", "the file name says all");
-			}
-			
 		}
 		#end
 	}
