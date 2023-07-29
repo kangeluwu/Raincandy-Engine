@@ -316,7 +316,9 @@ function changeCurMusicName(newName:String):String
 	return (newName);
 }
 function addVirtualPads(){
+	#if mobile
 	addVirtualPad(UP_DOWN,A_B_7);
+	#end
 }
 function coolURL(url:String):String
 	{
