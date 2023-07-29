@@ -21,6 +21,7 @@ function create()
     addHaxeLibrary('LoadingState');
     addHaxeLibrary('OptionsState','options');
     addHaxeLibrary('MasterEditorMenu','editors');
+
     if (!FlixG.sound.music.playing)
         {
             FlixG.sound.playMusic(Paths.music('freakyMenu'),0);
@@ -161,7 +162,7 @@ function create()
         }
     });
 if (mobile)
-    addVirtualPads();
+    addVirtualPads('up_down','a_b_e');
 
 }
 function giveAchievement() {
@@ -221,7 +222,7 @@ function update(elapsed)
         {
             enter();
         }
-        else if ((desktop && FlxG.keys.anyJustPressed(debugKeys)) || (mobile && damn))
+        else if ((desktop && FlxG.keys.anyJustPressed(debugKeys)) || (mobile && visPressed('E')))
         {
             selectedSomethin = true;
             MusicBeatState.switchState(new MasterEditorMenu());

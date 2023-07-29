@@ -36,12 +36,8 @@ function startDead(x, y, camX, camY, isPlayer)
 		PlayState.instance.callAllHScript('inGameOver', [x, y, camX, camY, isPlayer]);
 		Main.fpsVar.x = 10;
 if (mobile){
-		addVirtualPad(FlxDPadMode.NONE, FlxActionMode.A_B);
-		
-		var camcontrol = new FlxCamera();
-		FlxG.cameras.add(camcontrol);
-		camerabgAlphaShits(camcontrol);
-		_virtualpad.cameras = [camcontrol];
+		addVirtualPads('none', 'a_b');
+		addPadCamera();
 }
 }
 var isFollowingAlready = false;

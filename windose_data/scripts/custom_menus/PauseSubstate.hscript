@@ -156,13 +156,14 @@ function create()
 
 	setCameras();
 	if (mobile){
+		menuItemsOG.insert(2, 'Chart Editor');
 	if (PlayState.chartingMode)
 	{
-			addVirtualPad(FlxDPadMode.FULL, FlxActionMode.A);
+			addVirtualPads('full', 'a');
 	}
 	else
 	{
-			addVirtualPad(FlxDPadMode.UP_DOWN, FlxActionMode.A);
+		addVirtualPads('up_down', 'a');
 	}
 	addPadCamera();
 	}
@@ -199,6 +200,9 @@ function update(elapsed)
 		var daSelected = menuItems[curSelected];
 		switch (daSelected)
 		{
+			case 'Chart Editor':
+				MusicBeatState.switchState(new editors.ChartingState());
+				PlayState.chartingMode = true;
 			case 'Skip Time':
 				if (controls.UI_LEFT_P)
 				{

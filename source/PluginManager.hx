@@ -111,6 +111,7 @@ class PluginManager {
         interp.variables.set("Paths", Paths);
         interp.variables.set("CoolUtil", CoolUtil);
         interp.variables.set("Main", Main);
+        interp.variables.set("Reflect", Reflect);
         interp.variables.set("AtlasFrameMaker", AtlasFrameMaker);
         interp.variables.set("FlxCamera", FlxCamera);
         interp.variables.set("Function_Continue", FunkinLua.Function_Continue);
@@ -185,6 +186,7 @@ interp.variables.set("mobile", false);
         interp.variables.set("Main", Main);
         interp.variables.set("AtlasFrameMaker", AtlasFrameMaker);
         interp.variables.set("FlxCamera", FlxCamera);
+        interp.variables.set("Reflect", Reflect);
         #if VIDEOS_ALLOWED
        // interp.variables.set("MP4Handler", MP4Handler);
         interp.variables.set("FlxVideo", FlxVideo);

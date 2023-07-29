@@ -160,7 +160,7 @@ var size = 16;
 			
 		}
 		if (mobile)
-		addVirtualPad(FlxDPadMode.FULL, FlxActionMode.A_B_C_X_Y_Z);
+		addVirtualPads('full', 'a_b_c_x_y_z');
 
 }
 function closeSubState() {
@@ -213,11 +213,11 @@ function update(elapsed)
 		var upP = controls.UI_UP_P;
 		var downP = controls.UI_DOWN_P;
 		var accepted = controls.ACCEPT;
-		var space = FlixG.keys.justPressed.SPACE;
-		var ctrl = FlixG.keys.justPressed.CONTROL;
+		var space = FlixG.keys.justPressed.SPACE || visPressed('X');
+		var ctrl = FlixG.keys.justPressed.CONTROL || visPressed('C');
 
 		var shiftMult = 1;
-		if(FlixG.keys.pressed.SHIFT) shiftMult = 3;
+		if(FlixG.keys.pressed.SHIFT || visPressed('Z')) shiftMult = 3;
 
 		if(songs.length > 1)
 		{
@@ -312,7 +312,7 @@ function update(elapsed)
 	}
 				}
 			}
-			if(!space && controls.RESET)
+			if(!space && (controls.RESET || visPressed('Y')))
 			{
 				togglePersistUpdate(false);
 				openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
@@ -350,7 +350,7 @@ function enter()
 				colorTween.cancel();
 			}
 
-			if (FlixG.keys.pressed.SHIFT){
+			if (FlixG.keys.pressed.SHIFT|| visPressed('Z')){
 				LoadingState.loadAndSwitchState(new ChartingState(), true);
 			}else{
 				if (!ClientPrefs.skipChartTypeMenu){
