@@ -83,6 +83,11 @@ var luaallowed = true;
 #else
 var luaallowed = false;
 #end
+#if mobile
+var mobile = true;
+#else
+var mobile = false;
+#end
 var hscriptStates:Map<String, Interp> = [];
 var exInterp:InterpEx = new InterpEx();
 var haxeSprites:Map<String, FlxSprite> = [];
@@ -212,11 +217,13 @@ function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	
 	
 	#end
-	#if mobile 
-	interp.variables.set("damn", _virtualpad.button7.justPressed);
-	#else
-	interp.variables.set("damn", false);
-	#end
+ #if mobile
+ interp.variables.set("damn", true);
+ #else
+ interp.variables.set("damn", false);
+ #end
+	interp.variables.set("mobile", mobile);
+
 	interp.variables.set("BlackColor", FlxColor.BLACK);
 	interp.variables.set("BlueColor", FlxColor.BLUE);
 	interp.variables.set("RedColor", FlxColor.RED);
@@ -307,6 +314,9 @@ function changeCurMusicName(newName:String):String
 	Main.curMusicName = newName;
 	setAllHaxeVar('curMusicName', newName);
 	return (newName);
+}
+function addVirtualPads(){
+	addVirtualPad(UP_DOWN,A_B_7);
 }
 function coolURL(url:String):String
 	{

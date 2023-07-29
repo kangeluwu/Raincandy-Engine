@@ -122,7 +122,11 @@ var titleEaster = true;
 #else
 var titleEaster = false;
 #end
-
+#if mobile
+var mobile = true;
+#else
+var mobile = false;
+#end
 	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
 		// if function doesn't exist
 			if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
@@ -272,6 +276,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("removeVirtualPad", removeVirtualPad);
 		interp.variables.set("addPadCamera", addPadCamera);
 		interp.variables.set("addAndroidControls", addAndroidControls);
+		interp.variables.set("mobile", mobile);
 		#end
 		interp.variables.set("insert", insert);
 		interp.variables.set("pi", Math.PI);

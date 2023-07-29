@@ -161,7 +161,7 @@ function create()
         }
     });
 if (mobile)
-    addVirtualPad(FlxDPadMode.UP_DOWN, FlxActionMode.A_B_7);
+    addVirtualPads();
 
 }
 function giveAchievement() {
