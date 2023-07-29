@@ -32,7 +32,7 @@ class AttachedSprite extends FlxSprite
 			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.xml') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + file + '.xml')) ? 
 			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.xml') ? 
 			FNFAssets.getText(SUtil.getPath() + 'windose_data/images/' + file + '.xml') : 
-			FNFAssets.getText('SUtil.getPath() + windose_data/shared/images/' + file + '.xml')) :
+			FNFAssets.getText(SUtil.getPath() + 'windose_data/shared/images/' + file + '.xml')) :
 			FNFAssets.getText(Paths.modFolders('images/' + file + '.xml')));
 			animation.addByPrefix('idle', anim, 24, loop);
 			animation.play('idle');
