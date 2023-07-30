@@ -360,8 +360,10 @@ public function actionModeModeFromString(lmao:String):FlxActionMode{
 #end
 public function visPressed(dumbass:String = ''):Bool{
 	#if mobile
-	if (Reflect.field(_virtualpad, 'button' + dumbass).justPressed)
-	return true;
+	var lmao = Reflect.field(_virtualpad.curPad, 'button' + dumbass);
+	return lmao.justPressed;
+	#else
+	return false;
 	#end
 }
 function coolURL(url:String):String

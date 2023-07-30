@@ -11,6 +11,7 @@ import flixel.graphics.FlxGraphic;
 
 class FlxVirtualPad extends FlxSpriteGroup {
 	//Actions
+	public var curPad:FlxVirtualPad;
 	public var buttonA:FlxButton;
 	public var buttonB:FlxButton;
 	public var buttonC:FlxButton;
@@ -42,7 +43,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 
 	public function new(?DPad:FlxDPadMode, ?Action:FlxActionMode, ?alphaAlt:Float = 0.75, ?antialiasingAlt:Bool = true) {
 		super();
-
+		curPad = this;
 		orgAntialiasing = antialiasingAlt;
 		orgAlpha = alphaAlt;
 

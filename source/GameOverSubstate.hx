@@ -361,8 +361,10 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 	#end
 	public function visPressed(dumbass:String = ''):Bool{
 		#if mobile
-		if (Reflect.field(_virtualpad, 'button' + dumbass).justPressed)
-		return true;
+		var lmao = Reflect.field(_virtualpad.curPad, 'button' + dumbass);
+		return lmao.justPressed;
+		#else
+		return false;
 		#end
 	}
 	public function new(x:Float, y:Float, camX:Float, camY:Float,?isPlayer:Bool = true)
