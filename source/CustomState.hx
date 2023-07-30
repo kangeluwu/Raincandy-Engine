@@ -503,8 +503,8 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 	#end
 	public function visPressed(dumbass:String = ''){
 		#if mobile
-		if (Reflect.hasField(_virtualpad, 'button' + dumbass))
-		return Reflect.getProperty(_virtualpad, 'button' + dumbass).justPressed;
+		if (Reflect.getProperty(_virtualpad, 'button' + dumbass).justPressed)
+		return true;
 		#end
 	}
 	override function create()
