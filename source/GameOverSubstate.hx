@@ -359,7 +359,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		return FlxActionMode.NONE;
 		}
 	#end
-	public function visPressed(dumbass:String = ''){
+	public function visPressed(dumbass:String = ''):Bool{
 		#if mobile
 		if (Reflect.getProperty(_virtualpad, 'button' + dumbass).justPressed)
 		return true;
