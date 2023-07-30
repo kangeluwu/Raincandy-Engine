@@ -46,6 +46,11 @@ import hscript.ParserEx;
 import hscript.InterpEx;
 import openfl.Lib;
 using StringTools;
+#if mobile
+import flixel.input.actions.FlxActionInput;
+import android.AndroidControls.AndroidControls;
+import android.FlxVirtualPad;
+#end
 import Type.ValueType;
 import flixel.addons.display.FlxRuntimeShader;
 typedef TitleData =

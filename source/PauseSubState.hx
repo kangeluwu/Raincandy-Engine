@@ -23,6 +23,11 @@ import hscript.InterpEx;
 import flixel.addons.display.FlxRuntimeShader;
 import sys.FileSystem;
 import sys.io.File;
+#if mobile
+import flixel.input.actions.FlxActionInput;
+import android.AndroidControls.AndroidControls;
+import android.FlxVirtualPad;
+#end
 class PauseSubState extends MusicBeatSubstate
 {
 	//var botplayText:FlxText;
@@ -197,7 +202,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("_virtualpad", _virtualpad);
 		interp.variables.set("dPadModeFromString", dPadModeFromString);
 		interp.variables.set("actionModeModeFromString", actionModeModeFromString);
-		interp.variables.set("camerabgAlphaShits", camerabgAlphaShits);
+
 		#end
 		interp.variables.set("addVirtualPads", addVirtualPads);
 		interp.variables.set("visPressed", visPressed);

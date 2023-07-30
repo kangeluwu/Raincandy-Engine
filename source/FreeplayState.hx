@@ -37,6 +37,11 @@ import hscript.Parser;
 import hscript.ParserEx;
 import hscript.InterpEx;
 import flixel.addons.display.FlxRuntimeShader;
+#if mobile
+import flixel.input.actions.FlxActionInput;
+import android.AndroidControls.AndroidControls;
+import android.FlxVirtualPad;
+#end
 class FreeplayState extends MusicBeatState
 {
 	public static var vocals:FlxSound = null;

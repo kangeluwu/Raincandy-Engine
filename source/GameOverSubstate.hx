@@ -28,7 +28,11 @@ import hscript.Parser;
 import hscript.ParserEx;
 import hscript.InterpEx;
 import flixel.FlxSprite;
-
+#if mobile
+import flixel.input.actions.FlxActionInput;
+import android.AndroidControls.AndroidControls;
+import android.FlxVirtualPad;
+#end
 import haxe.Json;
 import tjson.TJSON;
 using StringTools;
@@ -248,7 +252,6 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("visPressed", visPressed);
 		interp.variables.set("characterName", characterName);
 		interp.variables.set("deathSoundName", deathSoundName);
-		interp.variables.set("camerabgAlphaShits", camerabgAlphaShits);
 		interp.variables.set("loopSoundName", loopSoundName);
 		interp.variables.set("endSoundName", endSoundName);
 		interp.variables.set("GameOverSubstate", GameOverSubstate);

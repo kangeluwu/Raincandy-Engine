@@ -31,6 +31,11 @@ import openfl.Lib;
 #else import vlc.VideoHandler as FlxVideo; #end
 #if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideoSprite; #end
 #end
+#if mobile
+import flixel.input.actions.FlxActionInput;
+import android.AndroidControls.AndroidControls;
+import android.FlxVirtualPad;
+#end
 import haxe.Json;
 import flixel.util.FlxTimer;
 import hscript.Interp;

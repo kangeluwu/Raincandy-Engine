@@ -162,7 +162,7 @@ function create()
         }
     });
 if (mobile)
-    addVirtualPads('up_down','a_b_e');
+    addVirtualPads('up_down','a_b_7');
 
 }
 function giveAchievement() {
@@ -222,7 +222,7 @@ function update(elapsed)
         {
             enter();
         }
-        else if ((desktop && FlxG.keys.anyJustPressed(debugKeys)) || (mobile && visPressed('E')))
+        else if ((desktop && FlxG.keys.anyJustPressed(debugKeys)) || (mobile && visPressed('7')))
         {
             selectedSomethin = true;
             MusicBeatState.switchState(new MasterEditorMenu());

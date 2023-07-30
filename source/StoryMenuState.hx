@@ -36,6 +36,11 @@ import flixel.addons.display.FlxRuntimeShader;
 import hscript.InterpEx;
 import sys.FileSystem;
 import sys.io.File;
+#if mobile
+import flixel.input.actions.FlxActionInput;
+import android.AndroidControls.AndroidControls;
+import android.FlxVirtualPad;
+#end
 class StoryMenuState extends MusicBeatState
 {
 	public static var weekCompleted:Map<String, Bool> = new Map<String, Bool>();
