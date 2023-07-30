@@ -134,12 +134,6 @@ addOption(option);
 	addOption(option);
 	option.onChange = onChangePauseMusic;
 
-	var option:Option = new Option('Show Haxe Splash Intro',
-	"If checked, Show the Haxe Splash Intro,just like the OLD FNF Builds.",
-	'skipSplash',
-	'bool',
-	true);
-addOption(option);
 
 		#if CHECK_FOR_UPDATES
 		var option:Option = new Option('Check for Updates',
