@@ -89,10 +89,7 @@ class Main extends Sprite
 		}
 		#if mobile
 		SUtil.doTheCheck();
-		FlxG.save.data.volume = 1;
-		FlxG.sound.volume = 1;
-		FlxG.save.data.mute = false;
-		FlxG.sound.muted = false;
+		
 				
 			
 		#end
