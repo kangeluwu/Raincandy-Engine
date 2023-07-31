@@ -119,7 +119,7 @@ function create()
 
     FlxG.camera.follow(camFollowPos, null, 1);
 
-    var funniVerison = CoolUtil.coolTextFile(Paths.txt('verisons'));
+    var funniVerison = CoolUtil.coolTextFile(SUtil.getPath() + Paths.txt('verisons'));
 		var engineName;
 		var gameVersion;
 		engineName = funniVerison[0];
