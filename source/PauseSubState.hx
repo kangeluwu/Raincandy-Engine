@@ -197,13 +197,14 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		#if mobile
 		interp.variables.set("addVirtualPad", addVirtualPad);
 		interp.variables.set("removeVirtualPad", removeVirtualPad);
-		interp.variables.set("addPadCamera", addPadCamera);
+		
 		interp.variables.set("addAndroidControls", addAndroidControls);
 		interp.variables.set("_virtualpad", _virtualpad);
 		interp.variables.set("dPadModeFromString", dPadModeFromString);
 		interp.variables.set("actionModeModeFromString", actionModeModeFromString);
 
 		#end
+		interp.variables.set("addPadcam", addPadcam);
 		interp.variables.set("addVirtualPads", addVirtualPads);
 		interp.variables.set("visPressed", visPressed);
 		interp.variables.set("CreditsState", CreditsState);
@@ -285,13 +286,19 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		callAllHScript('update', [elapsed]);
 		super.update(elapsed);
 	}
-	
+
 function addVirtualPads(dPad:String,act:String){
 	#if mobile
 	addVirtualPad(dPadModeFromString(dPad),actionModeModeFromString(act));
 	#end
 }
+function addPadcam(){
+	#if mobile
+	addPadCamera();
+	#end
+}
 #if mobile
+
 public function dPadModeFromString(lmao:String):FlxDPadMode{
 switch (lmao){
 case 'up_down':return FlxDPadMode.UP_DOWN;

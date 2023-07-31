@@ -241,14 +241,15 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		#if mobile
 		interp.variables.set("addVirtualPad", addVirtualPad);
 		interp.variables.set("removeVirtualPad", removeVirtualPad);
-		interp.variables.set("addPadCamera", addPadCamera);
 
+		interp.variables.set("addPadCamera", addPadCamera);
 		interp.variables.set("_virtualpad", _virtualpad);
 		interp.variables.set("dPadModeFromString", dPadModeFromString);
 		interp.variables.set("actionModeModeFromString", actionModeModeFromString);
 
 		#end
 		interp.variables.set("addVirtualPads", addVirtualPads);
+		interp.variables.set("addPadcam", addPadcam);
 		interp.variables.set("visPressed", visPressed);
 		interp.variables.set("characterName", characterName);
 		interp.variables.set("deathSoundName", deathSoundName);
@@ -358,7 +359,13 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		}
 		return FlxActionMode.NONE;
 		}
+
 	#end
+	function addPadcam(){
+		#if mobile
+		addPadCamera();
+		#end
+	}
 	public function visPressed(dumbass:String = ''):Bool{
 		#if mobile
 		var lmao = Reflect.field(_virtualpad, 'button' + dumbass);

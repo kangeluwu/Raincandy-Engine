@@ -48,7 +48,7 @@ class OptionsState extends MusicBeatState
 				openSubState(new GameplayChangersSubstate());
 			case 'Controls':
 				#if mobile
-				LoadingState.loadAndSwitchState(new android.AndroidControlsMenu());
+				MusicBeatState.switchState(new android.AndroidControlsMenu());
 
 				#else 
 				openSubState(new options.ControlsSubState());
