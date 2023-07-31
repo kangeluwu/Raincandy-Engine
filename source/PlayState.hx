@@ -537,7 +537,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 			return null;
 			#end
 		}
-		
+		#if mobile
 	public function dPadModeFromString(lmao:String):FlxDPadMode{
 	switch (lmao){
 	case 'up_down':return FlxDPadMode.UP_DOWN;
