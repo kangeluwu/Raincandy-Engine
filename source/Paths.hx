@@ -451,10 +451,11 @@ class Paths
 			currentTrackedSounds.set(gottenPath, Sound.fromFile('./' + gottenPath));
 		#else
 		{
+			#if !mobile
 			var folder:String = '';
 			if(path == 'songs') folder = 'songs:';
-
-			currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(folder + getPath('$path/$key.$SOUND_EXT', SOUND, library)));
+#end
+			currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(#if !mobile folder + #end getPath('$path/$key.$SOUND_EXT', SOUND, library)));
 		}
 		#end
 		localTrackedAssets.push(gottenPath);

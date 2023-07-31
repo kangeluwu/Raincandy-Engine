@@ -488,12 +488,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
 
 		}
-#if mobile
-	FlxG.save.data.volume = 1;
-		FlxG.sound.volume = 1;
-		FlxG.save.data.mute = false;
-		FlxG.sound.muted = false;
-		#end
+
 		FlxG.mouse.visible = false;
 		#if FREEPLAY
 		MusicBeatState.switchState(new FreeplayState());
