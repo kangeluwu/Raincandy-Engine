@@ -521,7 +521,7 @@ class Controls extends FlxActionSet
 				inline forEachBound(Control.ACCEPT, (action, state) -> addbuttonNOTES(action, virtualPad.buttonA, state));
 				inline forEachBound(Control.BACK, (action, state) -> addbuttonNOTES(action, virtualPad.buttonB, state));
 			case A_B_7:
-				inline forEachBound(FlxG.keys.justPressed.SEVEN, (action, state) -> addbuttonNOTES(action, virtualPad.button7, state));
+				
 				inline forEachBound(Control.ACCEPT, (action, state) -> addbuttonNOTES(action, virtualPad.buttonA, state));
 				inline forEachBound(Control.BACK, (action, state) -> addbuttonNOTES(action, virtualPad.buttonB, state));
 			case A_B_C:
@@ -533,7 +533,7 @@ class Controls extends FlxActionSet
 			case A_B_X_Y:
 				inline forEachBound(Control.ACCEPT, (action, state) -> addbuttonNOTES(action, virtualPad.buttonA, state));
 				inline forEachBound(Control.BACK, (action, state) -> addbuttonNOTES(action, virtualPad.buttonB, state));
-				inline forEachBound(FlxG.keys.justPressed.CONTROL, (action, state) -> addbuttonNOTES(action, virtualPad.buttonX, state));     
+   
 				inline forEachBound(Control.RESET, (action, state) -> addbuttonNOTES(action, virtualPad.buttonY, state));     
 			case A_B_C_X_Y:
 				inline forEachBound(Control.ACCEPT, (action, state) -> addbuttonNOTES(action, virtualPad.buttonA, state));
@@ -542,9 +542,8 @@ class Controls extends FlxActionSet
 				inline forEachBound(Control.ACCEPT, (action, state) -> addbuttonNOTES(action, virtualPad.buttonA, state));
 				inline forEachBound(Control.BACK, (action, state) -> addbuttonNOTES(action, virtualPad.buttonB, state));
 				inline forEachBound(Control.RESET, (action, state) -> addbuttonNOTES(action, virtualPad.buttonY, state));        
-				inline forEachBound(FlxG.keys.justPressed.SPACE, (action, state) -> addbuttonNOTES(action, virtualPad.buttonX, state));     
-				inline forEachBound(FlxG.keys.justPressed.CONTROL, (action, state) -> addbuttonNOTES(action, virtualPad.buttonC, state));     
-				inline forEachBound(FlxG.keys.justPressed.SHIFT, (action, state) -> addbuttonNOTES(action, virtualPad.buttonZ, state));     
+				
+			
    
             case FULL:
 				inline forEachBound(Control.ACCEPT, (action, state) -> addbuttonNOTES(action, virtualPad.buttonA, state));
