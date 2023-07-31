@@ -4537,7 +4537,7 @@ function eventPushed(event:EventNote) {
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
 		}*/
 
-		if (controls.PAUSE && startedCountdown && canPause)
+		if (controls.PAUSE  #if android || FlxG.android.justReleased.BACK #end && startedCountdown && canPause)
 		{
 			var ret:Dynamic = callOnLuas('onPause', [], false);
 			callAllHScript('onPause', []);
