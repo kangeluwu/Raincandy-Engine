@@ -285,7 +285,8 @@ callInterp("init", [this]);
 						} else {
 							animation.addByPrefix(animAnim, animName, animFps, animLoop);
 						}
-
+						if(anim.offsets == null) 
+							crossFadeColor = FlxColor.fromRGB(healthColorArray[0],healthColorArray[1],healthColorArray[2]);
 						if(anim.offsets != null && anim.offsets.length > 1) {
 							addOffset(anim.anim, anim.offsets[0], anim.offsets[1]);
 						}
