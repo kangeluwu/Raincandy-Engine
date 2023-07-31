@@ -148,7 +148,7 @@ var num = 0;
 		changeDifficulty(0);
 		if (mobile){
 		addVirtualPads('full', 'a_b_x_y');
-		addPadCamera();
+		addPadcam();
 		}
        
 }

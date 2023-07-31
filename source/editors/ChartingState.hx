@@ -470,7 +470,7 @@ var voicesStuff:String = '';
 
 		updateGrid();
 		#if mobile
-		addVirtualPad(FULL, A_B);
+		addVirtualPad(FULL, FULL);
         #end
 		super.create();
 
@@ -1790,7 +1790,7 @@ case 'Alt Anim Note':
 				{
 					if (FlxG.mouse.overlaps(note))
 					{
-						if (FlxG.keys.pressed.CONTROL)
+						if (FlxG.keys.pressed.CONTROL #if mobile   || _virtualpad.buttonD.pressed #end)
 						{
 							selectNote(note);
 						}
@@ -1861,12 +1861,12 @@ case 'Alt Anim Note':
 
 		if (!blockInput)
 		{
-			if (FlxG.keys.justPressed.ESCAPE)
+			if (FlxG.keys.justPressed.ESCAPE #if mobile   || FlxG.android.justReleased.BACK #end)
 			{
 				autosaveSong();
 				LoadingState.loadAndSwitchState(new editors.EditorPlayState(sectionStartTime()));
 			}
-			if (FlxG.keys.justPressed.ENTER)
+			if (FlxG.keys.justPressed.ENTER #if mobile   || _virtualpad.buttonA.justPressed #end)
 			{
 				autosaveSong();
 				FlxG.mouse.visible = false;
@@ -1891,7 +1891,7 @@ case 'Alt Anim Note':
 			}
 
 
-			if (FlxG.keys.justPressed.BACKSPACE) {
+			if (FlxG.keys.justPressed.BACKSPACE #if mobile   || _virtualpad.buttonB.justPressed #end) {
 				//if(onMasterEditor) {
 					MusicBeatState.switchState(new editors.MasterEditorMenu());
 					FlxG.sound.playMusic(Paths.music('freakyMenu1'));
@@ -1906,11 +1906,11 @@ case 'Alt Anim Note':
 
 
 
-			if(FlxG.keys.justPressed.Z && curZoom > 0 && !FlxG.keys.pressed.CONTROL) {
+			if(FlxG.keys.justPressed.Z #if mobile || _virtualpad.buttonZ.pressed#end && curZoom > 0 && !FlxG.keys.pressed.CONTROL) {
 				--curZoom;
 				updateZoom();
 			}
-			if(FlxG.keys.justPressed.X && curZoom < zoomList.length-1) {
+			if(FlxG.keys.justPressed.X  #if mobile || _virtualpad.buttonZ.pressed#end&& curZoom < zoomList.length-1) {
 				curZoom++;
 				updateZoom();
 			}
@@ -1931,7 +1931,7 @@ case 'Alt Anim Note':
 				}
 			}
 
-			if (FlxG.keys.justPressed.SPACE)
+			if (FlxG.keys.justPressed.SPACE #if mobile   || _virtualpad.buttonX.justPressed #end)
 			{
 				if (FlxG.sound.music.playing)
 				{
@@ -1956,9 +1956,9 @@ case 'Alt Anim Note':
 				}
 			}
 
-			if (FlxG.keys.justPressed.R)
+			if (FlxG.keys.justPressed.R #if mobile || _virtualpad.buttonV.pressed #end)
 			{
-				if (FlxG.keys.pressed.SHIFT)
+				if (FlxG.keys.pressed.SHIFT #if mobile   || _virtualpad.buttonY.pressed #end)
 					resetSection(true);
 				else
 					resetSection();
@@ -1996,7 +1996,7 @@ case 'Alt Anim Note':
 
 
 
-			if (FlxG.keys.pressed.W || FlxG.keys.pressed.S)
+			if (FlxG.keys.pressed.W || FlxG.keys.pressed.S #if mobile || _virtualpad.buttonUp.pressed || _virtualpad.buttonDown.pressed #end)
 			{
 				FlxG.sound.music.pause();
 
@@ -2004,11 +2004,11 @@ case 'Alt Anim Note':
 				lilOpp.animation.play("idle");
 				var holdingShift:Float = 1;
 				if (FlxG.keys.pressed.CONTROL) holdingShift = 0.25;
-				else if (FlxG.keys.pressed.SHIFT) holdingShift = 4;
+				else if (FlxG.keys.pressed.SHIFT #if mobile   || _virtualpad.buttonY.pressed #end) holdingShift = 4;
 
 				var daTime:Float = 700 * FlxG.elapsed * holdingShift;
 
-				if (FlxG.keys.pressed.W)
+				if (FlxG.keys.pressed.W #if mobile   || _virtualpad.buttonUp.pressed #end)
 				{
 					FlxG.sound.music.time -= daTime;
 				}
@@ -2050,7 +2050,7 @@ case 'Alt Anim Note':
 
 			var style = currentType;
 
-			if (FlxG.keys.pressed.SHIFT){
+			if (FlxG.keys.pressed.SHIFT #if mobile   || _virtualpad.buttonY.pressed #end){
 				style = 3;
 			}
 
@@ -2059,7 +2059,7 @@ case 'Alt Anim Note':
 			//AWW YOU MADE IT SEXY <3333 THX SHADMAR
 
 			if(!blockInput){
-				if(FlxG.keys.justPressed.RIGHT){
+				if(FlxG.keys.justPressed.RIGHT #if mobile   || _virtualpad.buttonRight.justPressed #end){
 					curQuant++;
 					if(curQuant>quantizations.length-1)
 						curQuant = 0;
@@ -2067,7 +2067,7 @@ case 'Alt Anim Note':
 					quantization = quantizations[curQuant];
 				}
 
-				if(FlxG.keys.justPressed.LEFT){
+				if(FlxG.keys.justPressed.LEFT #if mobile   || _virtualpad.buttonLeft.justPressed #end){
 					curQuant--;
 					if(curQuant<0)
 						curQuant = quantizations.length-1;
@@ -2090,7 +2090,7 @@ case 'Alt Anim Note':
 				}
 
 				var feces:Float;
-				if (FlxG.keys.justPressed.UP || FlxG.keys.justPressed.DOWN  )
+				if (FlxG.keys.justPressed.UP || FlxG.keys.justPressed.DOWN  #if mobile   || _virtualpad.buttonUp.justPressed || _virtualpad.buttonDown.justPressed #end )
 				{
 					FlxG.sound.music.pause();
 
@@ -2103,7 +2103,7 @@ case 'Alt Anim Note':
 					var beat:Float = curDecBeat;
 					var snap:Float = quantization / 4;
 					var increase:Float = 1 / snap;
-					if (FlxG.keys.pressed.UP)
+					if (FlxG.keys.pressed.UP #if mobile   || _virtualpad.buttonUp.pressed #end)
 					{
 						var fuck:Float = CoolUtil.quantize(beat, snap) - increase;
 						feces = Conductor.beatToSeconds(fuck);
@@ -2145,7 +2145,7 @@ case 'Alt Anim Note':
 				}
 			}
 			var shiftThing:Int = 1;
-			if (FlxG.keys.pressed.SHIFT)
+			if (FlxG.keys.pressed.SHIFT #if mobile   || _virtualpad.buttonY.pressed #end)
 				shiftThing = 4;
 
 			if (FlxG.keys.justPressed.I) {
@@ -2154,9 +2154,9 @@ case 'Alt Anim Note':
 				changeKeyType(1);
 			}
 			
-			if (FlxG.keys.justPressed.D)
+			if (FlxG.keys.justPressed.D #if mobile   || _virtualpad.buttonRight.justPressed #end && !vortex|| FlxG.keys.justPressed.D #if mobile   || _virtualpad.buttonRight.justPressed #end)
 				changeSection(curSec + shiftThing);
-			if (FlxG.keys.justPressed.A) {
+			if (FlxG.keys.justPressed.A #if mobile   || _virtualpad.buttonLeft.justPressed #end && !vortex|| FlxG.keys.justPressed.A #if mobile   || _virtualpad.buttonLeft.justPressed #end) {
 				if(curSec <= 0) {
 					changeSection(_song.notes.length-1);
 				} else {

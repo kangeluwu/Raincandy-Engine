@@ -165,7 +165,7 @@ function create()
 	{
 		addVirtualPads('up_down', 'a');
 	}
-	addPadCamera();
+	addPadcam();
 	}
 }
 var holdTime = 0;

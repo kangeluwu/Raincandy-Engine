@@ -37,7 +37,7 @@ function startDead(x, y, camX, camY, isPlayer)
 		Main.fpsVar.x = 10;
 if (mobile){
 		addVirtualPads('none', 'a_b');
-		addPadCamera();
+		addPadcam();
 }
 }
 var isFollowingAlready = false;
