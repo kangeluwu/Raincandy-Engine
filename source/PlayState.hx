@@ -116,6 +116,11 @@ import openfl.display.Sprite;
 import openfl.utils.Assets;
 import flixel.addons.display.FlxRuntimeShader;
 import openfl.filters.ShaderFilter;
+#if mobile
+import flixel.input.actions.FlxActionInput;
+import android.AndroidControls.AndroidControls;
+import android.FlxVirtualPad;
+#end
 enum abstract DisplayLayer(Int) from Int to Int {
 	var BEHIND_GF = 1;
 	var BEHIND_BF = 1 << 1;
