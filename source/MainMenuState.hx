@@ -353,7 +353,6 @@ public function actionModeModeFromString(lmao:String):FlxActionMode{
 	case 'a_b_c_x_y':return FlxActionMode.A_B_C_X_Y;
 	case 'a_b_c_x_y_z':return FlxActionMode.A_B_C_X_Y_Z;
 	case 'full':return FlxActionMode.FULL;
-	case 'none':return FlxActionMode.NONE;
 	}
 	return FlxActionMode.NONE;
 	}

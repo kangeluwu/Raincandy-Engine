@@ -536,7 +536,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 	function getHaxeVirtualPad(dumbass:String = ''):FlxButton
 		{
 			#if mobile
-			var lmao = Reflect.field(_virtualpad, 'button' + dumbass);
+			var lmao =  Reflect.field(_virtualpad, 'button' + dumbass);
 			return lmao;
 			#else
 			return null;
@@ -574,8 +574,8 @@ function camerabgAlphaShits(cam:FlxCamera)
 	#end
 	public function visPressed(dumbass:String = ''):Bool{
 		#if mobile
-		var lmao = Reflect.field(_virtualpad, 'button' + dumbass);
-		return lmao.justPressed;
+		
+		return _virtualpad.returnPressed(dumbass);
 		#else
 		return false;
 		#end
