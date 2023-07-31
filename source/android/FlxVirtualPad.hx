@@ -5,11 +5,11 @@ import flixel.graphics.frames.FlxTileFrames;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxPoint;
 import flixel.util.FlxDestroyUtil;
-import flixel.ui.FlxButton.FlxButtonEvent;
+
 import flixel.ui.FlxButton;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.FlxGraphic;
-
+@:access(flixel.ui.FlxButton.FlxButtonEvent)
 class FlxVirtualPad extends FlxSpriteGroup {
 	//Actions
 	public var curPad:FlxVirtualPad;
@@ -125,7 +125,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 				actions.add(add(buttonA = createButton(FlxG.width - 44 * 3, FlxG.height - 45 * 3, 44 * 3, 45 * 3, "a")));
 				actions.add(add(buttonB = createButton(FlxG.width - 86 * 3, FlxG.height - 45 * 3, 44 * 3, 45 * 3, "b")));
 				actions.add(add(button7 = createButton(FlxG.width - 44 * 3, FlxG.height - 125 * 3, 44 * 3, 45 * 3, "7")));   
-				@:privateAccess  button7.onUp =  new FlxButtonEvent(function () {FlxG.keys.justPressed.SEVEN = true; });
+				@:privateAccess  button7.onUp =  new flixel.ui.FlxButton.FlxButtonEvent(function () {FlxG.keys.justPressed.SEVEN = true; });
 			case A_B_E:
 				actions.add(add(buttonE = createButton(FlxG.width - 128 * 3, FlxG.height - 45 * 3, 44 * 3, 45 * 3, "e")));   
 				actions.add(add(buttonB = createButton(FlxG.width - 86 * 3, FlxG.height - 45 * 3, 44 * 3, 45 * 3, "b")));								
@@ -137,7 +137,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 				actions.add(add(buttonB = createButton(FlxG.width - 86 * 3, FlxG.height - 45 * 3, 44 * 3, 45 * 3, "b")));								
 				actions.add(add(buttonA = createButton(FlxG.width - 44 * 3, FlxG.height - 45 * 3, 44 * 3, 45 * 3, "a")));	 			
 				             
-				@:privateAccess buttonX.onUp = new FlxButtonEvent(function () {FlxG.keys.justPressed.CONTROL = true; });
+				@:privateAccess buttonX.onUp = new flixel.ui.FlxButton.FlxButtonEvent(function () {FlxG.keys.justPressed.CONTROL = true; });
 				
 			case A_B_C_X_Y:		
 				actions.add(add(buttonY = createButton(FlxG.width - 86 * 3, FlxG.height - 85 * 3, 44 * 3, 45 * 3, "y")));
@@ -153,9 +153,9 @@ class FlxVirtualPad extends FlxSpriteGroup {
 				actions.add(add(buttonB = createButton(FlxG.width - 86 * 3, FlxG.height - 45 * 3, 44 * 3, 45 * 3, "b")));								
 				actions.add(add(buttonA = createButton(FlxG.width - 44 * 3, FlxG.height - 45 * 3, 44 * 3, 45 * 3, "a")));	
 				@:privateAccess {
-				buttonX.onUp = new FlxButtonEvent(function () {FlxG.keys.justPressed.SPACE = true; });
-				buttonC.onUp = new FlxButtonEvent(function () {FlxG.keys.justPressed.CONTROL = true; });
-				buttonZ.onUp = new FlxButtonEvent(function () {FlxG.keys.justPressed.SHIFT = true; });
+				buttonX.onUp = new flixel.ui.FlxButton.FlxButtonEvent(function () {FlxG.keys.justPressed.SPACE = true; });
+				buttonC.onUp = new flixel.ui.FlxButton.FlxButtonEvent(function () {FlxG.keys.justPressed.CONTROL = true; });
+				buttonZ.onUp = new flixel.ui.FlxButton.FlxButtonEvent(function () {FlxG.keys.justPressed.SHIFT = true; });
 				}
 
 			case FULL:
