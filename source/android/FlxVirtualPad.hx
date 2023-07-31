@@ -158,7 +158,21 @@ class FlxVirtualPad extends FlxSpriteGroup {
 			case NONE:
 		}
 	}
+public function returnPressed(buttonName:String):Bool{
+switch (buttonName){
+	case 'A':return buttonA.justPressed;
+	case 'B':return buttonB.justPressed;
+	case 'C':return buttonC.justPressed;
+	case 'D':return buttonD.justPressed;
+	case 'V':return buttonV.justPressed;
+	case 'X':return buttonX.justPressed;
+	case 'Y':return buttonY.justPressed;
+	case 'Z':return buttonZ.justPressed;
+	case '7':return button7.justPressed;
 
+}
+return false;
+}
 	public function createButton(x:Float, y:Float, width:Int, height:Int, frames:String):FlxButton {
 		var button = new FlxButton(x, y);
 		button.frames = FlxTileFrames.fromFrame(getFrames().getByName(frames), FlxPoint.get(width, height));
