@@ -527,10 +527,10 @@ function camerabgAlphaShits(cam:FlxCamera)
 		addVirtualPad(dPadModeFromString(dPad),actionModeModeFromString(act));
 		#end
 	}
-	#if mobile
+	
 	function getHaxeVirtualPad(dumbass:String = ''):FlxButton
 		{
-			
+			#if mobile
 			var lmao = Reflect.field(_virtualpad, 'button' + dumbass);
 			return lmao;
 			#else
