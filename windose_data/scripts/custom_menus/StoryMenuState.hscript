@@ -147,7 +147,7 @@ var num = 0;
 		changeWeek(0);
 		changeDifficulty(0);
 		if (mobile){
-		addVirtualPad('full', 'a_b_x_y');
+		addVirtualPads('full', 'a_b_x_y');
 		addPadCamera();
 		}
        

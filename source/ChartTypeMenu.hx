@@ -84,6 +84,9 @@ class ChartTypeMenu extends MusicBeatSubstate
 				selectable = true;
                 FlxG.camera.follow(camFollow, null, camLerp);
 			});
+            #if android
+            addVirtualPad(UP_DOWN, A_B);
+            #end
     }
 
     var selectable:Bool = false;
@@ -160,7 +163,7 @@ class ChartTypeMenu extends MusicBeatSubstate
 
 
 
-                FlxTween.tween(FlxG.camera, { zoom:1.4}, 1.3, { ease: FlxEase.quartInOut});
+                FlxTween.tween(FlxG.camera, { alpha:0}, 1.3, { ease: FlxEase.quartInOut});
                 FlxTween.tween(camFollow, { y:5000}, 1.3, { ease: FlxEase.quartInOut,
                     onComplete: function(twn:FlxTween)
                     {			new FlxTimer().start(1, function(tmr:FlxTimer)

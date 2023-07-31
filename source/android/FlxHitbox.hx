@@ -44,8 +44,15 @@ class FlxHitbox extends FlxSpriteGroup {
 
 	public function createhitbox(x:Float = 0, y:Float = 0, frames:String) {
 		var button = new FlxButton(x, y);
-		button.loadGraphic(FlxGraphic.fromFrame(getFrames().getByName(frames)));
+		button.loadGraphic(Paths.image('androidcontrols/hitboxblank'));
 		button.antialiasing = orgAntialiasing;
+		switch (frames){
+			case "left":button.color = 0xFFCC5B9E;
+			case "down":button.color = 0xFF00E5FF;
+			case "up":button.color = 0xFF04D400;
+			case "right":button.color = 0xFFFF4C3C;
+			case "space":button.color = 0xFFE9F812;//?
+		}
 		button.alpha = 0;// sorry but I can't hard lock the hitbox alpha
 		button.onDown.callback = function (){FlxTween.num(0, 0.75, 0.075, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;});};
 		button.onUp.callback = function (){FlxTween.num(0.75, 0, 0.1, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;});}
@@ -53,9 +60,9 @@ class FlxHitbox extends FlxSpriteGroup {
 		return button;
 	}
 
-	public function getFrames():FlxAtlasFrames {
-		return Paths.getSparrowAtlas('androidcontrols/hitbox');
-	}
+	//public function getFrames():FlxAtlasFrames {
+		//return Paths.getSparrowAtlas('androidcontrols/hitboxblank');
+	//}
 
 	override public function destroy():Void {
 		super.destroy();

@@ -360,7 +360,7 @@ public function actionModeModeFromString(lmao:String):FlxActionMode{
 #end
 public function visPressed(dumbass:String = ''):Bool{
 	#if mobile
-	var lmao = Reflect.field(_virtualpad.curPad, 'button' + dumbass);
+	var lmao = Reflect.field(_virtualpad, 'button' + dumbass);
 	return lmao.justPressed;
 	#else
 	return false;
