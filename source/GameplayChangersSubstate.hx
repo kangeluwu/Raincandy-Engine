@@ -93,6 +93,10 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		var option:GameplayOption = new GameplayOption('Play as opponent', 'opponentPlayer', 'bool', false);
 		optionsArray.push(option);
+		#if mobile
+		addVirtualPad(FULL, A_B_C);
+		addPadCamera();
+		#end
 	}
 
 	public function getOptionByName(name:String)
