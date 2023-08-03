@@ -198,7 +198,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("addVirtualPad", addVirtualPad);
 		interp.variables.set("removeVirtualPad", removeVirtualPad);
 		
-		interp.variables.set("addAndroidControls", addAndroidControls);
+
 		interp.variables.set("_virtualpad", _virtualpad);
 		interp.variables.set("dPadModeFromString", dPadModeFromString);
 		interp.variables.set("actionModeModeFromString", actionModeModeFromString);
@@ -271,8 +271,9 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 
 	public function new(x:Float, y:Float)
 	{
-		makeHaxeState("pause", "windose_data/scripts/custom_menus/", "PauseSubstate");
 		super();
+		makeHaxeState("pause", "windose_data/scripts/custom_menus/", "PauseSubstate");
+	
 		
 	}
 	function setCameras()
