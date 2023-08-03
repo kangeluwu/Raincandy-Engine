@@ -167,7 +167,7 @@ class PauseSubState extends MusicBeatSubstate
 	function makeHaxeState(usehaxe:String, path:String, filename:String) {
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
-		var program = parser.parseString(FNFAssets.getHscript(path + filename));
+		var program = parser.parseString(FNFAssets.getHscript(Sutil.getPath() + path + filename));
 		var interp = PluginManager.createSimpleInterp();
 		// set vars
 		interp.variables.set("FlxRuntimeShader", FlxRuntimeShader);
@@ -271,8 +271,9 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 
 	public function new(x:Float, y:Float)
 	{
-		super();
 		makeHaxeState("pause", "windose_data/scripts/custom_menus/", "PauseSubstate");
+		super();
+		
 	}
 	function setCameras()
 		{

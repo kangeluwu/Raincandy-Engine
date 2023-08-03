@@ -243,7 +243,7 @@ public function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	interp.variables.set("Highscore", Highscore);
 	interp.variables.set("FlxCamera", FlxCamera);
 	interp.variables.set("openSubState", openSubState);
-
+	interp.variables.set("closeSubState", closeSubState);
 	interp.variables.set("FlxTransitionableState", FlxTransitionableState);
 	interp.variables.set("MainMenuState", MainMenuState);
 	interp.variables.set("FlxTypedGroup", FlxTypedGroup);

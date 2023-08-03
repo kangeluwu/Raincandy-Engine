@@ -11,32 +11,39 @@ var botText;
 var skipTimeText;
 var skipTimeTracker;
 var tweenStuff;
-var curShader;
+
 var storyDifficultyTextCh = '';
 function create() 
 {
+	addHaxeLibrary('ChartingState','editors');
 	addHaxeLibrary('OptionsState','options');
 	addHaxeLibrary('FlxMath','flixel.math');
 
     if(CoolUtil.difficulties.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
+	var num = 0;
+	
+	if(!PlayState.instance.startingSong && PlayState.chartingMode)
+	{
+		num = 1;
+	}
     if(PlayState.chartingMode)
     {
         menuItemsOG.insert(2, 'Leave Charting Mode');
         
-        var num = 0;
-        if(!PlayState.instance.startingSong)
-        {
-            num = 1;
+    
             menuItemsOG.insert(3, 'Skip Time');
-        }
+       
 
         menuItemsOG.insert(3 + num, 'End Song');
         menuItemsOG.insert(4 + num, 'Toggle Practice Mode');
         menuItemsOG.insert(5 + num, 'Toggle Botplay');
+		
     }
+	if (mobile)
+		menuItemsOG.insert(menuItemsOG.length - 2 + num, 'Chart Editor');
     menuItems = menuItemsOG;
-	currentState.initLuaShader('desaturation');
-	curShader = currentState.createRuntimeShader('desaturation');
+
+
     for (i in 0...CoolUtil.difficulties.length) {
         var diff = '' + CoolUtil.difficulties[i];
         difficultyChoices.push(diff);
@@ -150,13 +157,12 @@ function create()
 
 		
 	}
-	var cam = FlixG.cameras.list[FlixG.cameras.list.length - 1];
-	cam.setFilters([new ShaderFilter(curShader)]);
+	
 	regenMenu();
 
 	setCameras();
 	if (mobile){
-		menuItemsOG.insert(2, 'Chart Editor');
+
 	if (PlayState.chartingMode)
 	{
 			addVirtualPads('full', 'a');
@@ -201,7 +207,7 @@ function update(elapsed)
 		switch (daSelected)
 		{
 			case 'Chart Editor':
-				MusicBeatState.switchState(new editors.ChartingState());
+				MusicBeatState.switchState(new ChartingState());
 				PlayState.chartingMode = true;
 			case 'Skip Time':
 				if (controls.UI_LEFT_P)
@@ -244,11 +250,8 @@ function update(elapsed)
 					PlayState.SONG = Song.loadFromJson(poop, name);
 					PlayState.storyDifficulty = curSelected;
 					
-	Main.fpsVar.alpha = 1;				
-if(tweenStuff != null) {
-						tweenStuff.cancel();
-						Main.fpsVar.alpha = 1;
-					}
+					
+
 					MusicBeatState.resetState();
 					FlixG.sound.music.volume = 0;
 					PlayState.changedDifficulty = true;
@@ -263,11 +266,8 @@ if(tweenStuff != null) {
 			switch (daSelected)
 			{
 				case "Resume":
-	Main.fpsVar.alpha = 1;				
-if(tweenStuff != null) {
-						tweenStuff.cancel();
-						Main.fpsVar.alpha = 1;
-					}
+					
+
 					close();
 					PlayState.instance.callAllHScript('onPauseConfirm', []);
 				case 'Change Difficulty':
@@ -282,9 +282,8 @@ if(tweenStuff != null) {
 					restartSong();
 					PlayState.instance.callAllHScript('onPauseRestart', []);
 				case 'Change Options':
-					Main.fpsVar.alpha = 1;
-					if (Main.fpsVar.x != 10)
-						Main.fpsVar.x = 10;
+					
+					
 					FlixG.sound.playMusic(Paths.music(ClientPrefs.menuMusic));
 					MusicBeatState.switchState(new OptionsState());
 				case "Leave Charting Mode":
@@ -305,18 +304,15 @@ if(tweenStuff != null) {
 						}
 						if(tweenStuff != null) {
 							tweenStuff.cancel();
-							Main.fpsVar.alpha = 1;
+							
 						}
 						close();
 					}
 				case "End Song":
 					close();
 					PlayState.instance.finishSong(true);
-	Main.fpsVar.alpha = 1;				
-if(tweenStuff != null) {
-						tweenStuff.cancel();
-						Main.fpsVar.alpha = 1;
-					}
+					
+
 				case 'Toggle Botplay':
 					PlayState.instance.botplay = !PlayState.instance.botplay;
 					PlayState.changedDifficulty = true;
@@ -327,11 +323,8 @@ if(tweenStuff != null) {
 					PlayState.seenCutscene = false;
 
 					WeekData.loadTheFirstEnabledMod();
-	Main.fpsVar.alpha = 1;				
-if(tweenStuff != null) {
-						tweenStuff.cancel();
-						Main.fpsVar.alpha = 1;
-					}
+					
+
 					if(PlayState.isStoryMode) {
 						OptionsState.isFromPlayState = false;
 					MusicBeatState.switchState(new StoryMenuState());

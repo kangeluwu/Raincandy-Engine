@@ -376,11 +376,11 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 	}
 	public function new(x:Float, y:Float, camX:Float, camY:Float,?isPlayer:Bool = true)
 	{
-		super();
+		
 		makeHaxeState("ded", "windose_data/scripts/custom_menus/", "GameOverSubstate");
 		callAllHScript("startDead", [x, y, camX, camY, isPlayer]);
 		PlayState.instance.setOnLuas('inGameOver', true);
-		
+		super();
 	/*	if (FNFAssets.exists("windose_data/data/" + PlayState.SONG.song.toLowerCase() + "/gameover", Hscript))
 			{
 				makeHaxeState("gameover", "windose_data/data/" + PlayState.SONG.song.toLowerCase() + "/", "gameover");

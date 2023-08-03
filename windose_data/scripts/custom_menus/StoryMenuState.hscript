@@ -148,14 +148,20 @@ var num = 0;
 		changeDifficulty(0);
 		if (mobile){
 		addVirtualPads('full', 'a_b_x_y');
-		addPadcam();
 		}
        
 }
-
+function openSubState(){
+	if (mobile){
+		removeVirtualPad();
+		}
+}
 function closeSubState() {
     togglePersistUpdate(true);
     changeWeek(0);
+	if (mobile){
+		addVirtualPads('full', 'a_b_x_y');
+		}
 }
 
 var lerpScore = 0;
@@ -223,6 +229,7 @@ function update(elapsed)
 			{
                 togglePersistUpdate(false);
 				openSubState(new GameplayChangersSubstate());
+				
 			}
 			else if(controls.RESET||visPressed('Y'))
 			{
