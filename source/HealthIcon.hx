@@ -12,6 +12,7 @@ enum abstract IconState(Int) from Int to Int {
 class HealthIcon extends FlxSprite
 {
 	public var isAnimated:Bool = false;
+	public var isPlayState:Bool = false;
 	public var sprTracker:FlxSprite;
 	private var isOldIcon:Bool = false;
 	private var isPlayer:Bool = false;
@@ -77,7 +78,8 @@ class HealthIcon extends FlxSprite
 		else changeIcon('bf');
 	}
 
-	private var iconOffsets:Array<Float> = [0, 0];
+	public var iconOffsets:Array<Float> = [0, 0];
+	public var iconoffsetsfnf:Array<Float> = null;
 	public function changeIcon(char:String) {
 		if(this.char != char) {
 			
@@ -89,6 +91,7 @@ class HealthIcon extends FlxSprite
 			var iconString:Array<String> = [];
 			var iconWidth:Float = 150;
 			var iconHeight:Float = 150;
+			
 			//MAKE SURE NOT CRASH
 
 			if (Reflect.hasField(iconJson, char))
@@ -97,6 +100,7 @@ class HealthIcon extends FlxSprite
 					iconString = Reflect.field(iconJson, char).frameNames;
 					iconWidth = Reflect.field(iconJson, char).width;
 					iconHeight = Reflect.field(iconJson, char).height;
+					iconoffsetsfnf = Reflect.field(iconJson, char).offsets;
 				}
 				else if (FNFAssets.exists(Paths.modFolders("images/icons/icons.json"))&&Reflect.hasField(iconmodJson, char))
 					{
@@ -104,9 +108,11 @@ class HealthIcon extends FlxSprite
 						iconString = Reflect.field(iconmodJson, char).frameNames;
 						iconWidth = Reflect.field(iconmodJson, char).width;
 				     	iconHeight = Reflect.field(iconmodJson, char).height;
+						iconoffsetsfnf = Reflect.field(iconmodJson, char).offsets;
 					}
 				else
 				{
+					
 					iconFrames = [0, 1, 0];
 					iconString = ['normal', 'dying', 'normal'];
 					iconWidth =width / 2;
@@ -117,6 +123,8 @@ class HealthIcon extends FlxSprite
 					iconWidth = width / 2;
 				if (iconHeight == 0)
 					iconHeight = height;
+				if (iconoffsetsfnf == null)
+					iconoffsetsfnf = [0,0,0];
 			var name:String = 'icons/' + char;
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-' + char; //Older versions of psych engine's support
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-face'; //Prevents crash from missing icon
@@ -157,8 +165,15 @@ class HealthIcon extends FlxSprite
 	override function updateHitbox()
 	{
 		super.updateHitbox();
-		offset.x = iconOffsets[0];
+		if (isPlayState){
+		offset.x = iconOffsets[0] + (isPlayer ? iconoffsetsfnf[0] : iconoffsetsfnf[2]);
+		offset.y = iconOffsets[1] + iconoffsetsfnf[1];
+		}
+		else
+			{
+				offset.x = iconOffsets[0];
 		offset.y = iconOffsets[1];
+			}
 	}
 
 	public function getCharacter():String {
