@@ -44,7 +44,7 @@ class FlxHitbox extends FlxSpriteGroup {
 
 	public function createhitbox(x:Float = 0, y:Float = 0, frames:String) {
 		var button = new FlxButton(x, y);
-		button.loadGraphic(FlxGraphic.fromFrame(getFrames().getByName('blank')));
+		button.loadGraphic(Paths.image('androidcontrols/hitboxblank'));
 		button.antialiasing = orgAntialiasing;
 		switch (frames){
 			case "left":button.color = 0xFFCC5B9E;
@@ -60,9 +60,9 @@ class FlxHitbox extends FlxSpriteGroup {
 		return button;
 	}
 
-	public function getFrames():FlxAtlasFrames {
-		return Paths.getSparrowAtlas('androidcontrols/hitboxblank');
-	}
+	//public function getFrames():FlxAtlasFrames {
+		//return Paths.getSparrowAtlas('androidcontrols/hitboxblank');
+	//}
 
 	override public function destroy():Void {
 		super.destroy();

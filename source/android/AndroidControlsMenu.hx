@@ -100,10 +100,6 @@ class AndroidControlsMenu extends MusicBeatState
 		tipText.borderSize = 2;
 		tipText.scrollFactor.set();
 		add(tipText);
-
-		#if mobile
-		addVirtualPad(UP_DOWN, A_B_C);
-		#end
 		
 		changeSelection();
 	}
