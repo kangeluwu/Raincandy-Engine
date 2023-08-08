@@ -2208,9 +2208,8 @@ case 'Alt Anim Note':
 		Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2)) + " / " + Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2)) +
 		"\nSection: " + curSec +
 		"\n\nBeat: " + Std.string(curDecBeat).substring(0,4) +
-		"\n\nStep: " + curStep +
-		#if !mobile
-		"\n\nBeat Snap: " + quantization + "th"	#end ;
+		"\n\nStep: " + curStep 
+		#if !mobile  + "\n\nBeat Snap: " + quantization + "th"	#end ;
 
 
 
