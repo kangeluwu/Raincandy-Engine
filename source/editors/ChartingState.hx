@@ -418,7 +418,7 @@ var voicesStuff:String = '';
 		UI_box.x = 640 + GRID_SIZE / 2;
 		UI_box.y = 25;
 		UI_box.scrollFactor.set();
-
+#if !mobile
 		text =
 		"W/S or Mouse Wheel - Change Conductor's strum time
 		\nA/D - Go to the previous/next section
@@ -432,7 +432,18 @@ var voicesStuff:String = '';
 		\nEnter - Play your chart
 		\nQ/E - Decrease/Increase Note Sustain Length
 		\nSpace - Stop/Resume song";
-
+#else
+text ="
+Left/Right - Go to the previous/next section
+\nUp/Down - Change Conductor's Strum Time with Snapping
+\nHold Y to move 4x faster
+\nHold D and click on an arrow to select it
+\n
+\nEsc - Test your chart inside Chart Editor
+\nA - Play your chart
+\nQ/E - Decrease/Increase Note Sustain Length
+\nX - Stop/Resume song";
+#end
 		var tipTextArray:Array<String> = text.split('\n');
 		for (i in 0...tipTextArray.length) {
 			var tipText:FlxText = new FlxText(UI_box.x, UI_box.y + UI_box.height + 8, 0, tipTextArray[i], 16);
@@ -1862,7 +1873,7 @@ case 'Alt Anim Note':
 
 		if (!blockInput)
 		{
-			if (FlxG.keys.justPressed.ESCAPE #if mobile   || FlxG.android.justReleased.BACK #end)
+			if (FlxG.keys.justPressed.ESCAPE #if android   || FlxG.android.justReleased.BACK #end)
 			{
 				autosaveSong();
 				LoadingState.loadAndSwitchState(new editors.EditorPlayState(sectionStartTime()));
@@ -2060,7 +2071,7 @@ case 'Alt Anim Note':
 			//AWW YOU MADE IT SEXY <3333 THX SHADMAR
 
 			if(!blockInput){
-				if(FlxG.keys.justPressed.RIGHT #if mobile   || _virtualpad.buttonRight.justPressed #end){
+				if(FlxG.keys.justPressed.RIGHT){
 					curQuant++;
 					if(curQuant>quantizations.length-1)
 						curQuant = 0;
@@ -2068,7 +2079,7 @@ case 'Alt Anim Note':
 					quantization = quantizations[curQuant];
 				}
 
-				if(FlxG.keys.justPressed.LEFT #if mobile   || _virtualpad.buttonLeft.justPressed #end){
+				if(FlxG.keys.justPressed.LEFT){
 					curQuant--;
 					if(curQuant<0)
 						curQuant = quantizations.length-1;
@@ -2198,7 +2209,9 @@ case 'Alt Anim Note':
 		"\nSection: " + curSec +
 		"\n\nBeat: " + Std.string(curDecBeat).substring(0,4) +
 		"\n\nStep: " + curStep +
-		"\n\nBeat Snap: " + quantization + "th";
+		#if !mobile
+		"\n\nBeat Snap: " + quantization + "th"	#end ;
+
 
 
 		
