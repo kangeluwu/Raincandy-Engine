@@ -281,8 +281,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 			cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 		}
 	
-	var holdTime:Float = 0;
-	var cantUnpause:Float = 0.1;
+
 	override function update(elapsed:Float)
 	{
 		callAllHScript('update', [elapsed]);

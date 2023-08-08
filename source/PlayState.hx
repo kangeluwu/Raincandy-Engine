@@ -418,11 +418,12 @@ class PlayState extends MusicBeatState
     public static var hscriptInstances:Array<Dynamic> = [];
 
 	public var isdefault:Bool = false;
-	public function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
+	public function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String):Dynamic {
 		// if function doesn't exist
+			var returnVal:Dynamic = FunkinLua.Function_Continue;
 		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
 			//trace("Function doesn't exist, silently skipping...");
-			return;
+			return FunkinLua.Function_Continue;
 		}
 		try
 			{
@@ -431,35 +432,47 @@ class PlayState extends MusicBeatState
 		var method = hscriptStates.get(usehaxe).variables.get(func_name);
 		switch(args.length) {
 			case 0:
-				method();
+				returnVal = method();
 			case 1:
-				method(args[0]);
+				returnVal = method(args[0]);
 			case 2:
-				method(args[0], args[1]);
+				returnVal = method(args[0], args[1]);
 			case 3:
-				method(args[0], args[1], args[2]);
+				returnVal = method(args[0], args[1], args[2]);
 			case 4:
-				method(args[0], args[1], args[2], args[3]);
+				returnVal = method(args[0], args[1], args[2], args[3]);
 			case 5:
-				method(args[0], args[1], args[2], args[3], args[4]);
+				returnVal = method(args[0], args[1], args[2], args[3], args[4]);
 		}
 	}
 	catch (e)
 	{
 		Lib.application.window.alert(e.message, "Pretty Bad :(");
+		return FunkinLua.Function_Continue;
 	}
+	return returnVal;
 	}
-	public function callAllHScript(func_name:String, args:Array<Dynamic>) {
+	public function callAllHScript(func_name:String, args:Array<Dynamic>, ignoreStops = true):Dynamic {
+		var returnVal:Dynamic = FunkinLua.Function_Continue;
+		for (key in hscriptStates.keys()) {
 		try
 			{
-				for (key in hscriptStates.keys()) {
-					callHscript(func_name, args, key);
-				}
+			
+					var ret:Dynamic = callHscript(func_name, args, key);
+					if(ret == FunkinLua.Function_StopLua && !ignoreStops)
+						break;
+					
+					if(ret != FunkinLua.Function_Continue)
+						returnVal = ret;
 	}
 	catch (e)
-	{
-		Lib.application.window.alert(e.message, "Hscript problem hmm");
-	}
+		{
+			returnVal = null;
+			Lib.application.window.alert(e.message, "Hscript problem hmm");
+		}
+
+}
+return returnVal;
 
 	}
 	public function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
@@ -835,8 +848,8 @@ function camerabgAlphaShits(cam:FlxCamera)
 	
 	
 		interp.variables.set('StringTools', StringTools);
-		interp.variables.set('callAllHscript', function(func_name:String, args:Array<Dynamic>) {
-			 callAllHScript(func_name, args);
+		interp.variables.set('callAllHscript', function(func_name:String, args:Array<Dynamic>,ignoreStops) {
+			 callAllHScript(func_name, args,ignoreStops);
 		});
 		interp.variables.set('setHaxeVar', function(name:String, value:Dynamic, usehaxe:String) {
 			 setHaxeVar(name, value, usehaxe);
@@ -1731,7 +1744,12 @@ if (OpenFlAssets.exists(file)) {
 
 		
 		var font:String = "vcr.ttf";
-		
+		#if HAD_DIFFERNET_LANGS
+		if(ClientPrefs.langType == 'Chinese')
+			font = "DinkieBitmap-9px.ttf";
+		else if(ClientPrefs.langType == 'English')
+			font = "vcr.ttf";
+		#end
 		Conductor.songPosition = -5000;
 		var showTime:Bool = (ClientPrefs.timeBarType != 'Disabled');
 		strumLine = new FlxSprite(ClientPrefs.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, 50).makeGraphic(FlxG.width, 10);
@@ -1762,7 +1780,12 @@ if (OpenFlAssets.exists(file)) {
 
 		timeTxt.screenCenter(X);
 		var text = SONG.song;
-
+		#if HAD_DIFFERNET_LANGS
+		if(ClientPrefs.langType == 'Chinese')
+			text = SONG.songNameChinese;
+		else if(ClientPrefs.langType == 'English')
+			#end
+			text = SONG.song;
 		if(ClientPrefs.timeBarType == 'Song Name')
 		{
 			timeTxt.text = text;
@@ -1947,12 +1970,14 @@ if (!opponentPlayer)
 
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
+		iconP1.isPlayState = true;
 		iconP1.visible = !ClientPrefs.hideHud;
 		iconP1.alpha = ClientPrefs.healthBarAlpha;
 		add(iconP1);
 
 		iconP2 = new HealthIcon(dad.healthIcon, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
+		iconP2.isPlayState = true;
 		iconP2.visible = !ClientPrefs.hideHud;
 		iconP2.alpha = ClientPrefs.healthBarAlpha;
 		add(iconP2);
@@ -3547,20 +3572,37 @@ if (!dadChar.beingControlled)
 	public function updateScore(miss:Bool = false)
 	{
 		if (!ClientPrefs.classicStyle){
-			
-		scoreTxt.text = 'Score: ' + songScore
-		+ ' | Combo Breaks: ' + songMisses
-		+ ' | Accuracy: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + " %"
-		+ " | " + (ratingFC == null ? "" : "(" + ratingFC + ")") + accuracyShits(ratingPercent * 100)
-		+ " | Rating : " + ratingName;
-			
-		
-		}
-		else
-		{
-		
-		scoreTxt.text = 'Score:' + songScore;	
-		}
+			#if HAD_DIFFERNET_LANGS
+			if(ClientPrefs.langType == 'English'){
+				#end
+				scoreTxt.text = 'Score: ' + songScore
+				+ ' | Combo Breaks: ' + songMisses
+				+ ' | Accuracy: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + " %"
+				+ " | " + (ratingFC == null ? "" : "(" + ratingFC + ")") + accuracyShits(ratingPercent * 100)
+				+ " | Rating : " + ratingName;
+				#if HAD_DIFFERNET_LANGS	
+			}
+					else if(ClientPrefs.langType == 'Chinese')
+						{
+							scoreTxt.text = '得分: ' + songScore
+							+ ' | 断连数: ' + songMisses
+							+ ' | 准确率: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + " %"
+							+ " | " + (ratingFC == null ? "" : "(" + ratingFC + ")") + accuracyShits(ratingPercent * 100)
+							+ " | 评分 : " + ratingName;		
+						}
+						#end
+				}
+				else
+				{
+					#if HAD_DIFFERNET_LANGS	
+					if(ClientPrefs.langType == 'English')
+						#end
+				scoreTxt.text = 'Score:' + songScore;
+				#if HAD_DIFFERNET_LANGS
+					else if(ClientPrefs.langType == 'Chinese')
+						scoreTxt.text = '得分:' + songScore;
+					#end		
+				}
 		if(ClientPrefs.scoreZoom && !miss && !botplay)
 		{
 			if(scoreTxtTween != null) {
@@ -4862,6 +4904,13 @@ if (opponentPlayer){
 						}
 					}
 				}
+			
+					if ((strumScroll && (daNote.y - daNote.offset.y * daNote.scale.y + daNote.height <= center))
+					||  (strumScroll && (daNote.y + daNote.offset.y * daNote.scale.y >= center)))
+						{
+							daNote.multSpeed *= 2;
+						}
+				
 
 				// Kill extremely late notes and cause misses
 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
@@ -7275,8 +7324,12 @@ public var curNoteHitHealth:Float = 0;
 		if(ret != FunkinLua.Function_Stop)
 		{
 			var rat:Int = 0;
-		
-
+			#if HAD_DIFFERNET_LANGS
+			if(ClientPrefs.langType == 'English')
+				rat = 0;
+		   else if(ClientPrefs.langType == 'Chinese')
+		   rat = 2;
+		   #end
 			if(totalPlayed < 1) //Prevent divide by 0
 				ratingName = '?';
 			else

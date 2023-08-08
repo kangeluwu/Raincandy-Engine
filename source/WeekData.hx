@@ -14,10 +14,12 @@ using StringTools;
 typedef WeekFile =
 {
 	// JSON variables
+	var songNameChinese:Array<Dynamic>;
 	var songs:Array<Dynamic>;
 	var weekCharacters:Array<String>;
 	var weekBackground:String;
 	var weekBefore:String;
+	var storyNameChinese:String;
 	var storyName:String;
 	var weekName:String;
 	var freeplayColor:Array<Int>;
@@ -34,11 +36,13 @@ class WeekData {
 	public var folder:String = '';
 	
 	// JSON variables
+	public var songNameChinese:Array<Dynamic>;
 	public var songs:Array<Dynamic>;
 	public var weekCharacters:Array<String>;
 	public var weekBackground:String;
 	public var weekBefore:String;
 	public var storyName:String;
+	public var storyNameChinese:String;
 	public var weekName:String;
 	public var freeplayColor:Array<Int>;
 	public var startUnlocked:Bool;
@@ -52,10 +56,12 @@ class WeekData {
 	public static function createWeekFile():WeekFile {
 		var weekFile:WeekFile = {
 			songs: [["Bopeebo", "dad", [146, 113, 253]], ["Fresh", "dad", [146, 113, 253]], ["Dad Battle", "dad", [146, 113, 253]]],
+			songNameChinese: [["Bopeebo"], ["新潮"], ["父战"]],
 			weekCharacters: ['dad', 'bf', 'gf'],
 			weekBackground: 'stage',
 			weekBefore: 'tutorial',
 			storyName: 'Your New Week',
+			storyNameChinese: '你的新周目',
 			weekName: 'Custom Week',
 			freeplayColor: [146, 113, 253],
 			startUnlocked: true,
@@ -81,7 +87,15 @@ class WeekData {
 		hideStoryMode = weekFile.hideStoryMode;
 		hideFreeplay = weekFile.hideFreeplay;
 		difficulties = weekFile.difficulties;
+		if (weekFile.storyNameChinese != null)
+			storyNameChinese = weekFile.storyNameChinese;
+		else
+			storyNameChinese = weekFile.storyName;
 
+		if (weekFile.songNameChinese != null)
+			songNameChinese = weekFile.songNameChinese;
+		else
+			songNameChinese = weekFile.songs;
 		this.fileName = fileName;
 	}
 

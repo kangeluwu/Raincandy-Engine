@@ -270,7 +270,8 @@ var voicesStuff:String = '';
 				cutsceneType: "none",
 				uiType: 'normal',
 				speed: 1,
-				composter: '',
+				composer: '',
+				songNameChinese: '测试',
 				stage: 'stage',
 				validScore: false
 			};

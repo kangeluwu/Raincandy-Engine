@@ -36,6 +36,9 @@ import android.FlxVirtualPad;
 import haxe.Json;
 import tjson.TJSON;
 using StringTools;
+#if android
+import android.Hardware;
+#end
 class GameOverSubstate extends MusicBeatSubstate
 {
 	var hscriptStates:Map<String, Interp> = [];
@@ -307,7 +310,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 	public static var deathSoundName:String = 'fnf_loss_sfx';
 	public static var loopSoundName:String = 'gameOver';
 	public static var endSoundName:String = 'gameOverEnd';
-
+	public static var vibrationTime:Int = 500;//milliseconds
 	public static var instance:GameOverSubstate;
 
 	public static function resetVariables() {
@@ -315,6 +318,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		deathSoundName = 'fnf_loss_sfx';
 		loopSoundName = 'gameOver';
 		endSoundName = 'gameOverEnd';
+		vibrationTime = 500;
 	}
 
 	override function create()
@@ -322,6 +326,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		instance = this;
 		PlayState.instance.callOnLuas('onGameOverStart', []);
 		callAllHScript('onCreate', []);
+		
 		super.create();
 	}
 
@@ -380,7 +385,12 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		makeHaxeState("ded", "windose_data/scripts/custom_menus/", "GameOverSubstate");
 		callAllHScript("startDead", [x, y, camX, camY, isPlayer]);
 		PlayState.instance.setOnLuas('inGameOver', true);
-		
+		#if android
+		if(ClientPrefs.vibration)
+		{
+			Hardware.vibrate(vibrationTime);
+		}
+		#end
 	/*	if (FNFAssets.exists("windose_data/data/" + PlayState.SONG.song.toLowerCase() + "/gameover", Hscript))
 			{
 				makeHaxeState("gameover", "windose_data/data/" + PlayState.SONG.song.toLowerCase() + "/", "gameover");

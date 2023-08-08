@@ -16,6 +16,7 @@ typedef SwagSong =
 {
 	var song:String;
 	var notes:Array<SwagSection>;
+	var songNameChinese:String;
 	var events:Array<Dynamic>;
 	var bpm:Float;
 	var uiType:String;
@@ -29,7 +30,7 @@ typedef SwagSong =
 	var arrowSkin:String;
 	var splashSkin:String;
 	var validScore:Bool;
-	var composter:String;
+	var composer:String;
 	//var mania:Null<Int>;
 }
 
@@ -37,7 +38,8 @@ class Song
 {
 	public var uiType:String = 'normal';
 	public var song:String;
-	public var composter:String = null;
+	public var songNameChinese:String = '';
+	public var composer:String = null;
 	public var notes:Array<SwagSection>;
 	public var events:Array<Dynamic>;
 	public var bpm:Float;
@@ -141,7 +143,13 @@ class Song
 		var songJson:Dynamic = parseJSONshit(rawJson);
 		if(jsonInput != 'events') StageData.loadDirectory(songJson);
 		onLoadJson(songJson);
-
+		if (songJson.songNameChinese == null){
+			songJson.songNameChinese = switch (songJson.song.toLowerCase()) {
+				default:
+					songJson.song;
+			
+			}
+		}
 		if (songJson.stage == null) {
 			// sw-switch case :fuckboy:
 			songJson.stage = switch (songJson.song.toLowerCase()) {
@@ -213,20 +221,20 @@ class Song
 					songJson.cutsceneType = 'none';
 			}
 		}
-		if (songJson.composter == null) {
+		if (songJson.composer == null) {
 			switch (songJson.song.toLowerCase()) {
 				case 'monster' | 'winter horrorland' | 'winter-horrorland':
-					songJson.composter = 'bassetfilms';
-				case 'bopeebo' | 'fresh' | 'dad battle' | 'dadbattle' | 'dad-battle' |
+					songJson.composer = 'bassetfilms';
+				case 'Tutorial' | 'bopeebo' | 'fresh' | 'dad battle' | 'dadbattle' | 'dad-battle' |
 				'spookeez' | 'south' | 
 				'philly-nice' | 'philly nice' | 'pico' | 'blammed' |
 				'milf' | 'high' | 'satin panties'| 'satin-panties' |
 				'cocoa' | 'eggnog' |
 				'senpai' | 'roses' | 'thorns' | 
 				'ugh' | 'stress' | 'guns':
-					songJson.composter = 'Kawai Sprite';
+					songJson.composer = 'Kawai Sprite';
 					default:
-					songJson.composter = 'IDK';
+					songJson.composer = 'IDK';
 			}
 		}
 		return songJson;

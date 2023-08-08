@@ -28,7 +28,9 @@ import Controls;
 import openfl.Lib;
 
 using StringTools;
-
+#if android
+import android.Hardware;
+#end
 class GraphicsSettingsSubState extends BaseOptionsMenu
 {
 	public function new()
@@ -44,7 +46,16 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			false); //Default value
 		addOption(option);
 
-	
+	#if HAD_DIFFERNET_LANGS
+	var option:Option = new Option('language',
+		"Which language do you prefer for the Storymenu Dialog and PlayState UI?",
+		'langType',
+		'string',
+		'English',
+		['English', 'Chinese']);
+	addOption(option);
+	#end
+
 		var option:Option = new Option('Anti-Aliasing',
 			'If unchecked, disables anti-aliasing, increases performance\nat the cost of sharper visuals.',
 			'globalAntialiasing',
@@ -67,6 +78,16 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		option.displayFormat = '%v FPS';
 		option.onChange = onChangeFramerate;
 		#end
+		#if android
+		var option:Option = new Option('GameOver Vibration',
+			'If unchecked, will make the game to vibrate when you die.',
+			'vibration',
+			'bool',
+			false);
+		addOption(option);
+		option.onChange = onChangeGameOverVibration;
+		#end
+
 		var option:Option = new Option('GPU Caching', //Name
 		"If checked, allows the GPU to be used for caching textures, decreasing RAM usage.\nDon't turn this on if you have a shitty Graphics Card.", //Description
 		'cacheOnGPU',
@@ -110,4 +131,13 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			FlxG.updateFramerate = ClientPrefs.framerate;
 		}
 	}
+	#if android
+	function onChangeGameOverVibration()
+	{
+		if(ClientPrefs.vibration)
+		{
+			Hardware.vibrate(500);
+		}
+	}
+	#end
 }
