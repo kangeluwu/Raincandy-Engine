@@ -448,7 +448,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		FlxG.sound.volumeDownKeys = volumeDownKeys;
 		FlxG.sound.volumeUpKeys = volumeUpKeys;
 		FlxG.keys.preventDefaultKeys = [TAB];
-
+		PluginManager.init();
 		PlayerSettings.init();
 		super.create();
 
