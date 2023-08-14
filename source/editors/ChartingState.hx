@@ -1253,7 +1253,7 @@ Left/Right - Go to the previous/next section
 		{
 			if(curSelectedNote != null && curSelectedNote[2] == null) //Is event note
 			{
-				if(curSelectedNote[1].length < 2)
+				if(curSelectedNote[1].length < 3)
 				{
 					_song.events.remove(curSelectedNote);
 					curSelectedNote = null;
@@ -1285,7 +1285,7 @@ Left/Right - Go to the previous/next section
 			if(curSelectedNote != null && curSelectedNote[2] == null) //Is event note
 			{
 				var eventsGroup:Array<Dynamic> = curSelectedNote[1];
-				eventsGroup.push(['', '', '']);
+				eventsGroup.push(['', '', '', '']);
 
 				changeEventSelected(1);
 				updateGrid();
