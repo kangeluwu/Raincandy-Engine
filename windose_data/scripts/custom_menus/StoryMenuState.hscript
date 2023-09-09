@@ -383,7 +383,7 @@ function changeWeek(change)
 
     CoolUtil.difficulties = CoolUtil.defaultDifficulties.copy();
     var diffStr = WeekData.getCurrentWeek().difficulties;
-    if(diffStr != null) diffStr = diffStr.trim(); //Fuck you HTML5
+    if(diffStr != null) diffStr = StringTools.trim(diffStr); //Fuck you HTML5
     difficultySelectors.visible = unlocked;
 
     if(diffStr != null && diffStr.length > 0)
@@ -394,7 +394,7 @@ function changeWeek(change)
         {
             if(diffs[i] != null)
             {
-                diffs[i] = diffs[i].trim();
+                diffs[i] = StringTools.trim(diffs[i]);
                 if(diffs[i].length < 1) diffs.remove(diffs[i]);
             }
             --i;
