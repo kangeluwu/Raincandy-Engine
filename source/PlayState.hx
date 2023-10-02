@@ -813,6 +813,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 			
 		});
 		interp.variables.set("add", add);
+		interp.variables.set("ColorSwap", ColorSwap);
 		interp.variables.set("fromRGB", fromRGB);
 		interp.variables.set("changeNewUI", changeNewUI);
 		interp.variables.set("remove", remove);
@@ -860,12 +861,15 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set('setAllHaxeVar', function (name:String, value:Dynamic) {
 			 setAllHaxeVar(name, value);
 		});
-		interp.variables.set('addHaxeLibrary', function (libName:String, ?libFolder:String = '') {
+		interp.variables.set('addHaxeLibrary', function (libName:String, ?libFolder:String = '',varName:String = '') {
 			try {
 				var str:String = '';
 				if(libFolder.length > 0)
 					str = libFolder + '.';
-				setAllHaxeVar(libName, Type.resolveClass(str + libName));
+
+				if (varName == null || varName == '')
+					varName = libName;
+				setAllHaxeVar(varName, Type.resolveClass(str + libName));
 			}
 			catch (e) {
 				Lib.application.window.alert(e.message, "ADD LIBRARY FAILED BRUH");
