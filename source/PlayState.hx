@@ -243,6 +243,7 @@ class PlayState extends MusicBeatState
 
 	public var gfSpeed:Int = 1;
 	public var health:Float = 1;
+	public var healthInstance:Float = 1;
 	public var combo:Int = 0;
 
 	public var healthBarBG:FlxSprite;
@@ -724,6 +725,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("middleScroll", ClientPrefs.middleScroll);
 		interp.variables.set("hscriptPath", SUtil.getPath() + path);
 		interp.variables.set("health", health);
+		interp.variables.set("healthInstance", healthInstance);
 		interp.variables.set("scoreTxt", scoreTxt);
  //funny colors0xFF6F0707
  		interp.variables.set("OGcolor", FlxColor.WHITE);
@@ -813,6 +815,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 			
 		});
 		interp.variables.set("add", add);
+		interp.variables.set("ColorSwap", ColorSwap);
 		interp.variables.set("fromRGB", fromRGB);
 		interp.variables.set("changeNewUI", changeNewUI);
 		interp.variables.set("remove", remove);
@@ -860,12 +863,15 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set('setAllHaxeVar', function (name:String, value:Dynamic) {
 			 setAllHaxeVar(name, value);
 		});
-		interp.variables.set('addHaxeLibrary', function (libName:String, ?libFolder:String = '') {
+		interp.variables.set('addHaxeLibrary', function (libName:String, ?libFolder:String = '',varName:String = '') {
 			try {
 				var str:String = '';
 				if(libFolder.length > 0)
 					str = libFolder + '.';
-				setAllHaxeVar(libName, Type.resolveClass(str + libName));
+
+				if (varName == null || varName == '')
+					varName = libName;
+				setAllHaxeVar(varName, Type.resolveClass(str + libName));
 			}
 			catch (e) {
 				Lib.application.window.alert(e.message, "ADD LIBRARY FAILED BRUH");
@@ -1957,7 +1963,7 @@ if (OpenFlAssets.exists(file)) {
 		
 
 
-		healthBar = new HealthBar(0, FlxG.height * (!ClientPrefs.downScroll ? 0.89 : 0.11), 'custom_ui/' + uiSmelly.uses + '/'  + 'healthBar', function() return health, 0, 2);
+		healthBar = new HealthBar(0, FlxG.height * (!ClientPrefs.downScroll ? 0.89 : 0.11), 'custom_ui/' + uiSmelly.uses + '/'  + 'healthBar', function() return healthInstance, 0, 2);
 if (!opponentPlayer)
 		healthBar.leftToRight = false;
 		healthBar.screenCenter(X);
@@ -4405,25 +4411,15 @@ function eventPushed(event:EventNote) {
 		{
 			iconP1.swapOldIcon();
 		}*/
+		
 		callOnLuas('onUpdate', [elapsed]);
-
-		@:privateAccess
-        var dadFrame = dad._frame;
-        
-        if (dadFrame == null || dadFrame.frame == null) return; // prevents crashes (i think???)
-            
-        var rect = new Rectangle(dadFrame.frame.x, dadFrame.frame.y, dadFrame.frame.width, dadFrame.frame.height);
-        
-        dadScrollWin.scrollRect = rect;
-        dadScrollWin.x = (((dadFrame.offset.x) - (dad.offset.x / 2)) * dadScrollWin.scaleX);
-        dadScrollWin.y = (((dadFrame.offset.y) - (dad.offset.y / 2)) * dadScrollWin.scaleY);     
 
 		setAllHaxeVar('camZooming', camZooming);
 		setAllHaxeVar('gfSpeed', gfSpeed);
 		setAllHaxeVar('health', health);
 
 		callAllHScript('update', [elapsed]);
-
+		healthInstance = FlxMath.lerp(healthInstance, health, CoolUtil.boundTo(elapsed * 24, 0, 1));
 		if(phillyGlowParticles != null)
 			{
 				var i:Int = phillyGlowParticles.members.length-1;
