@@ -47,7 +47,7 @@ jobs:
           haxelib install hxjsonast
           haxelib install hxCodec 3.0.2
           haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
-          haxelib install hscript 2.5.0
+         haxelib git hscript-improved https://github.com/FNF-CNE-Devs/hscript-improved
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
@@ -97,7 +97,7 @@ jobs:
           haxelib install hxjsonast
           haxelib install hxCodec 3.0.2
           haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
-          haxelib install hscript 2.5.0
+         haxelib git hscript-improved https://github.com/FNF-CNE-Devs/hscript-improved
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
@@ -148,7 +148,7 @@ jobs:
           haxelib install hxjsonast
           haxelib install hxCodec 3.0.2
           haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
-          haxelib install hscript 2.5.0
+         haxelib git hscript-improved https://github.com/FNF-CNE-Devs/hscript-improved
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
@@ -225,7 +225,7 @@ jobs:
                   haxelib install hxjsonast
                   haxelib install hxCodec 3.0.2
                   haxelib git linc_luajit https://github.com/Sirox228/linc_luajit
-                  haxelib install hscript 2.5.0
+                 haxelib git hscript-improved https://github.com/FNF-CNE-Devs/hscript-improved
                   haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
                   haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
                   haxelib install hxcpp-debug-server
