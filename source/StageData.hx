@@ -14,8 +14,8 @@ using StringTools;
 
 typedef StageFile = {
 	var directory:String;
-	var defaultZoom:Float;
-	var isPixelStage:Bool;
+	var defaultZoom:Null<Float>;
+	var isPixelStage:Null<Bool>;
 
 	var boyfriend:Array<Dynamic>;
 	var girlfriend:Array<Dynamic>;
