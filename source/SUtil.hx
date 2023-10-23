@@ -90,7 +90,7 @@ class SUtil
 				FileSystem.createDirectory(SUtil.getPath() + "saves");
 			}
 		}
-		#else
+		#elseif mobile
 		
 
 		if (!FileSystem.exists('./windose_data/') && !FileSystem.exists(SUtil.getPath() + './mods/'))
