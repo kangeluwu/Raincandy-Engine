@@ -169,7 +169,7 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 		if (curBox != null)
 		{
 			#if MODS_ALLOWED
-			var data:String = FNFAssets.getText(Paths.isModPath('images/custom_dialogs/dialogBoxes/' + curBox + '.txt'));
+			var data:String = FNFAssets.getText(Paths.isModPath('images/custom_dialogs/dialogBoxes/' + curBox + '.json'));
 			#else
 			var data:String = FNFAssets.getJson(SUtil.getPath() + 'windose_data/images/custom_dialogs/dialogBoxes/' + curBox);
 			#end
@@ -449,7 +449,7 @@ for (touch in FlxG.touches.list)
 			box.y = 710 - box.height;
 
 			#if MODS_ALLOWED
-			var data:String = FNFAssets.getText(Paths.isModPath('images/custom_dialogs/dialogBoxes/' + curBox + '.txt'));
+			var data:String = FNFAssets.getText(Paths.isModPath('images/custom_dialogs/dialogBoxes/' + curBox + '.json'));
 			#else
 			var data:String = FNFAssets.getJson(SUtil.getPath() + 'windose_data/images/custom_dialogs/dialogBoxes/' + curBox);
 			#end

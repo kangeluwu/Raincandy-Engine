@@ -3401,12 +3401,12 @@ if (!dadChar.beingControlled)
 				var intro1Sound:Sound;
 				var introGoSound:Sound;
 				if (FNFAssets.exists( SUtil.getPath() + Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro3' + introSoundsSuffix + '.ogg'))) {
-					intro3Sound = FNFAssets.getSound(Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro3' + introSoundsSuffix + '.ogg'));
-					intro2Sound = FNFAssets.getSound(Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro2' + introSoundsSuffix + '.ogg'));
-					intro1Sound = FNFAssets.getSound(Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro1' + introSoundsSuffix + '.ogg'));
+					intro3Sound = FNFAssets.getSound(SUtil.getPath() + Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro3' + introSoundsSuffix + '.ogg'));
+					intro2Sound = FNFAssets.getSound(SUtil.getPath() + Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro2' + introSoundsSuffix + '.ogg'));
+					intro1Sound = FNFAssets.getSound(SUtil.getPath() + Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/intro1' + introSoundsSuffix + '.ogg'));
 					// apparently this crashes if we do it from audio buffer?
 					// no it just understands 'hey that file doesn't exist better do an error'
-					introGoSound = FNFAssets.getSound(Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/introGo' + introSoundsSuffix + '.ogg'));
+					introGoSound = FNFAssets.getSound( SUtil.getPath() + Paths.getPreloadPath('shared/images/custom_ui/' + uiSmelly.uses + '/introGo' + introSoundsSuffix + '.ogg'));
 				} else if (FNFAssets.exists(Paths.modFolders('images/custom_ui/' + uiSmelly.uses + '/intro3' + introSoundsSuffix + '.ogg'))) {
 					intro3Sound = FNFAssets.getSound(Paths.modFolders('images/custom_ui/' + uiSmelly.uses + '/intro3' + introSoundsSuffix + '.ogg'));
 					intro2Sound = FNFAssets.getSound(Paths.modFolders('images/custom_ui/' + uiSmelly.uses + '/intro2' + introSoundsSuffix + '.ogg'));
@@ -3660,7 +3660,7 @@ if (!dadChar.beingControlled)
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
 
-			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
+		FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
 
 		FlxG.sound.music.onComplete = onSongComplete;
 		vocals.play();
@@ -6810,6 +6810,8 @@ public var curNoteHitHealth:Float = 0;
 				var strums = playerOne ? playerStrums : opponentStrums;
 				if(botplay) {
 					var time:Float = 0.05;
+					if (note.tail.length > 0)
+						time = 0.1;
 					if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
 						time += 0.1;
 					}

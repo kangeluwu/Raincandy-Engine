@@ -43,7 +43,7 @@
 	<!-- PSYCH ENGINE CUSTOMIZATION -->
 	<define name="MODS_ALLOWED"/>
 	<define name="LUA_ALLOWED" />
-	<define name="HAD_DIFFERNET_LANGS"/>
+	<!--define name="HAD_DIFFERNET_LANGS"/-->
 	<define name="ACHIEVEMENTS_ALLOWED" />
 	<define name="VIDEOS_ALLOWED" if="web || windows || mobile"/>
 	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
