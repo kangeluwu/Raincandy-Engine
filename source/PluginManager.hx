@@ -76,11 +76,15 @@ class PluginManager {
      */
     public static function createSimpleInterp():Interp {
         var reterp = new Interp();
+        reterp.allowStaticVariables = true;
+        reterp.allowPublicVariables = true;
         reterp = addVarsToInterp(reterp);
         return reterp;
     }
     public static function createSimpleInterpEx():InterpEx {
         var reterp = new InterpEx();
+        reterp.allowStaticVariables = true;
+        reterp.allowPublicVariables = true;
         reterp = addVarsToInterpEx(reterp);
         return reterp;
     }

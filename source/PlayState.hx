@@ -597,6 +597,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 	public function makeHaxeState(usehaxe:String, path:String, filename:String,isArray:Bool = false) {
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
+
 		var program;
 		parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 		if (isArray){
@@ -725,7 +726,6 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("middleScroll", ClientPrefs.middleScroll);
 		interp.variables.set("hscriptPath", SUtil.getPath() + path);
 		interp.variables.set("health", health);
-		interp.variables.set("healthInstance", healthInstance);
 		interp.variables.set("scoreTxt", scoreTxt);
  //funny colors0xFF6F0707
  		interp.variables.set("OGcolor", FlxColor.WHITE);
@@ -738,7 +738,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("CyanColor", FlxColor.CYAN);
 		interp.variables.set("gfSpeed", gfSpeed);
 		interp.variables.set("tweenCamIn", tweenCamIn);
-		interp.variables.set("health", health);
+
 		interp.variables.set("ClientPrefs", ClientPrefs);
 		interp.variables.set("skipCountdown", skipCountdown);
 //ClientPrefs:啊对对对我是颜色是吧
@@ -815,10 +815,9 @@ function camerabgAlphaShits(cam:FlxCamera)
 			
 		});
 		interp.variables.set("add", add);
-		interp.variables.set("ColorSwap", ColorSwap);
 		interp.variables.set("fromRGB", fromRGB);
 		interp.variables.set("changeNewUI", changeNewUI);
-		interp.variables.set("remove", remove);
+		interp.variables.set("remove", this.remove);
 		interp.variables.set("insert", insert);
 		interp.variables.set("replace", replace);
 		interp.variables.set("setDefaultZoom", function(zoom:Float){
@@ -932,6 +931,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 	{
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
+
 		var program = parser.parseModule(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 		trace("set stuff");
 		exInterp.registerModule(program);
@@ -1128,17 +1128,22 @@ function camerabgAlphaShits(cam:FlxCamera)
 				camera_speed: 1
 			};
 		}
-
+		if(stageData.defaultZoom != null)
 		defaultCamZoom = stageData.defaultZoom;
-
+		if(stageData.isPixelStage != null)
 		isPixelStage = stageData.isPixelStage;
-
+		if(stageData.boyfriend != null){
 		BF_X = stageData.boyfriend[0];
 		BF_Y = stageData.boyfriend[1];
+		}
+		if(stageData.girlfriend != null){
 		GF_X = stageData.girlfriend[0];
 		GF_Y = stageData.girlfriend[1];
+		}
+		if(stageData.opponent != null){
 		DAD_X = stageData.opponent[0];
 		DAD_Y = stageData.opponent[1];
+		}
 
 		if(stageData.camera_speed != null)
 			cameraSpeed = stageData.camera_speed;
@@ -1991,7 +1996,7 @@ if (!opponentPlayer)
 
 		if (ClientPrefs.classicStyle){
 			scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
-		scoreTxt.setFormat(Paths.font(font), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreTxt.setFormat(Paths.font(font), 16, FlxColor.WHITE, RIGHT);
 		}
 		else
 		{
@@ -4411,8 +4416,18 @@ function eventPushed(event:EventNote) {
 		{
 			iconP1.swapOldIcon();
 		}*/
-		
 		callOnLuas('onUpdate', [elapsed]);
+
+		@:privateAccess
+        var dadFrame = dad._frame;
+        
+        if (dadFrame == null || dadFrame.frame == null) return; // prevents crashes (i think???)
+            
+        var rect = new Rectangle(dadFrame.frame.x, dadFrame.frame.y, dadFrame.frame.width, dadFrame.frame.height);
+        
+        dadScrollWin.scrollRect = rect;
+        dadScrollWin.x = (((dadFrame.offset.x) - (dad.offset.x / 2)) * dadScrollWin.scaleX);
+        dadScrollWin.y = (((dadFrame.offset.y) - (dad.offset.y / 2)) * dadScrollWin.scaleY);     
 
 		setAllHaxeVar('camZooming', camZooming);
 		setAllHaxeVar('gfSpeed', gfSpeed);
@@ -4901,12 +4916,6 @@ if (opponentPlayer){
 					}
 				}
 			
-					if ((strumScroll && (daNote.y - daNote.offset.y * daNote.scale.y + daNote.height <= center))
-					||  (strumScroll && (daNote.y + daNote.offset.y * daNote.scale.y >= center)))
-						{
-							daNote.multSpeed *= 2;
-						}
-				
 
 				// Kill extremely late notes and cause misses
 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
@@ -6307,7 +6316,7 @@ currentTimingShown.cameras = [camHUD];
 				spr.playAnim('pressed');
 				spr.resetAnim = 0;
 			}
-			setAllHaxeVar('onKeyPress', [key]);
+			callAllHScript('onKeyPress', [key]);
 			callOnLuas('onKeyPress', [key]);
 		}
 		//trace('pressed: ' + controlArray);
@@ -6407,7 +6416,7 @@ currentTimingShown.cameras = [camHUD];
 				}
 				#end
 			}
-			else if (actingOn.holdTimer > Conductor.stepCrochet * 0.0011 * actingOn.singDuration && actingOn.animation.curAnim.name.startsWith('sing') && !actingOn.animation.curAnim.name.endsWith('miss'))
+			else if (actingOn.holdTimer > Conductor.stepCrochet * 0.001 * actingOn.singDuration && actingOn.animation.curAnim.name.startsWith('sing') && !actingOn.animation.curAnim.name.endsWith('miss'))
 			{
 				actingOn.dance();
 				//boyfriend.animation.curAnim.finish();
@@ -6717,7 +6726,6 @@ public var curNoteHitHealth:Float = 0;
 				{
 					case 'shit':
 					
-						songMisses++;
 						note.ratingHealAmount = 0.1;
 					case 'bad':
 		
@@ -6730,6 +6738,7 @@ public var curNoteHitHealth:Float = 0;
 				}
 				curNoteHitHealth = 1 * note.hitHealth * (!note.isSustainNote ? note.ratingHealAmount * healthGain :  healthGain);
 				health += curNoteHitHealth;
+				
 				if(!note.noAnimation) {
 					var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))] + altAnim;
 	
@@ -7129,15 +7138,15 @@ public var curNoteHitHealth:Float = 0;
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
 
-		if (gf != null && curBeat % Math.round(gfSpeed * gf.danceEveryNumBeats) == 0 && gf.animation.curAnim != null && !gf.animation.curAnim.name.startsWith("sing") && !gf.stunned)
+		if (gf != null && curBeat % Math.round(gfSpeed) == 0 && !gf.animation.curAnim.name.startsWith("sing"))
 		{
 			gf.dance();
 		}
-		if (curBeat % boyfriend.danceEveryNumBeats == 0 && boyfriend.animation.curAnim != null && !boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.stunned)
+		if (!boyfriend.animation.curAnim.name.startsWith('sing'))
 		{
 			boyfriend.dance();
 		}
-		if (curBeat % dad.danceEveryNumBeats == 0 && dad.animation.curAnim != null && !dad.animation.curAnim.name.startsWith('sing') && !dad.stunned)
+		if (!dad.animation.curAnim.name.startsWith('sing'))
 		{
 			dad.dance();
 		}
