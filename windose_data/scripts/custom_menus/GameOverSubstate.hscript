@@ -66,7 +66,7 @@ function update(elapsed)
 		else
 			MusicBeatState.switchState(new FreeplayState());
 
-		FlixG.sound.playMusic(Paths.music('freakyMenu'));
+		FlixG.sound.playMusic(Paths.music(ClientPrefs.menuMusic));
 		PlayState.instance.callOnLuas('onGameOverConfirm', [false]);
 		PlayState.instance.callAllHScript('onGameOverExit', []);
 	}

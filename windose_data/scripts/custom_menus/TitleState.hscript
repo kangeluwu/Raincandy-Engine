@@ -72,7 +72,7 @@ function startIntro()
       //  makeTransition();
       trace('lmao');
       if(FlixG.sound.music == null) {
-        FlixG.sound.playMusic(Paths.music('freakyMenu'), 0);
+        FlixG.sound.playMusic(Paths.music(ClientPrefs.menuMusic), 0);
     }
     FlixG.sound.music.fadeIn(4, 0, 0.7);
     }
@@ -426,7 +426,7 @@ function beatHit(beat)
         {
             case 1:
                 //FlxG.sound.music.stop();
-                FlixG.sound.playMusic(Paths.music('freakyMenu'), 0);
+                FlixG.sound.playMusic(Paths.music(ClientPrefs.menuMusic), 0);
                 FlixG.sound.music.fadeIn(4, 0, 0.7);
             case 2:
                 if (watermark)
@@ -519,7 +519,7 @@ function skipIntro()
 						skippedIntro = true;
 						playJingle = false;
 
-						FlixG.sound.playMusic(Paths.music('freakyMenu'), 0);
+						FlixG.sound.playMusic(Paths.music(ClientPrefs.menuMusic), 0);
 						FlixG.sound.music.fadeIn(4, 0, 0.7);
 						return;
 				}
@@ -541,7 +541,7 @@ function skipIntro()
 					remove(credGroup);
 					FlixG.camera.flash(OGcolor, 3);
 					sound.onComplete = function() {
-						FlixG.sound.playMusic(Paths.music('freakyMenu'), 0);
+						FlixG.sound.playMusic(Paths.music(ClientPrefs.menuMusic), 0);
 						FlixG.sound.music.fadeIn(4, 0, 0.7);
 						transitioning = false;
 					};

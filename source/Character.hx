@@ -569,6 +569,7 @@ callInterp("init", [this]);
 	public static function getAnimInterp(char:String):Interp {
 		var interp = PluginManager.createSimpleInterp();
 		var parser = new hscript.Parser();
+		parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 		var program:Expr;
 		var path:String = '';
 

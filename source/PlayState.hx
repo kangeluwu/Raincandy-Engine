@@ -597,6 +597,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 	public function makeHaxeState(usehaxe:String, path:String, filename:String,isArray:Bool = false) {
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
+	parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 
 		var program;
 		parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
@@ -931,6 +932,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 	{
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
+	parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 
 		var program = parser.parseModule(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 		trace("set stuff");
@@ -5840,7 +5842,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 				if (storyPlaylist.length <= 0)
 				{
 					WeekData.loadTheFirstEnabledMod();
-					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					FlxG.sound.playMusic(Paths.music(ClientPrefs.menuMusic));
 
 					cancelMusicFadeTween();
 					if(FlxTransitionableState.skipNextTransIn) {
@@ -5917,7 +5919,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 					Main.fpsVar.x = 10;
 				options.OptionsState.isFromPlayState = false;
 				MusicBeatState.switchState(new FreeplayState());
-				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				FlxG.sound.playMusic(Paths.music(ClientPrefs.menuMusic));
 				changedDifficulty = false;
 			}
 			transitioning = true;
