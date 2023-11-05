@@ -270,6 +270,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("ClientPrefs", ClientPrefs);
 		interp.variables.set("ChartingState", editors.ChartingState);
 		interp.variables.set("Alphabet", Alphabet);
+		
 		interp.variables.set("curBeat", 0);
 		interp.variables.set("currentTitleState", this);
 		interp.variables.set("getRandomObject",getRandomObject);

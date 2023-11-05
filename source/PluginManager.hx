@@ -76,15 +76,11 @@ class PluginManager {
      */
     public static function createSimpleInterp():Interp {
         var reterp = new Interp();
-        reterp.allowStaticVariables = true;
-        reterp.allowPublicVariables = true;
         reterp = addVarsToInterp(reterp);
         return reterp;
     }
     public static function createSimpleInterpEx():InterpEx {
         var reterp = new InterpEx();
-        reterp.allowStaticVariables = true;
-        reterp.allowPublicVariables = true;
         reterp = addVarsToInterpEx(reterp);
         return reterp;
     }
@@ -209,7 +205,9 @@ interp.variables.set("Paths", Paths);
         interp.variables.set("FlxText", FlxText);
         interp.variables.set("FlxTextBorderStyle", FlxTextBorderStyle);
         interp.variables.set("FlxBackdrop", FlxBackdrop);
-
+        interp.variables.set("Function_Continue", FunkinLua.Function_Continue);
+        interp.variables.set("Function_Stop", FunkinLua.Function_Stop);
+		interp.variables.set("Function_StopHscript", FunkinLua.Function_StopLua);
         interp.variables.set("FlxRect", FlxRect);
         interp.variables.set("FlixG", FlxG);
         interp.variables.set("PluginManager", PluginManager);

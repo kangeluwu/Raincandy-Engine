@@ -136,7 +136,7 @@
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
 	<!--From CodeNameEngine!Go to check their engine XD github.com/FNF-CNE-Devs/CodenameEngine-->
-	<haxelib name="hscript-improved" />
+	<haxelib name="hscript" />
 	<define name="hscriptPos" />
 	<haxelib name="json2object"/>
 	<haxelib name="uniontypes"/>
