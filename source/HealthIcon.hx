@@ -89,8 +89,8 @@ class HealthIcon extends FlxSprite
 			var iconStrings:Array<String> = [];
 			var iconFrames:Array<Int> = [];
 			var iconString:Array<String> = [];
-			var iconWidth:Float = 150;
-			var iconHeight:Float = 150;
+			var iconWidth:Null<Float> = 150;
+			var iconHeight:Null<Float> = 150;
 			
 			//MAKE SURE NOT CRASH
 
