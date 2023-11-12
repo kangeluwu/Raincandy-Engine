@@ -1,4 +1,4 @@
-{   //put your custom icon data in here!
+//put your custom icon data in here!
 //example:
     //"face": {
     //    "frames": [0, 1, 0],
@@ -7,4 +7,5 @@
     //    "frameNames": ["","",""]
     //｝
     //
+{   
 }
