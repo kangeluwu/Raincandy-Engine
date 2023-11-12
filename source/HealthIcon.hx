@@ -115,14 +115,11 @@ class HealthIcon extends FlxSprite
 					
 					iconFrames = [0, 1, 0];
 					iconString = ['normal', 'dying', 'normal'];
-					iconWidth =width / 2;
-					iconHeight = height;
+					iconWidth = 0;
+					iconHeight = 0;
 				}
 
-				if (iconWidth == 0)
-					iconWidth = width / 2;
-				if (iconHeight == 0)
-					iconHeight = height;
+				
 				if (iconoffsetsfnf == null)
 					iconoffsetsfnf = [0,0,0];
 			var name:String = 'icons/' + char;
@@ -143,6 +140,10 @@ class HealthIcon extends FlxSprite
 					isAnimated = false;
 					var file:Dynamic = Paths.image(name);
 					loadGraphic(file); //Load stupidly first for getting the file size
+if (iconWidth == 0 || iconWidth == null || iconWidth > width / 2)
+					iconWidth = width / 2;
+				if (iconHeight == 0 || iconHeight == null || iconHeight > height / 2)
+					iconHeight = height / 2;
 					loadGraphic(file, true, Math.floor(iconWidth), Math.floor(iconHeight)); //Then load it fr
 				
 		
