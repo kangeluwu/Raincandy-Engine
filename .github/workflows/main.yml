@@ -251,7 +251,7 @@ jobs:
                   ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         
               - name: Building
-                run: haxelib run lime build android -final
+                run: haxelib run lime build Project.xml android -final
         
               - name: Clear Previous Cache
                 uses: actions/github-script@main
