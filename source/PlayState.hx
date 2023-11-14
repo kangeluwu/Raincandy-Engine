@@ -3437,7 +3437,7 @@ if (!dadChar.beingControlled)
 					intro1Sound = Paths.sound('intro1' + introSoundsSuffix);
 					introGoSound = Paths.sound('introGo' + introSoundsSuffix);
 				}
-				var antialias:Bool = (ClientPrefs.data.antialiasing && !isPixelStage);
+				var antialias:Bool = (ClientPrefs.globalAntialiasing && !isPixelStage);
 				switch (swagCounter)
 				{
 					case 0:
