@@ -735,8 +735,22 @@ Left/Right - Go to the previous/next section
 			var tab_group_char = new FlxUI(null, UI_box);
 			tab_group_char.name = "Char";
 			player1TextField = new FlxUIInputText(10, 100, 70, _song.player1, 8);
+			player1TextField.callback = function(text:String,bf:String){
+				_song.player1 = text;
+				updateHeads();
+			};
 			player2TextField = new FlxUIInputText(120, 100, 70, _song.player2, 8);
+			player2TextField.callback = function(text:String,dad:String){
+				_song.player2 = text;
+				updateHeads();
+			};
+			
 			gfTextField = new FlxUIInputText(10, 120, 70, _song.gfVersion, 8);
+			gfTextField.callback = function(text:String,gf:String){
+				_song.gfVersion = text;
+				if (_song.notes[curSec].gfSection)
+				updateHeads();
+			};
 			stageTextField = new FlxUIInputText(120, 120, 70, _song.stage, 8);
 			cutsceneTextField = new FlxUIInputText(120, 140, 70, _song.cutsceneType, 8);
 			uiTextField = new FlxUIInputText(10, 140, 70, _song.uiType, 8);
@@ -1746,9 +1760,7 @@ case 'Alt Anim Note':
 		Conductor.songPosition = FlxG.sound.music.time;
 		_song.song = UI_songTitle.text;
 
-		_song.player1 = player1TextField.text;
-		_song.player2 = player2TextField.text;
-		_song.gfVersion = gfTextField.text;
+
 		_song.stage = stageTextField.text;
 		_song.cutsceneType = cutsceneTextField.text;
 		_song.uiType = uiTextField.text;

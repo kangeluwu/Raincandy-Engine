@@ -140,9 +140,9 @@ class HealthIcon extends FlxSprite
 					isAnimated = false;
 					var file:Dynamic = Paths.image(name);
 					loadGraphic(file); //Load stupidly first for getting the file size
-if (iconWidth == 0 || iconWidth == null || iconWidth > width / 2)
+if (iconWidth <= 0 || iconWidth == null || iconWidth > width / 2)
 					iconWidth = width / 2;
-				if (iconHeight == 0 || iconHeight == null || iconHeight > height)
+				if (iconHeight <= 0 || iconHeight == null || iconHeight > height)
 					iconHeight = height;
 					loadGraphic(file, true, Math.floor(iconWidth), Math.floor(iconHeight)); //Then load it fr
 				
