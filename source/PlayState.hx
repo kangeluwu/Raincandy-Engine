@@ -731,7 +731,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("hscriptPath", SUtil.getPath() + path);
 		interp.variables.set("health", health);
 		interp.variables.set("scoreTxt", scoreTxt);
- //funny colors0xFF6F0707
+ //funny colors0x82FFFFFF
  		interp.variables.set("OGcolor", FlxColor.WHITE);
 		interp.variables.set("BlackColor", FlxColor.BLACK);
 		interp.variables.set("BlueColor", FlxColor.BLUE);
@@ -1968,7 +1968,7 @@ if (OpenFlAssets.exists(file)) {
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
 		FlxG.fixedTimestep = false;
-		moveCameraSection();
+		movingCameraSection();
 
 		
 
@@ -5119,12 +5119,13 @@ if (opponentPlayer){
 				unspawnNotes.splice(index, 1);
 			}
 		}
-
+		if (SONG.notes[curSection] != null)
+			{
 		if (!inCutscene && generatedMusic && !endingSong && !isCameraOnForcedPos)
 			{
-				moveCameraSection();
+				movingCameraSection();
 			}
-			
+		}
 		if (generatedMusic)
 		{
 			if (!inCutscene) {
@@ -5979,7 +5980,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 		}
 
 		
-	function moveCameraSection():Void {
+	function movingCameraSection():Void {
 		if(SONG.notes[curSection] == null) return;
 
 		if (gf != null && SONG.notes[curSection].gfSection)
@@ -5988,6 +5989,29 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 			camFollow.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
 			camFollow.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
 			tweenCamIn();
+			callOnLuas('onMovingCamera', ['gf']);
+			callAllHScript('onMovingCamera', ['gf']);
+			return;
+		}
+
+		if (!SONG.notes[curSection].mustHitSection)
+		{
+			moveCamera(true);
+			callOnLuas('onMovingCamera', ['dad']);
+			callAllHScript('onMovingCamera', ['dad']);
+		}
+		else
+		{
+			moveCamera(false);
+			callOnLuas('onMoveCamera', ['boyfriend']);
+			callAllHScript('onMovingCamera', ['boyfriend']);
+		}
+	}
+	function moveCameraSection():Void {
+		if(SONG.notes[curSection] == null) return;
+
+		if (gf != null && SONG.notes[curSection].gfSection)
+		{
 			callOnLuas('onMoveCamera', ['gf']);
 			callAllHScript('onMoveCamera', ['gf']);
 			return;
@@ -5995,17 +6019,20 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 
 		if (!SONG.notes[curSection].mustHitSection)
 		{
-			moveCamera(true);
 			callOnLuas('onMoveCamera', ['dad']);
 			callAllHScript('onMoveCamera', ['dad']);
+			callAllHScript("opponentTurn", []);
+			callAllHScript("playerTwoTurn", []);
 		}
 		else
 		{
-			moveCamera(false);
 			callOnLuas('onMoveCamera', ['boyfriend']);
 			callAllHScript('onMoveCamera', ['boyfriend']);
+			callAllHScript("playerTurn", []);
+			callAllHScript("playerOneTurn", []);
 		}
 	}
+
 
 	var cameraTwn:FlxTween;
 	public function moveCamera(isDad:Bool)
@@ -6016,8 +6043,8 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0];
 			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1];
 			tweenCamIn();
-			callAllHScript("opponentTurn", []);
-			callAllHScript("playerTwoTurn", []);
+			callAllHScript("opponentTurnMoving", []);
+			callAllHScript("playerTwoTurnMoving", []);
 		}
 		else
 		{
@@ -6034,8 +6061,8 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 					}
 				});
 			}
-			callAllHScript("playerTurn", []);
-			callAllHScript("playerOneTurn", []);
+			callAllHScript("playerTurnMoving", []);
+			callAllHScript("playerOneTurnMoving", []);
 		}
 	}
 	function comboBreak(dir:Int, playerOne:Bool = true, rating:String = 'shit') {
@@ -7579,7 +7606,10 @@ public var curNoteHitHealth:Float = 0;
 		if (SONG.notes[curSection] != null)
 		{
 
-
+			if (generatedMusic && !endingSong && !isCameraOnForcedPos)
+				{
+					moveCameraSection();
+				}
 			if (camZooming && FlxG.camera.zoom < 1.35 && ClientPrefs.camZooms)
 			{
 				FlxG.camera.zoom += 0.015 * camZoomingMult;
