@@ -148,6 +148,7 @@ interp.variables.set("mobile", false);
         interp.variables.set("privateAccess", privateAccess);
         interp.variables.set("FlxRect", FlxRect);
         interp.variables.set("FlixG", FlxG);
+        interp.variables.set("getAudiosampleRate", getAudiosampleRate);
         interp.variables.set("PluginManager", PluginManager);
         interp.variables.set("callExternClass", instanceExClass); //Call modules?? :D
 
@@ -168,6 +169,12 @@ interp.variables.set("mobile", false);
             }
 			}
 		}
+            public static function getAudiosampleRate(sound:FlxSound):Int
+		{
+			@:privateAccess
+       return sound._sound.__buffer.sampleRate;
+			
+		}
     public static function addVarsToInterpEx<T:InterpEx>(interp:T):T {
         interp.variables.set("SUtil", SUtil);
 		interp.variables.set("Conductor", Conductor);
@@ -179,6 +186,7 @@ interp.variables.set("mobile", false);
 		interp.variables.set("FlxGroup", flixel.group.FlxGroup);
 		interp.variables.set("FlxAngle", flixel.math.FlxAngle);
 		interp.variables.set("FlxMath", flixel.math.FlxMath);
+        interp.variables.set("getAudiosampleRate", getAudiosampleRate);
 		interp.variables.set("TitleState", TitleState);
 		interp.variables.set("makeRangeArray", CoolUtil.numberArray);
 		interp.variables.set("FNFAssets", FNFAssets);

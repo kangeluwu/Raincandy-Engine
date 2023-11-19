@@ -187,6 +187,8 @@ class ChartingState extends MusicBeatState
 	var uiTextField:FlxUIInputText;
 
 	var stageTextField:FlxUIInputText;
+	var composerTextField:FlxUIInputText;
+
 	var isAltNoteCheck:FlxUICheckBox;
     var isCrossfade:FlxUICheckBox;
 	var playerText:FlxText;
@@ -195,6 +197,7 @@ class ChartingState extends MusicBeatState
 	var stageText:FlxText;
 	var cutsceneText:FlxText;
 	var uiText:FlxText;
+	var composerText:FlxText;
 	var zoomTxt:FlxText;
 
 	var zoomList:Array<Float> = [
@@ -754,21 +757,23 @@ Left/Right - Go to the previous/next section
 			stageTextField = new FlxUIInputText(120, 120, 70, _song.stage, 8);
 			cutsceneTextField = new FlxUIInputText(120, 140, 70, _song.cutsceneType, 8);
 			uiTextField = new FlxUIInputText(10, 140, 70, _song.uiType, 8);
-	
+			composerTextField = new FlxUIInputText(10, 160, 70, _song.composer, 8);
+
 			playerText = new FlxText(player1TextField.x + 70, player1TextField.y, 0, ":bf", 8, false);
 			enemyText = new FlxText(player2TextField.x + 70, player2TextField.y, 0, ":opponent", 8, false);
 			gfText = new FlxText(gfTextField.x + 70, gfTextField.y, 0, ":gf", 8, false);
 			stageText = new FlxText(stageTextField.x + 70, stageTextField.y, 0, ":stage", 8, false);
 			cutsceneText = new FlxText(cutsceneTextField.x + 70, uiTextField.y, 0, ":cutscene", 8, false);
 			uiText = new FlxText(uiTextField.x + 70, uiTextField.y, 0, ":UI", 8, false);
-	
+			composerText = new FlxText(composerTextField.x + 70, composerTextField.y, 0, ":composer", 8, false);
+
 			blockPressWhileTypingOn.push(player1TextField);
 			blockPressWhileTypingOn.push(player2TextField);
 			blockPressWhileTypingOn.push(gfTextField);
 			blockPressWhileTypingOn.push(stageTextField);
 			blockPressWhileTypingOn.push(cutsceneTextField);
 			blockPressWhileTypingOn.push(uiTextField);
-	
+			blockPressWhileTypingOn.push(composerTextField);
 
 	
 			tab_group_char.add(stageTextField);
@@ -777,14 +782,14 @@ Left/Right - Go to the previous/next section
 			tab_group_char.add(player2TextField);
 			tab_group_char.add(cutsceneTextField);
 			tab_group_char.add(uiTextField);
-	
+			tab_group_char.add(composerTextField);
 			tab_group_char.add(playerText);
 			tab_group_char.add(enemyText);
 			tab_group_char.add(gfText);
 			tab_group_char.add(stageText);
 			tab_group_char.add(cutsceneText);
 			tab_group_char.add(uiText);
-	
+			tab_group_char.add(composerText);
 			UI_box.addGroup(tab_group_char);
 
 		}
@@ -1764,6 +1769,7 @@ case 'Alt Anim Note':
 		_song.stage = stageTextField.text;
 		_song.cutsceneType = cutsceneTextField.text;
 		_song.uiType = uiTextField.text;
+		_song.composer = composerTextField.text;
 		strumLineUpdateY();
 		for (i in 0...8){
 			strumLineNotes.members[i].y = strumLine.y;

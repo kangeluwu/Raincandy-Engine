@@ -1548,6 +1548,35 @@ function camerabgAlphaShits(cam:FlxCamera)
 		add(luaDebugGroup);
 		#end
 
+		var haxefilesPushed:Array<String> = [];
+		var haxefoldersToCheck:Array<String> = [SUtil.getPath() + Paths.getPreloadPath('scripts/preloadScripts/')];
+
+		#if MODS_ALLOWED
+		haxefoldersToCheck.insert(0, Paths.mods('scripts/preloadScripts/'));
+		if(Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0)
+			haxefoldersToCheck.insert(0, Paths.mods(Paths.currentModDirectory + '/scripts/preloadScripts/'));
+
+		for(mod in Paths.getGlobalMods())
+			haxefoldersToCheck.insert(0, Paths.mods(mod + '/scripts/preloadScripts/'));
+		#end
+
+		for (folder in haxefoldersToCheck)
+		{
+			if(FileSystem.exists(folder))
+			{
+				for (file in FileSystem.readDirectory(folder))
+				{
+					if(file.endsWith('.hscript') && !haxefilesPushed.contains(file))
+					{
+						makeHaxeState('precacheModchart - ' + file.substr(0, file.length - 8), folder, file,true);
+						haxefilesPushed.push(file);
+					}
+					
+				}
+			}
+		}
+	
+
 		// "GLOBAL" SCRIPTS
 		#if LUA_ALLOWED
 		var filesPushed:Array<String> = [];
@@ -2314,7 +2343,7 @@ if (!opponentPlayer)
 
 	#if sys
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
-	public function createRuntimeShader(name:String):FlxRuntimeShader
+	public function createRuntimeShader(name:String,?glslVersion:Int = 120):FlxRuntimeShader
 	{
 
 
@@ -2326,7 +2355,7 @@ if (!opponentPlayer)
 		}
 
 		var arr:Array<String> = runtimeShaders.get(name);
-		return new FlxRuntimeShader(arr[0], arr[1]);
+		return new FlxRuntimeShader(arr[0], arr[1],glslVersion);
 		#else
 		FlxG.log.warn("Platform unsupported for Runtime Shaders!");
 		return null;
@@ -3696,12 +3725,11 @@ if (!dadChar.beingControlled)
 			if (dataPath == '' || dataPath == null)
 				return;
 var data:Map<String,Dynamic> = new Map<String,Dynamic>();
-var difficulty:String = CoolUtil.getDifficultyFilePath();
-var preEvents:Array<EventNote> = [];
-var precacheNotes:Array<Note> = [];
+var difficulty:String = CoolUtil.getDifficultyFilePath(storyDifficulty);
+var preEvents = [];
+var precacheNotes = [];
 			var songData = Song.loadFromJson(dataPath.toLowerCase() + difficulty, dataPath.toLowerCase());
            data.set("song",songData);
-		   trace(songData);
 		   var preVocal = new FlxSound();
 			if (songData.needsVoices)
 				preVocal = new FlxSound().loadEmbedded(Paths.voices(songData.song));
@@ -3718,7 +3746,6 @@ var precacheNotes:Array<Note> = [];
 	
 			// NEW SHIT
 			noteData = songData.notes;
-	
 			var playerCounter:Int = 0;
 	
 			var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
@@ -3751,19 +3778,21 @@ var precacheNotes:Array<Note> = [];
 				}
 	
 			var songName:String = Paths.formatToSongPath(songData.song);
+			trace(songName);
 			var file:String = Paths.json(songName + '/events');
 			#if MODS_ALLOWED
-			if (FileSystem.exists(Paths.modsJson(songName + '/events')) || FileSystem.exists(file)) {
+			if (FileSystem.exists(Paths.modsJson(songName + '/events')) || FileSystem.exists(file)) 
 			#else
-			if (OpenFlAssets.exists(file)) {
+			if (OpenFlAssets.exists(file)) 
 			#end
+		{
 				var eventsData:Array<Dynamic> = Song.loadFromJson('events', songName).events;
-				trace('read');
-				for (event in eventsData) //Event Notes
+				trace(eventsData);
+				for (curEvent in eventsData) //Event Notes
 				{
-					for (i in 0...event[1].length)
+					for (i in 0...curEvent[1].length)
 					{
-						var newEventNote:Array<Dynamic> = [event[0], event[1][i][0], event[1][i][1], event[1][i][2], event[1][i][3], event[1][i][4]];
+						var newEventNote:Array<Dynamic> = [curEvent[0], curEvent[1][i][0], curEvent[1][i][1], curEvent[1][i][2], curEvent[1][i][3], curEvent[1][i][4]];
 						var subEvent:EventNote = {
 							strumTime: newEventNote[0] + ClientPrefs.noteOffset,
 							event: newEventNote[1],
@@ -3771,34 +3800,38 @@ var precacheNotes:Array<Note> = [];
 							value2: newEventNote[3],
 							value3: newEventNote[4]
 						};
+
 						subEvent.strumTime -= eventNoteEarlyTrigger(subEvent);
+						
 						preEvents.push(subEvent);
+
 						eventPushed(subEvent);
+
 					}
 				}
 			}
-			trace(preEvents);
-			for (section in noteData)
+			
+			for (sec in noteData)
 			{
-				for (songNotes in section.sectionNotes)
+				for (preSongNotes in sec.sectionNotes)
 				{
-					var daStrumTime:Float = songNotes[0];
-					var daNoteData:Int = Std.int(songNotes[1] % Note.NOTE_AMOUNT);
+					var daStrumTime:Float = preSongNotes[0];
+					var daNoteData:Int = Std.int(preSongNotes[1] % Note.NOTE_AMOUNT);
 					var altNote:Bool = false;
 					var crossFade:Bool = false;
-					var gottaHitNote:Bool = section.mustHitSection;
+					var gottaHitNote:Bool = sec.mustHitSection;
 	
-					if (songNotes[1] % 8 > 3)
+					if (preSongNotes[1] % 8 > 3)
 					{
-						gottaHitNote = !section.mustHitSection;
+						gottaHitNote = !sec.mustHitSection;
 					}
 	
-					if (songNotes[4] || section.altAnim)
+					if (preSongNotes[4] || sec.altAnim)
 					{
 						altNote = true;
 					}
 	
-					if (songNotes[12] || (gottaHitNote && section.crossfadeBf) || (!gottaHitNote && section.crossfadeDad))
+					if (preSongNotes[12] || (gottaHitNote && sec.crossfadeBf) || (!gottaHitNote && sec.crossfadeDad))
 					{
 						crossFade = true;
 					}
@@ -3807,12 +3840,12 @@ var precacheNotes:Array<Note> = [];
 					switch (chartType)
 					{
 						case "standard":
-								daNoteData = Std.int(songNotes[1] % 4);
+								daNoteData = Std.int(preSongNotes[1] % 4);
 						case "flip":
 							if (gottaHitNote)
 							{
 								// B-SIDE FLIP???? Rozebud be damned lmao
-									daNoteData = 3 - Std.int(songNotes[1] % 4);
+									daNoteData = 3 - Std.int(preSongNotes[1] % 4);
 							}
 	
 						case "chaos":
@@ -3864,14 +3897,14 @@ var precacheNotes:Array<Note> = [];
 	
 					swagNote.altNote = altNote;
 	
-					swagNote.sustainLength = songNotes[2];
+					swagNote.sustainLength = preSongNotes[2];
 	
 					swagNote.crossFade = crossFade;
-					swagNote.altNum = songNotes[4] == null ? (swagNote.altNote ? 1 : 0) : songNotes[4];
+					swagNote.altNum = preSongNotes[4] == null ? (swagNote.altNote ? 1 : 0) : preSongNotes[4];
 	
-					swagNote.gfNote = (section.gfSection && (songNotes[1]%8<4));
-					swagNote.noteType = songNotes[3];
-					if(!Std.isOfType(songNotes[3], String)) swagNote.noteType = editors.ChartingState.noteTypeList[songNotes[3]]; //Backward compatibility + compatibility with Week 7 charts
+					swagNote.gfNote = (sec.gfSection && (preSongNotes[1]%8<4));
+					swagNote.noteType = preSongNotes[3];
+					if(!Std.isOfType(preSongNotes[3], String)) swagNote.noteType = editors.ChartingState.noteTypeList[preSongNotes[3]]; //Backward compatibility + compatibility with Week 7 charts
 					if (opponentPlayer) {
 						swagNote.oppMode = true;
 					}
@@ -3898,7 +3931,7 @@ var precacheNotes:Array<Note> = [];
 								{
 									sustainNote.oppMode = true;
 								}
-							sustainNote.gfNote = (section.gfSection && (songNotes[1]%8<4));
+							sustainNote.gfNote = (sec.gfSection && (preSongNotes[1]%8<4));
 							sustainNote.noteType = swagNote.noteType;
 							sustainNote.scrollFactor.set();
 							swagNote.tail.push(sustainNote);
@@ -3968,12 +4001,12 @@ var precacheNotes:Array<Note> = [];
 				}
 				daBeats += 1;
 			}
-			trace(precacheNotes);
-			for (event in songData.events) //Event Notes
+		
+			for (curEvent in songData.events) //Event Notes
 			{
-				for (i in 0...event[1].length)
+				for (i in 0...curEvent[1].length)
 				{
-					var newEventNote:Array<Dynamic> = [event[0], event[1][i][0], event[1][i][1], event[1][i][2], event[1][i][3], event[1][i][4]];
+					var newEventNote:Array<Dynamic> = [curEvent[0], curEvent[1][i][0], curEvent[1][i][1], curEvent[1][i][2], curEvent[1][i][3], curEvent[1][i][4]];
 					var subEvent:EventNote = {
 						strumTime: newEventNote[0] + ClientPrefs.noteOffset,
 						event: newEventNote[1],
@@ -3986,7 +4019,7 @@ var precacheNotes:Array<Note> = [];
 					eventPushed(subEvent);
 				}
 			}
-			trace(preEvents);
+		
 			// trace(precacheNotes.length);
 			// playerCounter += 1;
 	
@@ -4023,10 +4056,17 @@ var precacheNotes:Array<Note> = [];
 			}
 	}
 
-	
+	KillNotes();
+	Conductor.songPosition = -5000;
 	deathCounter = 0;
 	seenCutscene = false;
-	
+	curStep = 0;
+	curBeat = 0;
+	stepsToDo = 0;
+	curDecBeat = 0;
+	curDecStep = 0;
+	curSection = 0;
+	lastBeatHit = -1;
 	songScore = 0;
 	songMisses = 0;
 	songHits = 0;
@@ -4042,6 +4082,7 @@ var precacheNotes:Array<Note> = [];
 	vocals.volume = 0;
     SONG = preSongData.get('song');
 	var songData = SONG;
+	Conductor.mapBPMChanges(songData);
 	Conductor.changeBPM(songData.bpm);
 	songSpeedType = ClientPrefs.getGameplaySetting('scrolltype','multiplicative');
 
@@ -4056,7 +4097,8 @@ var precacheNotes:Array<Note> = [];
 	vocals = preSongData.get('voices');
 	unspawnNotes = preSongData.get('notes');
 	eventNotes = preSongData.get('eventNotes');
-	startSong();
+	startedCountdown = false;
+	startingSong = true;
 	startCountdown();
 	callAllHScript('onSwitchSong', [dataPath]);
 	}
@@ -4369,6 +4411,7 @@ var precacheNotes:Array<Note> = [];
 		}
 		checkEventNote();
 		generatedMusic = true;
+		callAllHScript('onSongGenerated', [SONG.song]);
 	}
 	
 
