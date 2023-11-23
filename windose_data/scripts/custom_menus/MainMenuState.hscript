@@ -24,7 +24,7 @@ function create()
 
     if (!FlixG.sound.music.playing)
         {
-            FlixG.sound.playMusic(Paths.music('freakyMenu'),0);
+            FlixG.sound.playMusic(Paths.music(ClientPrefs.menuMusic),0);
         }
 
     if (!modsAllow || ClientPrefs.classicStyle) 

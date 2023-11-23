@@ -21,7 +21,7 @@ import android.FlxVirtualPad;
 class MusicBeatState extends FlxUIState
 {
 	public var curSection:Int = 0;
-	private var stepsToDo:Int = 0;
+	public var stepsToDo:Int = 0;
 
 	public var curStep:Int = 0;
 	public var curBeat:Int = 0;

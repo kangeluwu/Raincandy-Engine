@@ -8,6 +8,8 @@ art/test_x64-debug-officialrelease.bat
 ### VS Code
 export/*
 .vscode/*
+backup/*
+*.zip
 .haxelib/
 *.code-workspace
 # Local history which shouldn't be shared.
@@ -19,3 +21,7 @@ export/*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+art/}\]}R\]MX_C56~%UH39$X4NRE.jpg
+vscode-project.hxml
+vscode-project.hxml

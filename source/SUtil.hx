@@ -55,7 +55,12 @@ class SUtil
 			if (!FileSystem.exists(Tools.getExternalStorageDirectory() + '/' + '.' + Application.current.meta.get('file')))
 				FileSystem.createDirectory(Tools.getExternalStorageDirectory() + '/' + '.' + Application.current.meta.get('file'));
 
-
+			if (FileSystem.exists('windose_data') && FileSystem.isDirectory('windose_data') && !FileSystem.exists(SUtil.getPath() + 'windose_data')){
+				SUtil.copyContent('windose_data',SUtil.getPath() + 'windose_data');
+			}
+			if (FileSystem.exists('mods') && FileSystem.isDirectory('mods') && !FileSystem.exists(SUtil.getPath() + 'mods')){
+				SUtil.copyContent('mods',SUtil.getPath() + 'mods');
+			}
 			if (!FileSystem.exists(SUtil.getPath() + 'windose_data') && !FileSystem.exists(SUtil.getPath() + 'mods'))
 			{
 				SUtil.applicationAlert('Uncaught Error :(!', "Whoops, seems you didn't extract the files from the .APK!\nPlease watch the tutorial by pressing OK.");
@@ -85,7 +90,7 @@ class SUtil
 				FileSystem.createDirectory(SUtil.getPath() + "saves");
 			}
 		}
-		#else
+		#elseif mobile
 		
 
 		if (!FileSystem.exists('./windose_data/') && !FileSystem.exists(SUtil.getPath() + './mods/'))
@@ -96,6 +101,12 @@ class SUtil
 		}
 		else
 		{
+			if (FileSystem.exists('windose_data') && !FileSystem.exists(SUtil.getPath() + 'windose_data')){
+				SUtil.copyContent('windose_data',SUtil.getPath() + 'windose_data');
+			}
+			if (FileSystem.exists('mods') && !FileSystem.exists(SUtil.getPath() + 'mods')){
+				SUtil.copyContent('mods',SUtil.getPath() + 'mods');
+			}
 			if (!FileSystem.exists('./windose_data/'))
 			{
 				SUtil.applicationAlert('Uncaught Error :(!', "Whoops, seems you didn't extract the assets/windose_data folder from the .APK!\nPlease watch the tutorial by pressing OK.");

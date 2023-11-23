@@ -227,6 +227,7 @@ var mobile = false;
 	function makeHaxeState(usehaxe:String, path:String, filename:String) {
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
+	parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 		var program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 		var interp = PluginManager.createSimpleInterp();
 		// set vars
@@ -269,6 +270,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("ClientPrefs", ClientPrefs);
 		interp.variables.set("ChartingState", editors.ChartingState);
 		interp.variables.set("Alphabet", Alphabet);
+		
 		interp.variables.set("curBeat", 0);
 		interp.variables.set("currentTitleState", this);
 		interp.variables.set("getRandomObject",getRandomObject);

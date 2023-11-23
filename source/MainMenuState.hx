@@ -192,6 +192,7 @@ catch (e)
 function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	trace("opening a haxe state (because we are cool :))");
 	var parser = new ParserEx();
+	parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 	var program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 	var interp = PluginManager.createSimpleInterp();
 	// set vars
@@ -259,6 +260,7 @@ function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	interp.variables.set("add", add);
 	interp.variables.set("remove", remove);
 	interp.variables.set("X", FlxAxes.X);
+	interp.variables.set("Y", FlxAxes.Y);
 	interp.variables.set("Application", Application);
 	interp.variables.set("togglePersistUpdate", togglePersistUpdate);
 	interp.variables.set("togglePersistentDraw", togglePersistentDraw);

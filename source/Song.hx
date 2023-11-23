@@ -55,13 +55,7 @@ class Song
 	private static function onLoadJson(songJson:Dynamic) // Convert old charts to newest format
 	{
 		
-		if (songJson.uiType == null) {
-
-			songJson.uiType = switch (songJson.song.toLowerCase()) {
-				default:
-					'normal';
-			}
-		}
+		
 		//if (songJson.mania == null) {
 		//	songJson.mania = 0;
 		//}
@@ -143,6 +137,14 @@ class Song
 		var songJson:Dynamic = parseJSONshit(rawJson);
 		if(jsonInput != 'events') StageData.loadDirectory(songJson);
 		onLoadJson(songJson);
+		if (songJson.song != null){
+		if (songJson.uiType == null) {
+
+			songJson.uiType = switch (songJson.song.toLowerCase()) {
+				default:
+					'normal';
+			}
+		}
 		if (songJson.songNameChinese == null){
 			songJson.songNameChinese = switch (songJson.song.toLowerCase()) {
 				default:
@@ -174,30 +176,7 @@ class Song
 			
 			}
 		}
-		if (songJson.gfVersion == null) {
-			// are you kidding me did i really do song to lowercase
-			switch (songJson.stage) {
-				
-					case 'limo':
-						songJson.gfVersion = 'gf-car';
-					case 'mall':
-						songJson.gfVersion = 'gf-christmas';
-					case 'mallEvil':
-						songJson.gfVersion = 'gf-christmas';
-					case 'school' 
-					| 'schoolEvil':
-					songJson.gfVersion = 'gf-pixel';
-					case 'tank':
-						songJson.gfVersion = 'gf-tankmen';
-						if (songJson.song.toLowerCase() == "stress") {
-							songJson.gfVersion = "pico-speaker";
-						}
-				
-				default:
-					songJson.gfVersion = 'gf';
-			}
-
-		}
+		
 		
 		if (songJson.cutsceneType == null) {
 			switch (songJson.song.toLowerCase()) {
@@ -237,6 +216,33 @@ class Song
 					songJson.composer = 'IDK';
 			}
 		}
+
+		if (songJson.gfVersion == null) {
+			// are you kidding me did i really do song to lowercase
+			switch (songJson.stage) {
+				
+					case 'limo':
+						songJson.gfVersion = 'gf-car';
+					case 'mall':
+						songJson.gfVersion = 'gf-christmas';
+					case 'mallEvil':
+						songJson.gfVersion = 'gf-christmas';
+					case 'school' 
+					| 'schoolEvil':
+					songJson.gfVersion = 'gf-pixel';
+					case 'tank':
+						songJson.gfVersion = 'gf-tankmen';
+						if (songJson.song.toLowerCase() == "stress") {
+							songJson.gfVersion = "pico-speaker";
+						}
+				
+				default:
+					songJson.gfVersion = 'gf';
+			}
+
+		}
+
+	}
 		return songJson;
 	}
 
