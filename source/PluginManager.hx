@@ -89,6 +89,10 @@ class PluginManager {
 	}
 
     public static function addVarsToInterp<T:Interp>(interp:T):T {
+        interp.variables.set('pushCameraShader', function(cam,value){
+			@:privateAccess
+			cam._filters.push(value);
+		});
         		interp.variables.set("SUtil", SUtil);
 		interp.variables.set("Conductor", Conductor);
 		interp.variables.set("FlxSprite", DynamicSprite);
@@ -177,6 +181,10 @@ interp.variables.set("mobile", false);
 		}
     public static function addVarsToInterpEx<T:InterpEx>(interp:T):T {
         interp.variables.set("SUtil", SUtil);
+        interp.variables.set('pushCameraShader', function(cam,value){
+			@:privateAccess
+			cam._filters.push(value);
+		});
 		interp.variables.set("Conductor", Conductor);
 		interp.variables.set("FlxSprite", DynamicSprite);
         interp.variables.set("AttachedSprite", AttachedSprite);

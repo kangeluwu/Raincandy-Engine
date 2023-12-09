@@ -38,6 +38,7 @@ class Song
 {
 	public var uiType:String = 'normal';
 	public var song:String;
+	public var basedOldMode:Bool = false;
 	public var songNameChinese:String = '';
 	public var composer:String = null;
 	public var notes:Array<SwagSection>;
@@ -84,11 +85,12 @@ class Song
 		}
 	}
 
-	public function new(song, notes, bpm)
+	public function new(song, notes, bpm, basedOldMode:Bool = false)
 	{
 		this.song = song;
 		this.notes = notes;
 		this.bpm = bpm;
+		this.basedOldMode = basedOldMode;
 	}
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
@@ -111,13 +113,13 @@ class Song
 			rawJson = Assets.getText(Paths.json(formattedFolder + '/' + formattedSong)).trim();
 			#end
 		}
-
+if (!basedOldMode){
 		while (!rawJson.endsWith("}"))
 		{
 			rawJson = rawJson.substr(0, rawJson.length - 1);
 			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
 		}
-
+	}
 		// FIX THE CASTING ON WINDOWS/NATIVE
 		// Windows???
 		// trace(songData);
