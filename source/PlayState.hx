@@ -5321,24 +5321,22 @@ if (opponentPlayer){
 		}
 		checkEventNote();
 
-		#if debug
+		if (chartingMode){
 		if(!endingSong && !startingSong) {
 
-		
+			if (FlxG.keys.justPressed.PAGEUP)
+				changeSection(10);
+			if (FlxG.keys.justPressed.PAGEDOWN)
+				changeSection(-10);
 			if (FlxG.keys.justPressed.ONE) {
 				if (Main.fpsVar.x != 10)
 					Main.fpsVar.x = 10;
 				KillNotes();
 				FlxG.sound.music.onComplete();
 			}
-			if(FlxG.keys.justPressed.TWO) { //Go 10 seconds into the future :O
-				if (Main.fpsVar.x != 10)
-					Main.fpsVar.x = 10;
-				setSongTime(Conductor.songPosition + 10000);
-				clearNotesBefore(Conductor.songPosition);
-			}
+
 		}
-		#end
+	}
 
 	
 		setOnLuas('cameraX', camFollowPos.x);
@@ -5349,6 +5347,7 @@ if (opponentPlayer){
 		setAllHaxeVar('cameraY', camFollowPos.y);
 		setAllHaxeVar('botPlay', botplay);
 		callAllHScript('onUpdatePost', [elapsed]);
+		callAllHScript('updatePost', [elapsed]);
 	}
 
 	function openPauseMenu()
@@ -6169,6 +6168,11 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 		}
 	}
 
+	function changeSection(sec:Int):Void
+		{
+			setSongTime(Conductor.songPosition + sec * 1000);
+			clearNotesBefore(Conductor.songPosition);
+		}
 
 	public var transitioning = false;
 	public function endSong():Void
@@ -7225,9 +7229,9 @@ public var curNoteHitHealth:Float = 0;
 				}
 				var strums = playerOne ? playerStrums : opponentStrums;
 				if(botplay) {
-					var time:Float = 0.05;
+					var time:Float = 0.02;
 					if (note.tail.length > 0)
-						time = 0.1;
+						time = 0.15;
 					if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
 						time += 0.1;
 					}
