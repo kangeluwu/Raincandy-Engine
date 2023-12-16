@@ -25,6 +25,14 @@ import flixel.tweens.FlxEase;
 import flixel.addons.effects.FlxTrail;
 import hscript.InterpEx;
 import hscript.Interp;
+import flixel.addons.effects.chainable.FlxEffectSprite;
+import flixel.addons.effects.chainable.FlxGlitchEffect;
+import flixel.addons.effects.chainable.FlxOutlineEffect;
+import flixel.addons.effects.chainable.FlxRainbowEffect;
+import flixel.addons.effects.chainable.FlxShakeEffect;
+import flixel.addons.effects.chainable.FlxTrailEffect;
+import flixel.addons.effects.chainable.FlxWaveEffect;
+import flixel.addons.effects.chainable.IFlxEffect;
 import flixel.FlxG;
 #if VIDEOS_ALLOWED
 
@@ -87,13 +95,29 @@ class PluginManager {
     public static function instanceExClass(classname:String, args:Array<Dynamic> = null) {
 		return interp.createScriptClassInstance(classname, args);
 	}
-
+    static function addEffectSpriteVars<T:Interp>(interp:T):T{
+        interp.variables.set("FlxEffectSprite", FlxEffectSprite);
+		interp.variables.set("FlxOutlineEffect", FlxOutlineEffect);
+        interp.variables.set("FlxRainbowEffect", FlxRainbowEffect);
+        interp.variables.set("FlxShakeEffect", FlxShakeEffect);
+        interp.variables.set("FlxTrailEffect", FlxTrailEffect);
+		interp.variables.set("FlxWaveEffect", FlxWaveEffect);
+        interp.variables.set("IFlxEffect", IFlxEffect);
+        interp.variables.set("FlxGlitchDirection", FlxGlitchDirection);
+        interp.variables.set("FlxOutlineMode", FlxOutlineMode);
+        interp.variables.set("FlxWaveMode", FlxWaveMode);
+        interp.variables.set("FlxWaveDirection", FlxWaveDirection);
+        interp.variables.set("FlxGlitchEffect", FlxGlitchEffect);
+        return interp;
+        
+    }
     public static function addVarsToInterp<T:Interp>(interp:T):T {
         interp.variables.set('pushCameraShader', function(cam,value){
 			@:privateAccess
 			cam._filters.push(value);
 		});
         		interp.variables.set("SUtil", SUtil);
+        interp.variables.set("SUtil", SUtil);
 		interp.variables.set("Conductor", Conductor);
 		interp.variables.set("FlxSprite", DynamicSprite);
         interp.variables.set("MetroSprite", MetroSprite);
@@ -162,7 +186,7 @@ interp.variables.set("mobile", false);
 		#else
 		interp.variables.set("debug", false);
 		#end
-
+        addEffectSpriteVars(interp);
         return interp;
     }
     public static function privateAccess(?funtion:Void->Void = null)
@@ -236,7 +260,7 @@ interp.variables.set("Paths", Paths);
 		#else
 		interp.variables.set("debug", false);
 		#end
-
+        addEffectSpriteVars(interp);
         return interp;
     }
 }

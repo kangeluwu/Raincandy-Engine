@@ -42,13 +42,6 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 
-		var option:Option = new Option('Classic Style',
-		'If checked, Used the OG Engine HUDs XD.', 
-		'classicStyle', 
-		'bool', 
-		false); 
-	addOption(option);
-
 	var option:Option = new Option('Always Show Cutscenes',
 	'If checked, Force show cutscenes, even in freeplay.', 
 	'alwaysDoCutscenes', 
@@ -56,12 +49,6 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 	false); 
 addOption(option);
 
-var option:Option = new Option('Skip Chart Type Menu',
-'If checked, Skip select chart type menu.', 
-'skipChartTypeMenu', 
-'bool', 
-false); 
-addOption(option);
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
 		var option:Option = new Option('Downscroll', //Name
 			'If checked, notes go Down instead of Up, simple enough.', //Description

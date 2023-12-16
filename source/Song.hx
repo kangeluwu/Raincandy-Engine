@@ -114,7 +114,6 @@ class Song
 			#end
 		}
 
-
 		while (!rawJson.endsWith("}"))
 		{
 			rawJson = rawJson.substr(0, rawJson.length - 1);

@@ -29,11 +29,15 @@ using StringTools;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay'];
-	private var grpOptions:FlxTypedGroup<Alphabet>;
-	private static var curSelected:Int = 0;
+	public var options:Array<String> = [];
+	public var grpOptions:FlxTypedGroup<Alphabet>;
+	public var pageOptions:Array<FlxTypedGroup<Alphabet>> = [];
+	public static var curSelected:Int = 0;
+	public static var curPageSelected:Int = 0;
 	public static var menuBG:FlxSprite;
+	public var pages:Array<Array<String>> = [['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay'],['Default Settings']];
 	public static var isFromPlayState:Bool = false;
+	var pageText:Alphabet;
 	function openSelectedSubstate(label:String) {
 		switch(label) {
 			case 'Note Colors':
@@ -68,6 +72,11 @@ class OptionsState extends MusicBeatState
 				removeVirtualPad();
 				#end
 				openSubState(new options.GameplaySettingsSubState());
+				case 'Default Settings':
+				#if mobile
+				removeVirtualPad();
+				#end
+				openSubState(new options.DefaultSettingsSubState());
 			case 'Adjust Delay and Combo':
 				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
 		}
@@ -75,43 +84,48 @@ class OptionsState extends MusicBeatState
 
 	var selectorLeft:Alphabet;
 	var selectorRight:Alphabet;
-
+	var lastPage:Int = 0;
+	static var lastCurSelected:Array<Int> = [0,0];
 	override function create() {
+		options = pages[curPageSelected];
 		if (isFromPlayState)
-			options.push('Change Gameplay stuffs');
+			pages[1].push('Change Gameplay stuffs');
 		#if desktop
 		DiscordClient.changePresence("Options Menu", null);
 		#end
-		#if IS_CORRUPTION
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('optionsBack'));
-		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
-		menuBG.updateHitbox();
-		menuBG.screenCenter();
-		menuBG.antialiasing = ClientPrefs.globalAntialiasing;
-		var glitch:FlxSprite = new FlxSprite().loadGraphic(Paths.image('optionsGlitch'));
-		
-		add(menuBG);
-		add(glitch);
-	#else
+	
 
 	var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 	bg.color = 0xFFea71fd;
 	bg.screenCenter();
 	bg.antialiasing = ClientPrefs.globalAntialiasing;
 	add(bg);
-	#end
+
 
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
-		for (i in 0...options.length)
-		{
-			var optionText:Alphabet = new Alphabet(0, 0, options[i], true, false);
-			optionText.screenCenter();
-			optionText.y += (100 * (i - (options.length / 2))) + 50;
-			grpOptions.add(optionText);
-		}
+        for (arrays in pages){
+			var grpOption = new FlxTypedGroup<Alphabet>();
 
+		for (i in 0...arrays.length)
+		{
+			var optionText:Alphabet = new Alphabet(0, 0, arrays[i], true, false);
+			optionText.screenCenter();
+			optionText.y += (100 * (i - (arrays.length / 2))) + 50;
+			grpOption.add(optionText);
+		}
+		pageOptions.push(grpOption);
+		add(grpOption);
+		for (item in grpOption.members) {
+			item.alpha = 0.0001;
+		}
+	}
+
+	grpOptions = pageOptions[curPageSelected];
+	for (item in grpOptions.members) {
+		item.alpha = 1;
+	}
 		selectorLeft = new Alphabet(0, 0, '>', true, false);
 		add(selectorLeft);
 		selectorRight = new Alphabet(0, 0, '<', true, false);
@@ -123,30 +137,44 @@ class OptionsState extends MusicBeatState
 		tipText.scrollFactor.set();
 		add(tipText);
 		#end
-		changeSelection();
+		pageText = new Alphabet(0, 0, "Page - " + (curPageSelected + 1), true, false,0.05,0.5);
+		add(pageText);
+		pageText.scale.set(0.5,0.5);
+		pageText.updateHitbox();
+		pageText.alpha = 0.5;
+		changePage();
 		ClientPrefs.saveSettings();
 		#if mobile
-		addVirtualPad(UP_DOWN, A_B_C);
+		addVirtualPad(FULL, A_B_C);
 		#end
 		super.create();
 	}
+	
 
+	
 	override function closeSubState() {
 		super.closeSubState();
 		ClientPrefs.saveSettings();
 		#if mobile
-		addVirtualPad(UP_DOWN, A_B_C);
+		addVirtualPad(FULL, A_B_C);
                 #end
 	}
 
 	override function update(elapsed:Float) {
 		super.update(elapsed);
-
+		
 		if (controls.UI_UP_P) {
 			changeSelection(-1);
 		}
 		if (controls.UI_DOWN_P) {
 			changeSelection(1);
+		}
+
+		if (controls.UI_LEFT_P) {
+			changePage(-1);
+		}
+		if (controls.UI_RIGHT_P) {
+			changePage(1);
 		}
 
 		if (controls.BACK) {
@@ -166,7 +194,28 @@ class OptionsState extends MusicBeatState
 		}
 		#end
 	}
-	
+	function changePage(change:Int = 0) {
+		for (item in grpOptions.members) {
+			item.alpha = 0.0001;
+		}
+		lastCurSelected[lastPage] = curSelected;
+		curPageSelected += change;
+		if (curPageSelected < 0)
+			curPageSelected = pages.length - 1;
+		if (curPageSelected >= pages.length)
+			curPageSelected = 0;
+		lastPage = curPageSelected;
+		curSelected = lastCurSelected[curPageSelected];
+		options = pages[curPageSelected];
+		grpOptions = pageOptions[curPageSelected];
+		for (item in grpOptions.members) {
+			item.alpha = 1;
+		}
+		pageText.changeText("Page - " + (curPageSelected + 1));
+		changeSelection();
+		FlxG.sound.play(Paths.sound('scrollMenu'));
+	}
+
 	function changeSelection(change:Int = 0) {
 		curSelected += change;
 		if (curSelected < 0)

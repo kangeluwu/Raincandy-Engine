@@ -2188,7 +2188,7 @@ if (!opponentPlayer)
 		var daSong:String = Paths.formatToSongPath(curSong);
 		if ((isStoryMode || ClientPrefs.alwaysDoCutscenes)&& !seenCutscene)
 		{
-			switch (SONG.cutsceneType)
+			switch (SONG.cutsceneType.toLowerCase())
 			{
 				case "monster":
 					var whiteScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.WHITE);

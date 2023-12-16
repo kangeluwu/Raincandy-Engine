@@ -46,15 +46,6 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			false); //Default value
 		addOption(option);
 
-	#if HAD_DIFFERNET_LANGS
-	var option:Option = new Option('language',
-		"Which language do you prefer for the Storymenu Dialog and PlayState UI?",
-		'langType',
-		'string',
-		'English',
-		['English', 'Chinese']);
-	addOption(option);
-	#end
 
 		var option:Option = new Option('Anti-Aliasing',
 			'If unchecked, disables anti-aliasing, increases performance\nat the cost of sharper visuals.',
