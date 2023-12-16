@@ -11,7 +11,7 @@ class ClientPrefs {
 	public static var cacheOnGPU:Bool = true; //From Stilic
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
-	public static var skipSplash:Bool = false;
+	public static var skipSplash:Bool = true;
 	public static var opponentStrums:Bool = true;
 	public static var showFPS:Bool = true;
 	public static var showComboBreaks:Bool = true;
