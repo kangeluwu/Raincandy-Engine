@@ -266,6 +266,7 @@ class Note extends FlxSprite
 	public var offsetX:Float = 0;
 	public var offsetY:Float = 0;
 	public var offsetAngle:Float = 0;
+	public var multScale:Float = 1;
 	public var multAlpha:Float = 1;
 	public var multSpeed(default, set):Float = 1;
 	public var ratingDamageAmount:Null<Float> = null;
@@ -274,7 +275,7 @@ class Note extends FlxSprite
 	public var copyY:Bool = true;
 	public var copyAngle:Bool = true;
 	public var copyAlpha:Bool = true;
-
+	public var copyScale:Bool = true;
 	public var altNote:Bool = false;
 	public var altNum:Int = 0;
 	
@@ -562,6 +563,7 @@ else{
 			earlyHitMult = 1;
 		}
 		x += offsetX;
+		
 		callAllHScript('onCreate', [strumTime, noteData, prevNote, sustainNote, inEditor,this]);
 	}
 

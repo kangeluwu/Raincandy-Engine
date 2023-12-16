@@ -5203,10 +5203,12 @@ if (opponentPlayer){
 				var strumAlpha:Float = strumGroup.members[daNote.noteData].alpha;
 				var strumScroll:Bool = strumGroup.members[daNote.noteData].downScroll;
 
+
 				strumX += daNote.offsetX;
 				strumY += daNote.offsetY;
 				strumAngle += daNote.offsetAngle;
 				strumAlpha *= daNote.multAlpha;
+	
 				breakGroup.members[daNote.noteData].x = strumX;
 				if (strumScroll) //Downscroll
 				{
@@ -5229,7 +5231,10 @@ if (opponentPlayer){
 				if(daNote.copyX){
 					daNote.x = strumX + Math.cos(angleDir) * daNote.distance;
 				}
-
+				if(daNote.copyScale){
+					daNote.scale.x *= daNote.multScale;
+					daNote.scale.y *= daNote.multScale;
+				}
 				var coolMustPress = daNote.mustPress;
 				if (opponentPlayer)
 					coolMustPress = !daNote.mustPress;
@@ -5342,7 +5347,7 @@ if (opponentPlayer){
 		setOnLuas('cameraX', camFollowPos.x);
 		setOnLuas('cameraY', camFollowPos.y);
 		setOnLuas('botPlay', botplay);
-
+		callOnLuas('onUpdatePost', [elapsed]);
 		setAllHaxeVar('cameraX', camFollowPos.x);
 		setAllHaxeVar('cameraY', camFollowPos.y);
 		setAllHaxeVar('botPlay', botplay);

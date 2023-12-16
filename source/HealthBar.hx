@@ -12,6 +12,7 @@ class HealthBar extends FlxSpriteGroup
 	public var leftBar:FlxSprite;
 	public var rightBar:FlxSprite;
 	public var bg:FlxSprite;
+	public var post:FlxSprite;
 	public var valueFunction:Void->Float = function() return 0;
 	public var percent(default, set):Float = 0;
 	public var bounds:Dynamic = {min: 0, max: 1};
@@ -37,6 +38,18 @@ class HealthBar extends FlxSpriteGroup
 			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + image + '.png')):
 		FNFAssets.getBitmapData(Paths.modFolders('images/' + image + '.png')));
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
+		var gra = (FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + image + 'Post.png') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + image + 'Post.png')) ? 
+		(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + image + 'Post.png') ? 
+		FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/' + image + 'Post.png') : 
+		FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + image + 'Post.png')):
+	FNFAssets.getBitmapData(Paths.modFolders('images/' + image + 'Post.png'));
+	
+		post = new FlxSprite();
+		
+	if (gra != null){
+	    post.loadGraphic(gra);
+		post.antialiasing = ClientPrefs.globalAntialiasing;
+		}
 		barWidth = Std.int(bg.width - 10);
 		barHeight = Std.int(bg.height - 8);
 
@@ -53,6 +66,11 @@ class HealthBar extends FlxSpriteGroup
 		add(bg);
 		add(leftBar);
 		add(rightBar);
+		if (gra != null){
+			post.offset.x += 1;
+			post.offset.y += 1;
+		add(post);
+		}
 		regenerateClips();
 	}
 
