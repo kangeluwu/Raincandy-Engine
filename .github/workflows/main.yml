@@ -35,7 +35,7 @@ jobs:
           sudo apt-get install libvlccore-dev
           haxelib setup ~/haxelibhaxeui-core
           haxelib install hxcpp > /dev/null
-          haxelib install lime
+          haxelib install lime 8.0.0
           haxelib install openfl 9.2.0
           haxelib install flixel 4.11.0
           haxelib install devicelanguage 1.0.0 
@@ -46,7 +46,7 @@ jobs:
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install hxCodec 3.0.2
-          haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
+          haxelib git linc_luajit https://github.com/Sirox228/linc_luajit
           haxelib install hscript 2.5.0
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
@@ -85,7 +85,7 @@ jobs:
         run: |
           haxelib setup C:/haxelib
           haxelib install hxcpp > nul
-          haxelib install lime
+          haxelib install lime 8.0.0
           haxelib install openfl 9.2.0
           haxelib install flixel 4.11.0
           haxelib install devicelanguage 1.0.0 
@@ -96,7 +96,7 @@ jobs:
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install hxCodec 3.0.2
-          haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
+          haxelib git linc_luajit https://github.com/Sirox228/linc_luajit
           haxelib install hscript 2.5.0
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
@@ -136,7 +136,7 @@ jobs:
         run: |
           haxelib setup ~/haxelib
           haxelib install hxcpp > /dev/null
-          haxelib install lime
+          haxelib install lime 8.0.0
           haxelib install openfl 9.2.0
           haxelib  install flixel 4.11.0
           haxelib install devicelanguage 1.0.0 
@@ -147,7 +147,7 @@ jobs:
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install hxCodec 3.0.2
-          haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
+          haxelib git linc_luajit https://github.com/Sirox228/linc_luajit
           haxelib install hscript 2.5.0
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
@@ -213,7 +213,7 @@ jobs:
                 run: |
                   haxelib setup ~/haxelib
                   haxelib install hxcpp > nul
-                  haxelib install lime
+                  haxelib install lime 8.0.0
                   haxelib install openfl 9.2.0
                   haxelib install flixel 4.11.0
                   haxelib install devicelanguage 1.0.0 
@@ -251,7 +251,7 @@ jobs:
                   ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         
               - name: Building
-                run: haxelib run lime build Project.xml android -final
+                run: haxelib run lime build android -D NO_PRECOMPILED_HEADERS -final
         
               - name: Clear Previous Cache
                 uses: actions/github-script@main
