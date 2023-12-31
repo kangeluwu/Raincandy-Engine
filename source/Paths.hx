@@ -251,7 +251,12 @@ class Paths
 		var voices = returnSound('songs', songKey);
 		return voices;
 	}
-
+	inline static public function songStuffer(song:String,fileName:String = 'Inst'):Any
+		{
+			var songKey:String = '${formatToSongPath(song)}/$fileName';
+			var voices = returnSound('songs', songKey);
+			return voices;
+		}
 	inline static public function inst(song:String):Any
 	{
 		var songKey:String = '${formatToSongPath(song)}/Inst';
