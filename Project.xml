@@ -142,6 +142,7 @@
 	<haxelib name="uniontypes"/>
 	<haxelib name="haxeui-core"/>
 	<haxelib name="tjson"/>
+	<haxelib name="flxanimate"/>
 	<!--In case you want to use the ui package-->
 	<haxelib name="flixel-ui" />
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
@@ -228,7 +229,7 @@
 	<!--Used for Izzy Engine's crash handler-->
 	<haxedef name="HXCPP_CHECK_POINTER" if="CRASH_HANDLER" />
 	<haxedef name="HXCPP_STACK_LINE" if="CRASH_HANDLER" />
-
+	<haxedef name='no-deprecation-warnings' />
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->

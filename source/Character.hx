@@ -43,7 +43,7 @@ import flixel.math.FlxRect;
 
 #end
 typedef CharacterFile = {
-	var crossColor:FlxColor;
+	var crossColor:Null<FlxColor>;
 	var animations:Array<AnimArray>;
 	var image:String;
 	var scale:Float;
@@ -65,10 +65,12 @@ typedef AnimArray = {
 	var loop:Bool;
 	var indices:Array<Int>;
 	var offsets:Array<Int>;
+	var swappedoffsets:Array<Int>;
 }
 
 class Character extends FlxSprite
 {
+	public var extraData:Map<String, Dynamic> = new Map<String, Dynamic>();
 	public var inEdtior:Bool = false;
 	public var animOffsets:Map<String, Array<Dynamic>>;
 	public var debugMode:Bool = false;
@@ -109,7 +111,7 @@ class Character extends FlxSprite
 	private var interp:Interp;
 
 	//hscripts stuff pretty fucked up
-	
+	public var isAnimateAtlas:Bool = false;
 	public static var DEFAULT_CHARACTER:String = 'bf'; //In case a character is missing, it will use BF on its place
 	function callInterp(func_name:String, args:Array<Dynamic>) {
 		if (interp == null) return;
@@ -242,6 +244,7 @@ callInterp("init", [this]);
 					
 					case "texture":
 						frames = AtlasFrameMaker.construct(json.image);
+						isAnimateAtlas = true;
 				}
 				imageFile = json.image;
 
@@ -285,8 +288,10 @@ callInterp("init", [this]);
 						} else {
 							animation.addByPrefix(animAnim, animName, animFps, animLoop);
 						}
-						if(anim.offsets == null) 
+						if(anim.crossColor == null) 
 							crossFadeColor = FlxColor.fromRGB(healthColorArray[0],healthColorArray[1],healthColorArray[2]);
+						else
+							crossFadeColor = crossColor;
 						if(anim.offsets != null && anim.offsets.length > 1) {
 							addOffset(anim.anim, anim.offsets[0], anim.offsets[1]);
 						}
