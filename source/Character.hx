@@ -65,7 +65,7 @@ typedef AnimArray = {
 	var loop:Bool;
 	var indices:Array<Int>;
 	var offsets:Array<Int>;
-	var swappedoffsets:Array<Int>;
+
 }
 
 class Character extends FlxSprite
@@ -270,7 +270,10 @@ callInterp("init", [this]);
 				if(json.healthbar_colors != null && json.healthbar_colors.length > 2)
 					healthColorArray = json.healthbar_colors;
 
-
+				if(json.crossColor == null) 
+					crossFadeColor = FlxColor.fromRGB(healthColorArray[0],healthColorArray[1],healthColorArray[2]);
+				else
+					crossFadeColor = crossColor;
 
 				antialiasing = !noAntialiasing;
 				if(!ClientPrefs.globalAntialiasing) antialiasing = false;
@@ -288,10 +291,7 @@ callInterp("init", [this]);
 						} else {
 							animation.addByPrefix(animAnim, animName, animFps, animLoop);
 						}
-						if(anim.crossColor == null) 
-							crossFadeColor = FlxColor.fromRGB(healthColorArray[0],healthColorArray[1],healthColorArray[2]);
-						else
-							crossFadeColor = crossColor;
+					
 						if(anim.offsets != null && anim.offsets.length > 1) {
 							addOffset(anim.anim, anim.offsets[0], anim.offsets[1]);
 						}
