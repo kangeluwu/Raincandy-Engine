@@ -20,6 +20,7 @@ var bg;
 var intendedColor;
 var curPlaying = false;
 var colorTween;
+var curSong = null;
 function create()
 {
 	FlixG.mouse.visible = true;
@@ -179,6 +180,8 @@ function weekIsLocked(name) {
 	return (!leWeek.startUnlocked && leWeek.weekBefore.length > 0 && (!StoryMenuState.weekCompleted.exists(leWeek.weekBefore) || !StoryMenuState.weekCompleted.get(leWeek.weekBefore)));
 }
 var instPlaying = -1;
+var songFileNames = ['Inst','Voices'];
+
 var holdTime = 0;
 function update(elapsed)
 {
@@ -288,22 +291,25 @@ function update(elapsed)
 		}
 		else if(space || ClientPrefs.classicStyle)
 			{
-				if(instPlaying != curSelected)
+				//if(instPlaying != curSelected)
+				Paths.currentModDirectory = songs[curSelected].folder;
+				var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+				curSong = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+				songFileNames = curSong.songFileNames;
+				if ((instPlaying != curSelected) || ((PlayState.SONG != curSong || PlayState.SONG.songFileNames != songFileNames) && curSong != null))
 				{
 					if (preload){
 						destroyFreeplayVocals();
 					FlixG.sound.music.volume = 0;
-					Paths.currentModDirectory = songs[curSelected].folder;
-					var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
-					PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-					
+					PlayState.SONG = curSong;
+					PlayState.SONG.songFileNames = songFileNames;
 					if (PlayState.SONG.needsVoices && !ClientPrefs.classicStyle)
-						FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+						FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
 					else
 						FreeplayState.vocals = new FlxSound();
 	
 					FlixG.sound.list.add(FreeplayState.vocals);
-					FlixG.sound.playMusic(Paths.inst(PlayState.SONG.song), 0.7);
+					FlixG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[0]), 0.7);
 					FreeplayState.vocals.play();
 					FreeplayState.vocals.persist = true;
 					FreeplayState.vocals.looped = true;

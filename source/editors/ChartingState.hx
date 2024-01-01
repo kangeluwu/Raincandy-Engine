@@ -95,6 +95,7 @@ class ChartingState extends MusicBeatState
 	public var ignoreWarnings = false;
 	var undos = [];
 	var redos = [];
+	var songFileNames:Array<String> = ['Inst','Voices'];//YOOOOOOOOOOOOOOOOOOO
 	var eventStuff:Array<Dynamic> =
 	[
 		['', "Nothing. Yep, that's right."],
@@ -180,8 +181,10 @@ class ChartingState extends MusicBeatState
 	var value3InputText:FlxUIInputText;
 	var currentSongName:String;
 
-	var player1TextField:FlxUIInputText;
+	var vocalFileName:FlxUIInputText;
+	var instrumentalFileName:FlxUIInputText;
 	var player2TextField:FlxUIInputText;
+	var player1TextField:FlxUIInputText;
 	var gfTextField:FlxUIInputText;
 	var cutsceneTextField:FlxUIInputText;
 	var uiTextField:FlxUIInputText;
@@ -263,6 +266,7 @@ var voicesStuff:String = '';
 				song: 'Test',
 				notes: [],
 				events: [],
+				songFileNames: ['Inst','Voices'],
 				bpm: 150.0,
 				needsVoices: true,
 				arrowSkin: '',
@@ -289,7 +293,7 @@ var voicesStuff:String = '';
 		#end
 
 
-
+		songFileNames = _song.songFileNames;
 		vortex = FlxG.save.data.chart_vortex;
 		ignoreWarnings = FlxG.save.data.ignoreWarnings;
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -747,7 +751,9 @@ Left/Right - Go to the previous/next section
 				_song.player2 = text;
 				updateHeads();
 			};
-			
+
+
+
 			gfTextField = new FlxUIInputText(10, 120, 70, _song.gfVersion, 8);
 			gfTextField.callback = function(text:String,gf:String){
 				_song.gfVersion = text;
@@ -759,6 +765,16 @@ Left/Right - Go to the previous/next section
 			uiTextField = new FlxUIInputText(10, 140, 70, _song.uiType, 8);
 			composerTextField = new FlxUIInputText(10, 160, 70, _song.composer, 8);
 
+			instrumentalFileName = new FlxUIInputText(10, 180, 70, _song.songFileNames[0], 8);
+			instrumentalFileName.callback = function(text:String,as:String){
+				_song.songFileNames[0] = text;
+				loadSong();
+			}
+			vocalFileName = new FlxUIInputText(10, 200, 70, _song.songFileNames[1], 8);
+			vocalFileName.callback = function(text:String,as:String){
+				_song.songFileNames[1] = text;
+				loadSong();
+			}
 			playerText = new FlxText(player1TextField.x + 70, player1TextField.y, 0, ":bf", 8, false);
 			enemyText = new FlxText(player2TextField.x + 70, player2TextField.y, 0, ":opponent", 8, false);
 			gfText = new FlxText(gfTextField.x + 70, gfTextField.y, 0, ":gf", 8, false);
@@ -767,6 +783,9 @@ Left/Right - Go to the previous/next section
 			uiText = new FlxText(uiTextField.x + 70, uiTextField.y, 0, ":UI", 8, false);
 			composerText = new FlxText(composerTextField.x + 70, composerTextField.y, 0, ":composer", 8, false);
 
+			var instrumentalText = new FlxText(uiTextField.x + 70, instrumentalFileName.y, 0, ":Instrumental", 8, false);
+			var vocalText = new FlxText(composerTextField.x + 70, vocalFileName.y, 0, ":Voices", 8, false);
+
 			blockPressWhileTypingOn.push(player1TextField);
 			blockPressWhileTypingOn.push(player2TextField);
 			blockPressWhileTypingOn.push(gfTextField);
@@ -774,7 +793,8 @@ Left/Right - Go to the previous/next section
 			blockPressWhileTypingOn.push(cutsceneTextField);
 			blockPressWhileTypingOn.push(uiTextField);
 			blockPressWhileTypingOn.push(composerTextField);
-
+			blockPressWhileTypingOn.push(instrumentalFileName);
+			blockPressWhileTypingOn.push(vocalFileName);
 	
 			tab_group_char.add(stageTextField);
 			tab_group_char.add(gfTextField);
@@ -783,6 +803,8 @@ Left/Right - Go to the previous/next section
 			tab_group_char.add(cutsceneTextField);
 			tab_group_char.add(uiTextField);
 			tab_group_char.add(composerTextField);
+			tab_group_char.add(instrumentalFileName);
+			tab_group_char.add(vocalFileName);
 			tab_group_char.add(playerText);
 			tab_group_char.add(enemyText);
 			tab_group_char.add(gfText);
@@ -790,6 +812,8 @@ Left/Right - Go to the previous/next section
 			tab_group_char.add(cutsceneText);
 			tab_group_char.add(uiText);
 			tab_group_char.add(composerText);
+			tab_group_char.add(instrumentalText);
+			tab_group_char.add(vocalText);
 			UI_box.addGroup(tab_group_char);
 
 		}
@@ -1551,8 +1575,12 @@ Left/Right - Go to the previous/next section
 			FlxG.sound.music.stop();
 			// vocals.stop();
 		}
-
-		var file:Dynamic = Paths.voices(currentSongName);
+		if (vocals != null)
+			{
+				vocals.stop();
+				// vocals.stop();
+			}
+		var file:Dynamic = Paths.songStuffer(currentSongName,songFileNames[1]);
 		vocals = new FlxSound();
 		if (Std.isOfType(file, Sound) || OpenFlAssets.exists(file)) {
 			vocals.loadEmbedded(file);
@@ -1565,7 +1593,7 @@ Left/Right - Go to the previous/next section
 	}
 
 	function generateSong() {
-		FlxG.sound.playMusic(Paths.inst(currentSongName), 0.6/*, false*/);
+		FlxG.sound.playMusic(Paths.songStuffer(currentSongName,songFileNames[0]), 0.6/*, false*/);
 		if (instVolume != null) FlxG.sound.music.volume = instVolume.value;
 		if (check_mute_inst != null && check_mute_inst.checked) FlxG.sound.music.volume = 0;
 

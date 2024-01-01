@@ -3670,7 +3670,7 @@ if (!dadChar.beingControlled)
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
 
-		FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
+		FlxG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[0]), 1, false);
 
 		FlxG.sound.music.onComplete = onSongComplete;
 		vocals.play();
@@ -3732,10 +3732,10 @@ var precacheNotes = [];
            data.set("song",songData);
 		   var preVocal = new FlxSound();
 			if (songData.needsVoices)
-				preVocal = new FlxSound().loadEmbedded(Paths.voices(songData.song));
+				preVocal = new FlxSound().loadEmbedded(Paths.songStuffer(songData.song,PlayState.SONG.songFileNames[1]));
 			else
 				preVocal = new FlxSound();
-			var preInst = new FlxSound().loadEmbedded(Paths.inst(songData.song));
+			var preInst = new FlxSound().loadEmbedded(Paths.songStuffer(songData.song,PlayState.SONG.songFileNames[0]));
 
 			FlxG.sound.list.add(preVocal);
 			FlxG.sound.list.add(preInst);
@@ -4120,13 +4120,13 @@ var precacheNotes = [];
 
 		curSong = songData.song;
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			vocals = new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
 
 		else
 			vocals = new FlxSound();
 		
 		FlxG.sound.list.add(vocals);
-		FlxG.sound.list.add(new FlxSound().loadEmbedded(Paths.inst(PlayState.SONG.song)));
+		FlxG.sound.list.add(new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[0])));
 
 		notes = new FlxTypedGroup<Note>();
 		add(notes);

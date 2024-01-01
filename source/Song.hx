@@ -14,6 +14,7 @@ using StringTools;
 
 typedef SwagSong =
 {
+	var songFileNames:Null<Array<String>>;
 	var song:String;
 	var notes:Array<SwagSection>;
 	var songNameChinese:String;
@@ -38,6 +39,7 @@ class Song
 {
 	public var uiType:String = 'normal';
 	public var song:String;
+	public var songFileNames:Array<String> = ['Inst','Voices'];
 	public var basedOldMode:Bool = false;
 	public var songNameChinese:String = '';
 	public var composer:String = null;
@@ -140,6 +142,7 @@ class Song
 		if(jsonInput != 'events') StageData.loadDirectory(songJson);
 		onLoadJson(songJson);
 		if (songJson.song != null){
+			if (songJson.songFileNames == null) songJson.songFileNames = ['Inst','Voices'];
 		if (songJson.uiType == null) {
 
 			songJson.uiType = switch (songJson.song.toLowerCase()) {
