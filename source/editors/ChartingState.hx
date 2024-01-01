@@ -1850,10 +1850,12 @@ case 'Alt Anim Note':
 					{
 						if (FlxG.keys.pressed.CONTROL #if mobile   || _virtualpad.buttonD.pressed #end)
 						{
+							autosaveSong();
 							selectNote(note);
 						}
 						else if (FlxG.keys.pressed.ALT && curSelectedNote.length <= 3)
 						{
+							autosaveSong();
 							selectNote(note);
 							curSelectedNote[3] = noteTypeIntMap.get(currentType);
 							updateGrid();
@@ -1861,6 +1863,7 @@ case 'Alt Anim Note':
 						else
 						{
 							//trace('tryin to delete note...');
+							autosaveSong();
 							deleteNote(note);
 						}
 					}
@@ -2143,6 +2146,7 @@ case 'Alt Anim Note':
 					for (i in 0...controlArray.length)
 					{
 						if(controlArray[i])
+							autosaveSong();
 							doANoteThing(conductorTime, i, style);
 					}
 				}

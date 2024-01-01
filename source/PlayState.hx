@@ -7234,7 +7234,7 @@ public var curNoteHitHealth:Float = 0;
 				}
 				var strums = playerOne ? playerStrums : opponentStrums;
 				if(botplay) {
-					var time:Float = 0.02;
+					var time:Float = 0.05;
 					if (note.tail.length > 0)
 						time = 0.15;
 					if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
