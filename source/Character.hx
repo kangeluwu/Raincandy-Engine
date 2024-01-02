@@ -273,7 +273,7 @@ callInterp("init", [this]);
 				if(json.crossColor == null) 
 					crossFadeColor = FlxColor.fromRGB(healthColorArray[0],healthColorArray[1],healthColorArray[2]);
 				else
-					crossFadeColor = crossColor;
+					crossFadeColor = json.crossColor;
 
 				antialiasing = !noAntialiasing;
 				if(!ClientPrefs.globalAntialiasing) antialiasing = false;
