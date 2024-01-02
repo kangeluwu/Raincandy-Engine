@@ -292,17 +292,17 @@ function update(elapsed)
 		else if(space || ClientPrefs.classicStyle)
 			{
 				//if(instPlaying != curSelected)
-				Paths.currentModDirectory = songs[curSelected].folder;
-				var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
-				curSong = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-				songFileNames = curSong.songFileNames;
-				if ((instPlaying != curSelected) || ((PlayState.SONG != curSong || PlayState.SONG.songFileNames != songFileNames) && curSong != null))
+			
+				if ((instPlaying != curSelected))
 				{
 					if (preload){
 						destroyFreeplayVocals();
+						Paths.currentModDirectory = songs[curSelected].folder;
+						var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+						curSong = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+						songFileNames = curSong.songFileNames;
 					FlixG.sound.music.volume = 0;
 					PlayState.SONG = curSong;
-					PlayState.SONG.songFileNames = songFileNames;
 					if (PlayState.SONG.needsVoices && !ClientPrefs.classicStyle)
 						FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
 					else
@@ -389,6 +389,33 @@ function changeDiff(change)
 		PlayState.storyDifficulty = curDifficulty;
 		diffText.text = '< ' + CoolUtil.difficultyString() + ' >';
 		positionHighscore();
+		var songLowercase = Paths.formatToSongPath(songs[curSelected].songName);
+		var poop = Highscore.formatSong(songLowercase, curDifficulty);
+		curSong = Song.loadFromJson(poop, songLowercase);
+		if (songFileNames[0] != curSong.songFileNames[0] || songFileNames[1] != curSong.songFileNames[1])
+			{
+				if (preload){
+					destroyFreeplayVocals();
+
+					songFileNames = curSong.songFileNames;
+				FlixG.sound.music.volume = 0;
+				PlayState.SONG = curSong;
+				if (PlayState.SONG.needsVoices && !ClientPrefs.classicStyle)
+					FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,curSong.songFileNames[1]));
+				else
+					FreeplayState.vocals = new FlxSound();
+
+				FlixG.sound.list.add(FreeplayState.vocals);
+				FlixG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,curSong.songFileNames[0]), 0.7);
+				FreeplayState.vocals.play();
+				FreeplayState.vocals.persist = true;
+				FreeplayState.vocals.looped = true;
+				FreeplayState.vocals.volume = 0.7;
+				instPlaying = curSelected;
+}
+			}
+			
+			trace(songFileNames);
 }
 function stepHit(step)
 {
