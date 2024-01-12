@@ -115,11 +115,11 @@ function create()
 
     add(chartingText);
 
-    botText = new FlxText(20, 15 + 101, 0, "BOT PLAY", 32);
+    botText = new FlxText(20, 25 + 101, 0, "BOT PLAY", 32);
     botText.scrollFactor.set();
     botText.setFormat(Paths.font(font), 32);
     botText.x = FlxG.width - (botText.width + 20);
-    botText.y = FlxG.height - (botText.height + 40);
+	botText.y = FlxG.height - (botText.height + 52);
 
 
     botText.updateHitbox();
