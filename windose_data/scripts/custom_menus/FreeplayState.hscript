@@ -291,15 +291,14 @@ function update(elapsed)
 		}
 		else if(space || ClientPrefs.classicStyle)
 			{
-				//if(instPlaying != curSelected)
-				Paths.currentModDirectory = songs[curSelected].folder;
-				var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
-				curSong = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-				songFileNames = curSong.songFileNames;
-				if ((instPlaying != curSelected) || ((PlayState.SONG != curSong || PlayState.SONG.songFileNames != songFileNames) && curSong != null))
+				if(instPlaying != curSelected)
 				{
 					if (preload){
 						destroyFreeplayVocals();
+						Paths.currentModDirectory = songs[curSelected].folder;
+						var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+						curSong = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+						songFileNames = curSong.songFileNames;
 					FlixG.sound.music.volume = 0;
 					PlayState.SONG = curSong;
 					PlayState.SONG.songFileNames = songFileNames;
