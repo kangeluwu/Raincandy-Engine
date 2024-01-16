@@ -21,7 +21,7 @@ function create()
     addHaxeLibrary('LoadingState');
     addHaxeLibrary('OptionsState','options');
     addHaxeLibrary('MasterEditorMenu','editors');
-
+    addHaxeLibrary('CustomFadeTransition');
     if (!FlixG.sound.music.playing)
         {
             FlixG.sound.playMusic(Paths.music(ClientPrefs.menuMusic),0);
@@ -150,17 +150,9 @@ function create()
 			}
 		}
     }
-    var test = new FlxSprite().makeGraphic(Std.int(FlxG.width * 8), Std.int(FlxG.height * 8), BlackColor);
-    test.scrollFactor.set();
+    currentMainMenuState.openSubState(new CustomFadeTransition(0.6, true));
 
-    add(test);
-    FlxTween.tween(test, {alpha: 0}, 0.85,{
-        ease: FlxEase.linear,
-        onComplete: function(twn)
-        {
-            remove(test);
-        }
-    });
+
 if (mobile)
     addVirtualPads('up_down','a_b_7');
 
