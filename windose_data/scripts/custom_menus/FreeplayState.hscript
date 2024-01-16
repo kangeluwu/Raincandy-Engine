@@ -380,6 +380,18 @@ function changeDiff(change)
 		if (curDifficulty >= CoolUtil.difficulties.length)
 			curDifficulty = 0;
 
+		var songLowercase = Paths.formatToSongPath(songs[curSelected].songName);
+		var poop = Highscore.formatSong(songLowercase, curDifficulty);
+
+		if (!FNFAssets.exists(Paths.json(Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase())))
+			{
+				// assume we pecked up the difficulty, return to default difficulty
+				trace("UH OH SONG IN SPECIFIED DIFFICULTY DOESN'T EXIST\nUSING DEFAULT DIFFICULTY");
+				curDifficulty = 0;
+				poop =  Highscore.formatSong(songLowercase, curDifficulty);
+			}
+			curSong = Song.loadFromJson(poop, songLowercase);
+			
 		lastDifficultyName = CoolUtil.difficulties[curDifficulty];
 
 		if (!switchTarget){
@@ -389,9 +401,7 @@ function changeDiff(change)
 		PlayState.storyDifficulty = curDifficulty;
 		diffText.text = '< ' + CoolUtil.difficultyString() + ' >';
 		positionHighscore();
-		var songLowercase = Paths.formatToSongPath(songs[curSelected].songName);
-		var poop = Highscore.formatSong(songLowercase, curDifficulty);
-		curSong = Song.loadFromJson(poop, songLowercase);
+		
 		if (songFileNames[0] != curSong.songFileNames[0] || songFileNames[1] != curSong.songFileNames[1])
 			{
 				if (preload){
