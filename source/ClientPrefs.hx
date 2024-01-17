@@ -35,7 +35,8 @@ class ClientPrefs {
 	public static var noteOffset:Int = 0;
 	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
 	public static var imagesPersist:Bool = false;
-	public static var ghostTapping:Bool = true;
+	public static var usingOldNoteColorStuffer:Bool = true;
+	public static var splashAlpha:Int = 1;
 	public static var langType:String = 'English';
 	public static var timeBarType:String = 'Time Left';
 	public static var scoreZoom:Bool = true;
@@ -126,6 +127,7 @@ class ClientPrefs {
 		//FlxG.save.data.cursing = cursing;
 		//FlxG.save.data.violence = violence;
 		FlxG.save.data.alwaysDoCutscenes = alwaysDoCutscenes;
+		FlxG.save.data.splashAlpha = splashAlpha;
 		FlxG.save.data.camZooms = camZooms;
 		FlxG.save.data.noteOffset = noteOffset;
 		FlxG.save.data.menuMusic = menuMusic;
@@ -189,6 +191,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.vibration != null) {
 			vibration = FlxG.save.data.vibration;
+		}
+		if(FlxG.save.data.splashAlpha != null) {
+			splashAlpha = FlxG.save.data.splashAlpha;
 		}
 		if(FlxG.save.data.showComboBreaks != null) {
 			showComboBreaks = FlxG.save.data.showComboBreaks;
