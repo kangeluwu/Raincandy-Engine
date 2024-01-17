@@ -24,6 +24,7 @@ class ClientPrefs {
 	public static var hideMs:Bool = false;
 	public static var noteSplashes:Bool = true;
 	public static var lowQuality:Bool = false;
+	public static var ghostTapping:Bool = true;
 	public static var msDisabled:Bool = false;
 	public static var classicStyle:Bool = false;
 	public static var framerate:Int = 60;

@@ -76,59 +76,7 @@ class Alphabet extends FlxSpriteGroup
 		}
 	}
 
-	public function setScale(newX:Float, newY:Null<Float> = null)
-		{
-			var lastX:Float = scale.x;
-			var lastY:Float = scale.y;
-			if(newY == null) newY = newX;
-			@:bypassAccessor
-				scaleX = newX;
-			@:bypassAccessor
-				scaleY = newY;
-	
-			scale.x = newX;
-			scale.y = newY;
-			softReloadLetters(newX / lastX, newY / lastY);
-		}
 
-		private function set_scaleX(value:Float)
-			{
-				if (value == scaleX) return value;
-		
-				var ratio:Float = value / scale.x;
-				scale.x = value;
-				scaleX = value;
-				softReloadLetters(ratio, 1);
-				return value;
-			}
-		
-			private function set_scaleY(value:Float)
-			{
-				if (value == scaleY) return value;
-		
-				var ratio:Float = value / scale.y;
-				scale.y = value;
-				scaleY = value;
-				softReloadLetters(1, ratio);
-				return value;
-			}
-		
-			public function softReloadLetters(ratioX:Float = 1, ratioY:Null<Float> = null)
-			{
-				if(ratioY == null) ratioY = ratioX;
-		
-				for (letter in letters)
-				{
-					if(letter != null)
-					{
-						letter.setupAlphaCharacterScale(
-							(letter.x - x) * ratioX + x,
-							(letter.y - y) * ratioY + y
-						);
-					}
-				}
-			}
-			
 	public function changeText(newText:String, newTypingSpeed:Float = -1)
 	{
 		for (i in 0...lettersArray.length) {
@@ -471,20 +419,7 @@ class AlphaCharacter extends FlxSprite
 	public var row:Int = 0;
 
 	private var textSize:Float = 1;
-	var parent:Alphabet;
-	public var alignOffset:Float = 0; //Don't change this
-	public var letterOffset:Array<Float> = [0, 0];
-    public function setupAlphaCharacterScale(x:Float, y:Float){
-		this.x = x;
-		this.y = y;
 
-		if(parent != null)
-		{
-			this.scale.x = parent.scaleX;
-			this.scale.y = parent.scaleY;
-		}
-		updateHitbox();
-	}
 	public function new(x:Float, y:Float, textSize:Float)
 	{
 		super(x, y);
