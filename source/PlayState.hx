@@ -5284,7 +5284,7 @@ if (opponentPlayer){
 						if(daNote.y - daNote.offset.y * daNote.scale.y + daNote.height >= center)
 						{
 							var swagRect = new FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
-							swagRect.height = (center - daNote.y) / daNote.scale.y;
+							swagRect.height = (center - daNote.y - daNote.distance) / daNote.scale.y;
 							swagRect.y = daNote.frameHeight - swagRect.height;
 
 							daNote.clipRect = swagRect;
@@ -5295,7 +5295,7 @@ if (opponentPlayer){
 						if (daNote.y + daNote.offset.y * daNote.scale.y <= center)
 						{
 							var swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
-							swagRect.y = (center - daNote.y) / daNote.scale.y;
+							swagRect.y = (center - daNote.y- daNote.distance) / daNote.scale.y;
 							swagRect.height -= swagRect.y;
 
 							daNote.clipRect = swagRect;
