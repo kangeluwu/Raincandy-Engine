@@ -29,7 +29,7 @@ class AndroidControlsMenu extends MusicBeatState
 	var bindbutton:FlxButton;
 	var config:Config;
 
-	override public function create():Void
+	override function create():Void
 	{
 		
 		
