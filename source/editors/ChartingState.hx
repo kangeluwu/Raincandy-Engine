@@ -253,7 +253,7 @@ var voicesStuff:String = '';
 	public var lilBf:FlxSprite;
 	public var lilOpp:FlxSprite;
 	function outdatedEventsTransToNewOnes(){
-		var awa = [];
+		var awa:Map<Int,Array<Array<String>>> = [];
 		for (daSection in 0..._song.notes.length)
 				{
 			for (i in _song.notes[daSection].sectionNotes)
@@ -268,7 +268,7 @@ var voicesStuff:String = '';
 			}	
 				}
 		for (time in awa.keys())
-			_song.events.push(time,awa.get(time));
+			_song.events.push([time,awa.get(time)]);
 
 	}
 	override function create()
