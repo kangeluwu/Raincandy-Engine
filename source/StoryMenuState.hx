@@ -459,6 +459,16 @@ function togglePersistUpdate(toggle:Bool)
 		return FlxActionMode.NONE;
 		}
 	#end
+	override function closeSubState() {
+
+		callAllHScript("closeSubState", []);
+				super.closeSubState();
+	}
+override function openSubState(SubState:FlxSubState) {
+				super.openSubState();
+		callAllHScript("openSubState", [SubState]);
+
+	}
 	public function visPressed(dumbass:String = ''):Bool{
 		#if mobile
 		
