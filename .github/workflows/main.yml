@@ -51,13 +51,10 @@ jobs:
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
-                    haxelib install seedyrng
-                              haxelib install json2object
-                               haxelib install haxeui-core
-
-
+          haxelib install seedyrng
+          haxelib install json2object
+          haxelib install haxeui-core
           haxelib install uniontypes
-    
           haxelib install random
           haxelib install haxeui-flixel
           haxelib list
@@ -101,13 +98,10 @@ jobs:
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
-                    haxelib install seedyrng
-                              haxelib install json2object
-                               haxelib install haxeui-core
-
-
+          haxelib install seedyrng
+          haxelib install json2object
+          haxelib install haxeui-core
           haxelib install uniontypes
-         
           haxelib install random
           haxelib install haxeui-flixel
           haxelib list
@@ -152,13 +146,10 @@ jobs:
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
-                    haxelib install seedyrng
-                              haxelib install json2object
-                               haxelib install haxeui-core
-
-
+          haxelib install seedyrng
+          haxelib install json2object
+          haxelib install haxeui-core
           haxelib install uniontypes
-
           haxelib install random
           haxelib install haxeui-flixel
           haxelib list
@@ -235,7 +226,6 @@ jobs:
                   haxelib git extension-videoview https://github.com/mcagabe19-stuff/extension-videoview
                   haxelib git extension-androidtools https://github.com/MaysLastPlay77/extension-androidtools
                   haxelib install uniontypes
-        
                   haxelib install random
                   haxelib install haxeui-flixel
                   haxelib list
