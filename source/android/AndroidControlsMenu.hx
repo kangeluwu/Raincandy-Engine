@@ -31,7 +31,7 @@ class AndroidControlsMenu extends MusicBeatState
 
 	override public function create():Void
 	{
-		super.create();
+		
 		
 		config = new Config();
 		curSelected = config.getcontrolmode();
@@ -102,6 +102,7 @@ class AndroidControlsMenu extends MusicBeatState
 		add(tipText);
 		
 		changeSelection();
+		super.create();
 	}
 
 	override function update(elapsed:Float)
