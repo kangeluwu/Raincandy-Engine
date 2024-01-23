@@ -153,14 +153,9 @@ class Main extends Sprite
 		errMsg += "\nUncaught Error: " + e.error + "\n> Crash Handler written by: sqirra-rng";
                   
 		if (!FileSystem.exists("./crash/"))
-			FileSystem.createDirectory("./crash/");
+		FileSystem.createDirectory("./crash/");
 
 		File.saveContent(path, errMsg + "\n");
-               
-			  	if (!FileSystem.exists(SUtil.getPath() + "crash"))
-		FileSystem.createDirectory(SUtil.getPath() + "crash");
-
-		File.saveContent(SUtil.getPath() + path, errMsg + "\n");
 
 		Sys.println(errMsg);
 		Sys.println("Crash dump saved in " + Path.normalize(path));
@@ -170,7 +165,7 @@ class Main extends Sprite
 		Sys.exit(1);
 
 	#else
-				var errMsg:String = "";
+		var errMsg:String = "";
 		var path:String;
 		var callStack:Array<StackItem> = CallStack.exceptionStack(true);
 		var dateNow:String = Date.now().toString();
@@ -192,16 +187,11 @@ class Main extends Sprite
 		}
 
 		errMsg += "\nUncaught Error: " + e.error + "\n> Crash Handler written by: sqirra-rng";
-                  
-		if (!FileSystem.exists("./crash/"))
-			FileSystem.createDirectory("./crash/");
 
-		File.saveContent(path, errMsg + "\n");
-               
-			  	if (!FileSystem.exists(SUtil.getPath() + "crash"))
+		if (!FileSystem.exists(SUtil.getPath() + "crash"))
 		FileSystem.createDirectory(SUtil.getPath() + "crash");
 
-		File.saveContent(SUtil.getPath() + path, errMsg + "\n");
+		File.saveContent(path, errMsg + "\n");
 
 		Sys.println(errMsg);
 		Sys.println("Crash dump saved in " + Path.normalize(path));
