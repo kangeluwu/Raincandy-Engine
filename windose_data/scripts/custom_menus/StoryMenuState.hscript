@@ -155,7 +155,6 @@ function openSubState(state){
 	if (mobile){
 		removeVirtualPad();
 		}
-		currentStoryMenuState.openSubState(state);
 }
 function closeSubState() {
     togglePersistUpdate(true);
@@ -163,7 +162,6 @@ function closeSubState() {
 	if (mobile){
 		addVirtualPads('full', 'a_b_x_y');
 		}
-		urrentStoryMenuState.closeSubState();
 }
 
 var lerpScore = 0;
