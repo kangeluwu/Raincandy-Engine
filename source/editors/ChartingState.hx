@@ -252,6 +252,25 @@ var voicesStuff:String = '';
 	public var lilStage:FlxSprite;
 	public var lilBf:FlxSprite;
 	public var lilOpp:FlxSprite;
+	function outdatedEventsTransToNewOnes(){
+		var awa = [];
+		for (daSection in 0..._song.notes.length)
+				{
+			for (i in _song.notes[daSection].sectionNotes)
+			{
+				if (i[1] == -1){
+					if (!awa.exists(i[0]))
+						awa.set(i[0],[]);
+					var array = awa.get(i[0]);
+					array.push([i[2],i[3],i[4]]);
+					awa.set(i[0],array);
+				}
+			}	
+				}
+		for (time in awa.keys())
+			_song.events.push(time,awa.get(time));
+
+	}
 	override function create()
 	{
 		if (Main.fpsVar.x != 10)
@@ -285,7 +304,7 @@ var voicesStuff:String = '';
 			addSection();
 			PlayState.SONG = _song;
 		}
-
+                outdatedEventsTransToNewOnes();
 		// Paths.clearMemory();
 		#if desktop
 		// Updating Discord Rich Presence
