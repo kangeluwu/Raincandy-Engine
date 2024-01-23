@@ -465,7 +465,7 @@ function togglePersistUpdate(toggle:Bool)
 				super.closeSubState();
 	}
 override function openSubState(SubState:FlxSubState) {
-				super.openSubState();
+				super.openSubState(SubState);
 		callAllHScript("openSubState", [SubState]);
 
 	}
