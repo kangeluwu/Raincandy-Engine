@@ -264,6 +264,7 @@ var voicesStuff:String = '';
 					var array = awa.get(i[0]);
 					array.push([i[2],i[3],i[4]]);
 					awa.set(i[0],array);
+					_song.notes[daSection].sectionNotes.remove(i);
 				}
 			}	
 				}
