@@ -3817,7 +3817,7 @@ var precacheNotes = [];
 					var altNote:Bool = false;
 					var crossFade:Bool = false;
 					var gottaHitNote:Bool = sec.mustHitSection;
-	
+	                if (preSongNotes[1] != -1){
 					if (preSongNotes[1] % 8 > 3)
 					{
 						gottaHitNote = !sec.mustHitSection;
@@ -3995,8 +3995,22 @@ var precacheNotes = [];
 					if(!noteTypeMap.exists(swagNote.noteType)) {
 						noteTypeMap.set(swagNote.noteType, true);
 					}
+				}else{
+					var newEventNote:Array<Dynamic> = [preSongNotes[0], preSongNotes[2], preSongNotes[3], preSongNotes[4], preSongNotes[5]];
+					var subEvent:EventNote = {
+						strumTime: newEventNote[0] + ClientPrefs.noteOffset,
+						event: newEventNote[1],
+						value1: newEventNote[2],
+						value2: newEventNote[3],
+						value3: newEventNote[4]
+					};
+					subEvent.strumTime -= eventNoteEarlyTrigger(subEvent);
+					preEvents.push(subEvent);
+					eventPushed(subEvent);
 				}
+			}
 				daBeats += 1;
+				
 			}
 		
 			for (curEvent in songData.events) //Event Notes
@@ -4200,7 +4214,7 @@ var precacheNotes = [];
 				var altNote:Bool = false;
 				var crossFade:Bool = false;
 				var gottaHitNote:Bool = section.mustHitSection;
-
+              if (songNotes[1] != -1){
 				if (songNotes[1] % 8 > 3)
 				{
 					gottaHitNote = !section.mustHitSection;
@@ -4378,7 +4392,20 @@ var precacheNotes = [];
 				if(!noteTypeMap.exists(swagNote.noteType)) {
 					noteTypeMap.set(swagNote.noteType, true);
 				}
+			}else{
+				var newEventNote:Array<Dynamic> = [songNotes[0], songNotes[2], songNotes[3], songNotes[4], songNotes[5]];
+				var subEvent:EventNote = {
+					strumTime: newEventNote[0] + ClientPrefs.noteOffset,
+					event: newEventNote[1],
+					value1: newEventNote[2],
+					value2: newEventNote[3],
+					value3: newEventNote[4]
+				};
+				subEvent.strumTime -= eventNoteEarlyTrigger(subEvent);
+				eventNotes.push(subEvent);
+				eventPushed(subEvent);
 			}
+		}
 			daBeats += 1;
 		}
 		for (event in songData.events) //Event Notes

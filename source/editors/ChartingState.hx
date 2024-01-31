@@ -305,7 +305,11 @@ var voicesStuff:String = '';
 			addSection();
 			PlayState.SONG = _song;
 		}
+<<<<<<< Updated upstream
                 outdatedEventsTransToNewOnes();
+=======
+		updateEventsForRealXDDD();
+>>>>>>> Stashed changes
 		// Paths.clearMemory();
 		#if desktop
 		// Updating Discord Rich Presence
@@ -506,7 +510,7 @@ Left/Right - Go to the previous/next section
 		zoomTxt = new FlxText(10, 10, 0, "Zoom: 1 / 1", 16);
 		zoomTxt.scrollFactor.set();
 		add(zoomTxt);
-
+       
 		updateGrid();
 		#if mobile
 		addVirtualPad(FULL, FULL);
@@ -514,7 +518,17 @@ Left/Right - Go to the previous/next section
 		super.create();
 
 	}
-
+    function updateEventsForRealXDDD(){
+		for (daSection in 0..._song.notes.length)
+			{
+				for (i in _song.notes[daSection].sectionNotes){
+					if (i[1] < 0){
+						_song.events.push([i[0],[[i[2],i[3],i[4],i[5]]]]);
+						_song.notes[daSection].sectionNotes.remove(i);
+					}
+				}
+			}
+	}
 	var check_mute_inst:FlxUICheckBox = null;
 	var check_vortex:FlxUICheckBox = null;
 	var check_warnings:FlxUICheckBox = null;
