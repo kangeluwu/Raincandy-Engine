@@ -2700,7 +2700,7 @@ if (!dadChar.beingControlled)
 			}
 	
 			var video:FlxVideo = new FlxVideo();
-				#if (hxCodec >= "3.0.0")
+				#if (hxCodec >= "3.0.0" || ios)
 				// Recent versions
 				video.play(filepath);
 				video.onEndReached.add(function()
