@@ -44,6 +44,7 @@ import flixel.math.FlxRect;
 import PluginManger.FlxVideo as FlxVideo;
 import PluginManger.FlxVideoSprite;
 #end
+#end
 typedef CharacterFile = {
 	var crossColor:Null<FlxColor>;
 	var animations:Array<AnimArray>;
