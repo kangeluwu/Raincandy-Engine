@@ -295,11 +295,11 @@ jobs:
       - name: Setup Haxe
         uses: krdlab/setup-haxe@master
         with:
-          haxe-version: 4.2.5
+          haxe-version: latest
 
       - name: Install Libraries
         run: |
-           haxelib setup ~/haxelib
+          haxelib setup ~/haxelib
                   haxelib install hxcpp > nul
                   haxelib install lime 8.0.0
                   haxelib install openfl 9.2.0
@@ -311,7 +311,7 @@ jobs:
                   haxelib install flixel-addons 2.11.0
                   haxelib install tjson
                   haxelib install hxjsonast
-                  haxelib git hxvlc https://github.com/mcagabe19-stuff/hxvlc
+                  haxelib install hxCodec 3.0.2
                   haxelib git linc_luajit https://github.com/Sirox228/linc_luajit
                   haxelib install hscript 2.5.0
                   haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
@@ -326,20 +326,24 @@ jobs:
                   haxelib install random
                   haxelib install haxeui-flixel
                   haxelib list
+
       - name: Compile
-        run: haxelib run lime build Project.xml ios -final
+        run: haxelib run lime build ios -D NOVIDEO -final
+
+      # - name: Check Code Signing
+        # run: cd export/release/ios/build/Release-iphoneos && codesign -dv *.app
 
       - name: Make Ipa
         run: |
           cd export/release/ios/build/Release-iphoneos
           mkdir Payload
           mv *.app Payload
-          zip -r RCE.ipa Payload
+          zip -r PsychEngine.ipa Payload
 
       - name: Make Zip For Release
         run: |
            cd export/release/ios/build/Release-iphoneos
-           zip RCE-iOS.zip RCE.ipa
+           zip PsychEngine-iOS.zip PsychEngine.ipa
 
       - name: Upload Artifact
         if: ${{ success() }}
