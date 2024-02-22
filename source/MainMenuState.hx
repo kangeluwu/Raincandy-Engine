@@ -25,11 +25,14 @@ import flixel.group.FlxGroup;
 using StringTools;
 import openfl.Lib;
 #if VIDEOS_ALLOWED
+#if !ios
 #if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideo as FlxVideo;
 #elseif (hxCodec >= "2.6.1") import hxcodec.VideoHandler as FlxVideo;
 #elseif (hxCodec == "2.6.0") import VideoHandler as FlxVideo;
 #else import vlc.VideoHandler as FlxVideo; #end
-#if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideoSprite; #end
+#else
+import PluginManger.FlxVideo as FlxVideo;
+import PluginManger.FlxVideoSprite;
 #end
 #if mobile
 import flixel.input.actions.FlxActionInput;
