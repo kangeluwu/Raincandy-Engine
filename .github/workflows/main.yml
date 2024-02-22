@@ -327,7 +327,7 @@ jobs:
                   haxelib install haxeui-flixel
                   haxelib list
       - name: Compile
-        run: haxelib run lime build Project.xml ios -D NO_PRECOMPILED_HEADERS -final
+        run: haxelib run lime build Project.xml ios -final
 
       - name: Make Ipa
         run: |
