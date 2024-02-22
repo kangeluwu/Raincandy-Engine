@@ -310,6 +310,7 @@ jobs:
           haxelib install flixel-ui 2.4.0
           haxelib install flixel-addons 2.11.0
           haxelib install tjson
+          haxelib install hxCodec 3.0.2
           haxelib install hxjsonast
           haxelib git hxvlc https://github.com/mcagabe19-stuff/hxvlc
           haxelib git linc_luajit https://github.com/superpowers04/linc_luajit
