@@ -173,12 +173,10 @@
 		<!--Audio Recording Fix-->
 		<config:android target-sdk-version="29" if="${lime <= 8.0.0}" />
 	</section>
-
-	<section if="ios">
-		<!--Dependency--> 
-		<dependency name="Metal.framework" />
-		<dependency name="WebKit.framework" />
-	</section>
+<section if="ios">
+			<define name='objc' />
+			<ios linker-flags='-ObjC' />
+		</section>
 
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 
