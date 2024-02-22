@@ -182,7 +182,7 @@ jobs:
               - name: Setup Java JDK
                 uses: actions/setup-java@main
                 with:
-                  distribution: 'zulu'
+                  distribution: 'temurin'
                   java-version: '11'
         
               - name: Setup Haxe
