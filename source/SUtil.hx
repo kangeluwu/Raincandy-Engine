@@ -4,10 +4,6 @@ package;
 import android.Tools;
 import android.Permissions;
 import android.PermissionsList;
-import android.content.Context as AndroidContext;
-import android.widget.Toast as AndroidToast;
-import android.os.Environment as AndroidEnvironment;
-import android.Settings as AndroidSettings;
 #end
 import haxe.Exception;
 import haxe.io.Path;
@@ -147,12 +143,10 @@ class SUtil
 */
 	private static function applicationAlert(title:String, description:String #if android, ?positiveText:String = "OK", ?positiveFunc:Void->Void #end)
 	{
-		#if android
-		Tools.showAlertDialog(title, description, {name: positiveText, func: positiveFunc}, null);
-		#elseif (windows || web)
-		Application.current.window.alert(description, title);
-		#else
+		#if ios
 		LimeLogger.println('$title - $description');
+		#else
+		Application.current.window.alert(description, title);
 		#end
 		
 	}
