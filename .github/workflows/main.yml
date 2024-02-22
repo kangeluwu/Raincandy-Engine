@@ -241,7 +241,7 @@ jobs:
                   ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         
               - name: Building
-                run: haxelib run lime build Project.xml android -D NO_PRECOMPILED_HEADERS -final
+                run: haxelib run lime build android -D NO_PRECOMPILED_HEADERS -final
         
               - name: Clear Previous Cache
                 uses: actions/github-script@main
