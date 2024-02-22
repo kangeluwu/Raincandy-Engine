@@ -34,6 +34,7 @@ import openfl.Lib;
 import PluginManger.FlxVideo as FlxVideo;
 import PluginManger.FlxVideoSprite;
 #end
+#end
 #if mobile
 import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
