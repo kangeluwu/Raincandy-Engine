@@ -58,6 +58,7 @@ import flixel.graphics.frames.FlxFrame;
 import PluginManger.FlxVideo as FlxVideo;
 import PluginManger.FlxVideoSprite;
 #end
+#end
 import Sys;
 import sys.FileSystem;
 import sys.io.File;
