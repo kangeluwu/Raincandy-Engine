@@ -57,7 +57,14 @@ class FlxVideo extends Video
 {
     public function play(location:String, shouldLoop:Bool = false):Int
         {
-           this.load(location);
+           load(location);
+        }
+}
+class FlxVideoSprite extends VideoSprite
+{
+    public function play(location:String, shouldLoop:Bool = false):Int
+        {
+           load(location);
         }
 }
 #end
