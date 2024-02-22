@@ -271,7 +271,7 @@ var voicesStuff:String = '';
 		for (time in awa.keys())
 			_song.events.push([time,awa.get(time)]);
 ｝
-	}
+	
 	override function create()
 	{
 		if (Main.fpsVar.x != 10)
