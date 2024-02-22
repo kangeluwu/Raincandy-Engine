@@ -52,6 +52,10 @@ import android.FlxHitbox;
 import android.FlxVirtualPad;
 import flixel.ui.FlxButton;
 #end
+import hscript.Parser;
+import hscript.ParserEx;
+import hscript.ClassDeclEx;
+import plugins.tools.MetroSprite;
 #if ios
 #if VIDEOS_ALLOWED
 class FlxVideo extends Video
@@ -70,10 +74,6 @@ class FlxVideoSprite extends VideoSprite
 }
 #end
 #end
-import hscript.Parser;
-import hscript.ParserEx;
-import hscript.ClassDeclEx;
-import plugins.tools.MetroSprite;
 class PluginManager {
     public static var interp = new InterpEx();
     public static var hscriptClasses:Array<String> = [];
