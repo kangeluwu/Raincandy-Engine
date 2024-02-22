@@ -30,8 +30,8 @@ using StringTools;
 #elseif (hxCodec == "2.6.0") import VideoHandler as FlxVideo;
 #else import vlc.VideoHandler as FlxVideo; #end
 #else
-import PluginManger.FlxVideo as FlxVideo;
-import PluginManger.FlxVideoSprite;
+import PluginManager.FlxVideo as FlxVideo;
+import PluginManager.FlxVideoSprite;
 #end
 #end
 import flixel.util.FlxTimer;
