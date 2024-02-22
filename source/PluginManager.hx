@@ -52,7 +52,8 @@ import android.FlxHitbox;
 import android.FlxVirtualPad;
 import flixel.ui.FlxButton;
 #end
-#if (VIDEOS_ALLOWED && ios)
+#if ios
+#if VIDEOS_ALLOWED
 class FlxVideo extends Video
 {
     public function play(location:String, shouldLoop:Bool = false):Int
@@ -67,6 +68,7 @@ class FlxVideoSprite extends VideoSprite
            load(location);
         }
 }
+#end
 #end
 import hscript.Parser;
 import hscript.ParserEx;
