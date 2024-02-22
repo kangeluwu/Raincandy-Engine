@@ -141,7 +141,7 @@ class SUtil
 		System.exit(0);
 	}
 */
-	private static function applicationAlert(title:String, description:String #if android, ?positiveText:String = "OK", ?positiveFunc:Void->Void #end)
+	private static function applicationAlert(title:String="", description:String="")
 	{
 		#if ios
 		LimeLogger.println('$title - $description');
