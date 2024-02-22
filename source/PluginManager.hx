@@ -60,16 +60,20 @@ import plugins.tools.MetroSprite;
 #if VIDEOS_ALLOWED
 class FlxVideo extends Video
 {
-    public function play(location:String, shouldLoop:Bool = false):Int
+    override public function play(location:String, shouldLoop:Bool = false):Bool
         {
+        if(location != null && location != '')
            load(location);
+         return super.play();
         }
 }
 class FlxVideoSprite extends VideoSprite
 {
-    public function play(location:String, shouldLoop:Bool = false):Int
+    override public function play(location:String, shouldLoop:Bool = false):Bool
         {
+           if(location != null && location != '')
            load(location);
+         return super.play();
         }
 }
 #end
