@@ -270,7 +270,7 @@ var voicesStuff:String = '';
 				}
 		for (time in awa.keys())
 			_song.events.push([time,awa.get(time)]);
-｝
+	}
 	
 	override function create()
 	{
@@ -306,7 +306,7 @@ var voicesStuff:String = '';
 			PlayState.SONG = _song;
 		}
 
-			                outdatedEventsTransToNewOnes();
+		updateEventsForRealXDDD();
 		// Paths.clearMemory();
 		#if desktop
 		// Updating Discord Rich Presence

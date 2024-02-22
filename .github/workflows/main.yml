@@ -286,3 +286,65 @@ jobs:
                   path: export/release/android/bin/app/build/outputs/apk/debug
                   if-no-files-found: warn
         
+  buildIos:
+    runs-on: macos-13
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.2.5
+
+      - name: Install Libraries
+        run: |
+           haxelib setup ~/haxelib
+                  haxelib install hxcpp > nul
+                  haxelib install lime 8.0.0
+                  haxelib install openfl 9.2.0
+                  haxelib install flixel 4.11.0
+                  haxelib install devicelanguage 1.0.0 
+                  haxelib run lime setup
+                  haxelib install flixel-tools
+                  haxelib install flixel-ui 2.4.0
+                  haxelib install flixel-addons 2.11.0
+                  haxelib install tjson
+                  haxelib install hxjsonast
+                  haxelib git hxvlc https://github.com/mcagabe19-stuff/hxvlc
+                  haxelib git linc_luajit https://github.com/Sirox228/linc_luajit
+                  haxelib install hscript 2.5.0
+                  haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
+                  haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+                  haxelib install hxcpp-debug-server
+                  haxelib install seedyrng
+                  haxelib install json2object
+                  haxelib install haxeui-core
+                  haxelib git extension-videoview https://github.com/mcagabe19-stuff/extension-videoview
+                  haxelib git extension-androidtools https://github.com/MaysLastPlay77/extension-androidtools
+                  haxelib install uniontypes
+                  haxelib install random
+                  haxelib install haxeui-flixel
+                  haxelib list
+      - name: Compile
+        run: haxelib run lime build Project.xml ios -D NO_PRECOMPILED_HEADERS -final
+
+      - name: Make Ipa
+        run: |
+          cd export/release/ios/build/Release-iphoneos
+          mkdir Payload
+          mv *.app Payload
+          zip -r windose.ipa Payload
+
+      - name: Make Zip For Release
+        run: |
+           cd export/release/ios/build/Release-iphoneos
+           zip RaincandyEngine-iOS.zip windose.ipa
+
+      - name: Upload Artifact
+        if: ${{ success() }}
+        uses: actions/upload-artifact@main
+        with:
+          name: iOSBuild
+          path: export/release/ios/build/Release-iphoneos/*.zip
+          if-no-files-found: error

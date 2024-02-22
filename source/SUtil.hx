@@ -4,7 +4,15 @@ package;
 import android.Tools;
 import android.Permissions;
 import android.PermissionsList;
+import android.content.Context as AndroidContext;
+import android.widget.Toast as AndroidToast;
+import android.os.Environment as AndroidEnvironment;
+import android.Settings as AndroidSettings;
 #end
+import haxe.Exception;
+import haxe.io.Path;
+import lime.system.System as LimeSystem;
+import lime.utils.Log as LimeLogger;
 import lime.app.Application;
 import openfl.events.UncaughtErrorEvent;
 import openfl.utils.Assets as OpenFlAssets;
@@ -36,6 +44,8 @@ class SUtil
 			return aDir;
 		else
 			return aDir = Tools.getExternalStorageDirectory() + '/' + '.' + Application.current.meta.get('file') + '/';
+		#elseif ios
+		return LimeSystem.documentsDirectory;
 		#else
 		return '';
 		#end
@@ -90,46 +100,7 @@ class SUtil
 				FileSystem.createDirectory(SUtil.getPath() + "saves");
 			}
 		}
-		#elseif mobile
 		
-
-		if (!FileSystem.exists('./windose_data/') && !FileSystem.exists(SUtil.getPath() + './mods/'))
-		{
-			SUtil.applicationAlert('Uncaught Error :(!', "Whoops, seems you didn't extract the files from the .APK!\nPlease watch the tutorial by pressing OK.");
-			CoolUtil.browserLoad('https://b23.tv/qnuSteM');
-			System.exit(0);
-		}
-		else
-		{
-			if (FileSystem.exists('windose_data') && !FileSystem.exists(SUtil.getPath() + 'windose_data')){
-				SUtil.copyContent('windose_data',SUtil.getPath() + 'windose_data');
-			}
-			if (FileSystem.exists('mods') && !FileSystem.exists(SUtil.getPath() + 'mods')){
-				SUtil.copyContent('mods',SUtil.getPath() + 'mods');
-			}
-			if (!FileSystem.exists('./windose_data/'))
-			{
-				SUtil.applicationAlert('Uncaught Error :(!', "Whoops, seems you didn't extract the assets/windose_data folder from the .APK!\nPlease watch the tutorial by pressing OK.");
-				CoolUtil.browserLoad('https://b23.tv/qnuSteM');
-				System.exit(0);
-			}
-
-			if (!FileSystem.exists('./mods/'))
-			{
-				SUtil.applicationAlert('Uncaught Error :(!', "Whoops, seems you didn't extract the assets/mods folder from the .APK!\nPlease watch the tutorial by pressing OK.");
-				CoolUtil.browserLoad('https://b23.tv/qnuSteM');
-				System.exit(0);
-			}
-		}
-		if (!FileSystem.exists("./crash/")){
-			FileSystem.createDirectory("./crash/");
-		}
-		if (!FileSystem.exists("./saves/")){
-			FileSystem.createDirectory("./saves/");
-		}
-		if (!FileSystem.exists("./mods/") && !FileSystem.exists("./windose_data/")){
-			File.saveContent("./Paste the Assets and Mods folders here.txt", "the file name says all");
-		}
 		#end
 	}
 
@@ -174,9 +145,16 @@ class SUtil
 		System.exit(0);
 	}
 */
-	private static function applicationAlert(title:String, description:String)
+	private static function applicationAlert(title:String, description:String #if android, ?positiveText:String = "OK", ?positiveFunc:Void->Void #end)
 	{
+		#if android
+		Tools.showAlertDialog(title, description, {name: positiveText, func: positiveFunc}, null);
+		#elseif (windows || web)
 		Application.current.window.alert(description, title);
+		#else
+		LimeLogger.println('$title - $description');
+		#end
+		
 	}
 
 	#if mobile
