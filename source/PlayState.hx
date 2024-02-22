@@ -98,6 +98,7 @@ import lime.tools.ApplicationData;
 import PluginManger.FlxVideo as FlxVideo;
 import PluginManger.FlxVideoSprite;
 #end
+#end
 import flixel.system.scaleModes.StageSizeScaleMode;
 import flixel.system.scaleModes.BaseScaleMode;
 import flixel.addons.editors.pex.FlxPexParser;
