@@ -130,7 +130,7 @@ class OptionsState extends MusicBeatState
 		add(selectorLeft);
 		selectorRight = new Alphabet(0, 0, '<', true, false);
 		add(selectorRight);
-		#if android
+		#if mobile
 		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press C to Go In Mobile Controls Menu', 16);
 		tipText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tipText.borderSize = 2;
