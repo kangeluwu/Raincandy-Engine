@@ -79,11 +79,11 @@ var loaded:Bool = false;
 }
 class FlxVideoSprite extends VideoSprite
 {
-    var path:String = "";
+    var sillypath:String = "";
 var loaded:Bool = false;
     public override function load(loc:String,?options:Array<String>):Bool
     {
-    path=loc;
+    sillypath=loc;
     var exists = super.load(loc,options);
     if (exists)
     loaded = true;
@@ -91,8 +91,8 @@ var loaded:Bool = false;
 		}
     public override function play():Bool
         {
-        if(!loaded && path != null && path != '')
-           load(path);
+        if(!loaded && sillypath != null && sillypath != '')
+           load(sillypath);
          return super.play();
         }
 }
