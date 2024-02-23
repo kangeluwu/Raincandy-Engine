@@ -84,7 +84,7 @@ class ChartTypeMenu extends MusicBeatSubstate
 				selectable = true;
                 FlxG.camera.follow(camFollow, null, camLerp);
 			});
-            #if android
+            #if mobile
             addVirtualPad(UP_DOWN, A_B);
             #end
     }
