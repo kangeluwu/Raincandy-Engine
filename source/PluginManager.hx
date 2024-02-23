@@ -60,21 +60,39 @@ import plugins.tools.MetroSprite;
 #if VIDEOS_ALLOWED
 class FlxVideo extends Video
 {
-@:noCompletion
-    public override function play(location:String, shouldLoop:Bool = false):Bool
+var path:String = "";
+var loaded:Bool = false;
+    public override function load(loc:String,?options:Array<String>):Bool
+    {
+    path=loc;
+    var exists = super.load(loc,option);
+    if (exists)
+    loaded = true;
+    return super.load(loc,option);
+		}
+    public override function play():Bool
         {
-        if(location != null && location != '')
-           load(location);
+        if(!loaded && path != null && path != '')
+           load(path);
          return super.play();
         }
 }
 class FlxVideoSprite extends VideoSprite
 {
-@:noCompletion
-    public override function play(location:String, shouldLoop:Bool = false):Bool
+    var path:String = "";
+var loaded:Bool = false;
+    public override function load(loc:String,?options:Array<String>):Bool
+    {
+    path=loc;
+    var exists = super.load(loc,option);
+    if (exists)
+    loaded = true;
+    return super.load(loc,option);
+		}
+    public override function play():Bool
         {
-           if(location != null && location != '')
-           load(location);
+        if(!loaded && path != null && path != '')
+           load(path);
          return super.play();
         }
 }
