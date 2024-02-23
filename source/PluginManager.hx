@@ -65,10 +65,10 @@ var loaded:Bool = false;
     public override function load(loc:String,?options:Array<String>):Bool
     {
     path=loc;
-    var exists = super.load(loc,option);
+    var exists = super.load(loc,options);
     if (exists)
     loaded = true;
-    return super.load(loc,option);
+    return super.load(loc,options);
 		}
     public override function play():Bool
         {
@@ -84,10 +84,10 @@ var loaded:Bool = false;
     public override function load(loc:String,?options:Array<String>):Bool
     {
     path=loc;
-    var exists = super.load(loc,option);
+    var exists = super.load(loc,options);
     if (exists)
     loaded = true;
-    return super.load(loc,option);
+    return super.load(loc,options);
 		}
     public override function play():Bool
         {
