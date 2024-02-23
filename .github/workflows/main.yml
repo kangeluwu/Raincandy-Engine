@@ -223,7 +223,7 @@ jobs:
                   haxelib install seedyrng
                   haxelib install json2object
                   haxelib install haxeui-core
-                  haxelib git extension-videoview https://github.com/mcagabe19-stuff/extension-videoview
+                  haxelib git extension-videoview https://github.com/kangeluwu/extension-videoview
                   haxelib git extension-androidtools https://github.com/MaysLastPlay77/extension-androidtools
                   haxelib install uniontypes
                   haxelib install random
