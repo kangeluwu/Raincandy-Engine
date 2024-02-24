@@ -301,11 +301,7 @@ jobs:
         run: |
           haxelib setup ~/haxelib
           haxelib install hxcpp > /dev/null
-          haxelib git lime https://github.com/kangeluwu/lime
-          haxelib install format 3.5.0 -quiet
-          haxelib install hxp 1.2.0 -quiet
-          lime rebuild tools
-          lime rebuild ios
+          haxelib install lime 8.0.0
           haxelib install openfl 9.2.0 -quiet
           haxelib  install flixel 4.11.0 -quiet
           haxelib install devicelanguage 1.0.0 -quiet
@@ -329,6 +325,11 @@ jobs:
           haxelib install uniontypes
           haxelib install random
           haxelib install haxeui-flixel
+          haxelib git lime https://github.com/kangeluwu/lime
+          haxelib set lime git
+          haxelib install format 3.5.0 -quiet
+          haxelib install hxp 1.2.0 -quiet
+          lime rebuild tools
           haxelib list
 
       - name: Compile
