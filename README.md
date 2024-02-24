@@ -1,12 +1,6 @@
-# REALLY IMPORTANTED WARNING
-THIS IS OLD PSYCH(VERISON < 0.7)LMAO
-
-
-
-
 
 # Friday Night Funkin' - Raincandy Engine
-My own Engine for friday night funkin!!!!1 yeah kinda werid i know
+My "own" Engine for friday night funkin!!!!1 yeah kinda werid i know
 
 This engine kinda like modding plus & psych in one engine(used psych as default)
 And modding plus stuffs are mod supports lmao
@@ -86,4 +80,4 @@ _____________________________________
 ## Other gameplay features:
 * CAN CHOOSE VANILLA ENGINE STYLE!!!!1(dumb i know)
 
-sorry my english bad forgive me PLS QAQ
+this is bored when i was bored to make a engine
