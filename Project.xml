@@ -152,7 +152,6 @@
 	<haxelib name="seedyrng"/> <!--haxelib install seedyrng-->
 	<haxelib name="random"/> <!--haxelib install random-->
 	<!--<haxelib name="polymod"/> -->
-	<haxelib name="devicelanguage" />
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="linc_luajit" if="windows"/>
 	<haxelib name="haxeui-flixel"/>
