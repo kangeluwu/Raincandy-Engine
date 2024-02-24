@@ -301,9 +301,10 @@ jobs:
         run: |
           haxelib setup ~/haxelib
           haxelib install hxcpp > /dev/null
-          haxelib git lime https://github.com/kangeluwu/lime
+          haxelib git lime https://github.com/kangeluwu/lime submodules
           haxelib install format 3.5.0 -quiet
           haxelib install hxp 1.2.0 -quiet
+          lime rebuild tools
           lime rebuild ios
           haxelib install openfl 9.2.0 -quiet
           haxelib  install flixel 4.11.0 -quiet
