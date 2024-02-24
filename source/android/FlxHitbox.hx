@@ -54,9 +54,24 @@ class FlxHitbox extends FlxSpriteGroup {
 			case "space":button.color = 0xFFE9F812;//?
 		}
 		button.alpha = 0;// sorry but I can't hard lock the hitbox alpha
-		button.onDown.callback = function (){FlxTween.num(0, 0.75, 0.075, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;});};
-		button.onUp.callback = function (){FlxTween.num(0.75, 0, 0.1, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;});}
-		button.onOut.callback = function (){FlxTween.num(button.alpha, 0, 0.2, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;});}
+		button.onDown.callback = function (){
+FlxTween.num(0, 0.75, 0.075, {ease:FlxEase.circInOut}, 
+function(alpha:Float){ 
+button.alpha = alpha;
+});
+};
+		button.onUp.callback = function (){
+FlxTween.num(0.75, 0, 0.1, {ease:FlxEase.circInOut}, 
+function(alpha:Float){ 
+button.alpha = alpha;
+});
+};
+	button.onOut.callback = function (){FlxTween.num(button.alpha, 0, 0.2, {
+ease:FlxEase.circInOut}, 
+function(alpha:Float){ 
+button.alpha = alpha;
+});
+};
 		return button;
 	}
 
