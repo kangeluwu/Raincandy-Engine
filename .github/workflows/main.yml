@@ -329,7 +329,6 @@ jobs:
           haxelib set lime git
           haxelib install format 3.5.0 -quiet
           haxelib install hxp 1.2.0 -quiet
-          lime rebuild tools
           haxelib list
 
       - name: Compile
