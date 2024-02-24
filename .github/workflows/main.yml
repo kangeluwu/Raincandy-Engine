@@ -325,7 +325,7 @@ jobs:
           haxelib install uniontypes
           haxelib install random
           haxelib install haxeui-flixel
-          haxelib git lime https://github.com/mcagabe19-stuff/lime7.9.0-arm
+          haxelib git lime https://github.com/kangeluwu/lime
           haxelib set lime git
           haxelib list
 
