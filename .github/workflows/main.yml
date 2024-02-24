@@ -81,7 +81,7 @@ jobs:
       - name: Install Haxelib
         run: |
           haxelib setup C:/haxelib
-          haxelib install hxcpp > nul
+          haxelib install hxcpp > /dev/null
           haxelib install lime 8.0.0
           haxelib install openfl 9.2.0
           haxelib install flixel 4.11.0
@@ -203,7 +203,7 @@ jobs:
               - name: Installing Libraries
                 run: |
                   haxelib setup ~/haxelib
-                  haxelib install hxcpp > nul
+                  haxelib install hxcpp > /dev/null
                   haxelib install lime 8.0.0
                   haxelib install openfl 9.2.0
                   haxelib install flixel 4.11.0
@@ -300,7 +300,7 @@ jobs:
       - name: Install Libraries
         run: |
           haxelib setup ~/haxelib
-          haxelib git hxcpp https://github.com/mcagabe19-stuff/hxcpp
+          haxelib install hxcpp > /dev/null
           haxelib git lime https://github.com/kangeluwu/lime
           haxelib install openfl 9.2.0 -quiet
           haxelib  install flixel 4.11.0 -quiet
