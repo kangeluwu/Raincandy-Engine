@@ -128,14 +128,14 @@ class ChartTypeMenu extends MusicBeatSubstate
                 random = new Random(null, new seedyrng.Xorshift64Plus());
 			    if (FlxG.random.bool(50))
 		    	{
-          #!ios
+          #if !ios
 		    		if (FlxG.random.bool(50))
 		    		{
           #end
 		    			var seed = FlxG.random.int(1000000, 9999999); // seed in string numbers
 		    			FlxG.log.add('SEED (STRING): ' + seed);
 		    			random.setStringSeed(Std.string(seed));
-					  #!ios
+					  #if !ios
 		    		}
 		    		else
 	    			{
