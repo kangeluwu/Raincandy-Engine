@@ -175,13 +175,6 @@
 <section if="ios">
 			<define name='objc' />
 			<ios linker-flags='-ObjC' />
-	<!--Avoid memory leaks with for loops in HScript-->
-	<haxedef name="loop_unroll_max_cost" value="25" />
-	<haxedef name="DISABLED_MACRO_SUPERLATIVE" />
-
-	<!--Macro fixes-->
-	<haxeflag name="--macro" value="allowPackage('flash')" />
-	<haxeflag name="--macro" value="include('my.pack')" />
 		</section>
 <architecture exclude="armv7" if="ios" />
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
