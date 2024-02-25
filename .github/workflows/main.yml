@@ -301,9 +301,7 @@ jobs:
         run: |
           haxelib setup ~/haxelib
           haxelib install hxcpp > /dev/null
-          haxelib git lime https://github.com/kangeluwu/lime
-          haxelib install format
-          haxelib install hxp
+          haxelib git lime https://github.com/mcagabe19-stuff/lime
           haxelib run lime setup -alias -y
           haxelib install openfl 9.2.0 -quiet
           haxelib  install flixel 4.11.0 -quiet
@@ -312,7 +310,6 @@ jobs:
           haxelib install flixel-ui 2.4.0
           haxelib install flixel-addons 2.11.0
           haxelib install tjson
-          haxelib install hxCodec 3.0.2
           haxelib install hxjsonast
           haxelib git hxvlc https://github.com/mcagabe19-stuff/hxvlc
           haxelib git linc_luajit https://github.com/superpowers04/linc_luajit
