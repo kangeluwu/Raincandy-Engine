@@ -3784,7 +3784,7 @@ var precacheNotes = [];
 	    			FlxG.log.add('SEED (INT): ' + seed);
 	    			random.seed = seed;
 	    		}
-	
+	}
 			var songName:String = Paths.formatToSongPath(songData.song);
 			trace(songName);
 			var file:String = Paths.json(songName + '/events');
@@ -4191,7 +4191,7 @@ var precacheNotes = [];
 	    			FlxG.log.add('SEED (INT): ' + seed);
 	    			random.seed = seed;
 	    		}
-
+}
 		var songName:String = Paths.formatToSongPath(SONG.song);
 		var file:String = Paths.json(songName + '/events');
 		#if MODS_ALLOWED
