@@ -302,8 +302,11 @@ jobs:
           haxelib setup ~/haxelib
           haxelib install hxcpp > /dev/null
           haxelib git lime https://github.com/kangeluwu/lime
+          haxelib dev lime lime
           haxelib install format
           haxelib install hxp
+          lime rebuild ios
+          lime rebuild tools
           haxelib install openfl 9.2.0 -quiet
           haxelib  install flixel 4.11.0 -quiet
           haxelib install devicelanguage 1.0.0 -quiet
