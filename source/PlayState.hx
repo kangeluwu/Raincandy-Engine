@@ -3760,27 +3760,30 @@ var precacheNotes = [];
 				{
 					random = new Random(null, new seedyrng.Xorshift64Plus());
 					if (FlxG.random.bool(50))
-					{
-						if (FlxG.random.bool(50))
-						{
-							var seed = FlxG.random.int(1000000, 9999999); // seed in string numbers
-							FlxG.log.add('SEED (STRING): ' + seed);
-							random.setStringSeed(Std.string(seed));
-						}
-						else
-						{
-							var seed = Random.Random.string(7);
-							FlxG.log.add('SEED (STRING): ' + seed); // seed in string (alphabet edition)
-							random.setStringSeed(seed);
-						}
-					}
-					else
-					{
-						var seed = FlxG.random.int(1000000, 9999999); // seed in int
-						FlxG.log.add('SEED (INT): ' + seed);
-						random.seed = seed;
-					}
-				}
+		    	{
+          #if !ios
+		    		if (FlxG.random.bool(50))
+		    		{
+          #end
+		    			var seed = FlxG.random.int(1000000, 9999999); // seed in string numbers
+		    			FlxG.log.add('SEED (STRING): ' + seed);
+		    			random.setStringSeed(Std.string(seed));
+					  #if !ios
+		    		}
+		    		else
+	    			{
+	    				var seed = Random.Random.string(7);
+	    				FlxG.log.add('SEED (STRING): ' + seed); // seed in string (alphabet edition)
+	    				random.setStringSeed(seed);
+	    			}
+					 #end
+	    		}
+	    		else
+	    		{
+	    			var seed = FlxG.random.int(1000000, 9999999); // seed in int
+	    			FlxG.log.add('SEED (INT): ' + seed);
+	    			random.seed = seed;
+	    		}
 	
 			var songName:String = Paths.formatToSongPath(songData.song);
 			trace(songName);
@@ -4164,27 +4167,30 @@ var precacheNotes = [];
 			{
 				random = new Random(null, new seedyrng.Xorshift64Plus());
 				if (FlxG.random.bool(50))
-				{
-					if (FlxG.random.bool(50))
-					{
-						var seed = FlxG.random.int(1000000, 9999999); // seed in string numbers
-						FlxG.log.add('SEED (STRING): ' + seed);
-						random.setStringSeed(Std.string(seed));
-					}
-					else
-					{
-						var seed = Random.Random.string(7);
-						FlxG.log.add('SEED (STRING): ' + seed); // seed in string (alphabet edition)
-						random.setStringSeed(seed);
-					}
-				}
-				else
-				{
-					var seed = FlxG.random.int(1000000, 9999999); // seed in int
-					FlxG.log.add('SEED (INT): ' + seed);
-					random.seed = seed;
-				}
-			}
+		    	{
+          #if !ios
+		    		if (FlxG.random.bool(50))
+		    		{
+          #end
+		    			var seed = FlxG.random.int(1000000, 9999999); // seed in string numbers
+		    			FlxG.log.add('SEED (STRING): ' + seed);
+		    			random.setStringSeed(Std.string(seed));
+					  #if !ios
+		    		}
+		    		else
+	    			{
+	    				var seed = Random.Random.string(7);
+	    				FlxG.log.add('SEED (STRING): ' + seed); // seed in string (alphabet edition)
+	    				random.setStringSeed(seed);
+	    			}
+					 #end
+	    		}
+	    		else
+	    		{
+	    			var seed = FlxG.random.int(1000000, 9999999); // seed in int
+	    			FlxG.log.add('SEED (INT): ' + seed);
+	    			random.seed = seed;
+	    		}
 
 		var songName:String = Paths.formatToSongPath(SONG.song);
 		var file:String = Paths.json(songName + '/events');
