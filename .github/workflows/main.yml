@@ -302,7 +302,6 @@ jobs:
           haxelib setup ~/haxelib
           haxelib install hxcpp > /dev/null
           haxelib git lime https://github.com/kangeluwu/lime
-          haxelib dev lime lime
           haxelib install format
           haxelib install hxp
           haxelib run lime setup -alias -y
