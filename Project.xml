@@ -105,8 +105,8 @@
 	<assets path="windose_data/week7"         library="week7"         exclude="*.ogg" if="web"/>
 	<assets path="windose_data/week7"         library="week7"         exclude="*.mp3" unless="web"/>
 	<assets path="windose_data/scripts"           library="scripts"       exclude="*.mp3" unless="web"/>
-<assets path='dlls/' rename='' />
-<assets path='plugins'/>
+<assets path='dlls/' rename='' unless ='ios'/>
+<assets path='plugins' unless ='ios'/>
 	<!-- <template path='mods' /> -->
 
 		<section if="MODS_ALLOWED">
@@ -146,7 +146,9 @@
 	<haxelib name="flixel-ui" />
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
 	<haxelib name="hxCodec" if="VIDEOS_ALLOWED"  unless="ios"/>
-	<haxelib name="hxvlc" if="VIDEOS_ALLOWED ios"/>
+<section if="ios">
+	<haxelib name="hxvlc" if="VIDEOS_ALLOWED"/>
+		</section>
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="hscript-ex"/>
 	<haxelib name="seedyrng"/> <!--haxelib install seedyrng-->
