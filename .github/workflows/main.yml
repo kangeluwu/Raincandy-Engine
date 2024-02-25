@@ -329,7 +329,7 @@ jobs:
           haxelib list
 
       - name: Compile
-        run: haxelib run lime build ios -D NOVIDEO -final
+        run: haxelib run lime build ios -D NO_PRECOMPILED_HEADERS -final
 
       # - name: Check Code Signing
         # run: cd export/release/ios/build/Release-iphoneos && codesign -dv *.app
