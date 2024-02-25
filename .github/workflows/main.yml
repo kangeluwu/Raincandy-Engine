@@ -301,7 +301,7 @@ jobs:
         run: |
           haxelib setup ~/haxelib
           haxelib install hxcpp > /dev/null
-          haxelib git lime https://github.com/mcagabe19-stuff/lime
+          haxelib git lime https://github.com/kangeluwu/lime
           haxelib install format
           haxelib install hxp
           haxelib install openfl 9.2.0 -quiet
