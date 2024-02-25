@@ -307,8 +307,6 @@ jobs:
           haxelib install openfl 9.2.0 -quiet
           haxelib  install flixel 4.11.0 -quiet
           haxelib install devicelanguage 1.0.0 -quiet
-        
-          haxelib run lime setup
           haxelib install flixel-tools 
           haxelib install flixel-ui 2.4.0
           haxelib install flixel-addons 2.11.0
