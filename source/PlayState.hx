@@ -3338,7 +3338,7 @@ if (!dadChar.beingControlled)
 		}
 		var ret:Dynamic = callOnLuas('onStartCountdown', [], false);
 		var ret2:Dynamic = callAllHScript('onStartCountdown', [],false);
-		if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) {
+		if(ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop) {
 			if (skipCountdown || startOnTime > 0) skipArrowStartTween = true;
 			#if mobile 
 			androidc.visible = true;
@@ -5006,7 +5006,8 @@ function eventPushed(event:EventNote) {
 
 		setOnLuas('curDecStep', curDecStep);
 		setOnLuas('curDecBeat', curDecBeat);
-
+		setAllHaxeVar('curDecStep', curDecStep);
+		setAllHaxeVar('curDecBeat', curDecBeat);
 		/*if(botplayTxt.visible) {
 			botplaySine += 180 * elapsed;
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
@@ -5016,7 +5017,7 @@ function eventPushed(event:EventNote) {
 		{
 			var ret:Dynamic = callOnLuas('onPause', [], false);
 			var ret2:Dynamic = callAllHScript('onPause', [],false);
-			if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) {
+			if(ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop) {
 				openPauseMenu();
 			}
 		}
@@ -5443,7 +5444,7 @@ if (opponentPlayer){
 
 			var ret:Dynamic = callOnLuas('onGameOver', [], false);
 			var ret2:Dynamic = callAllHScript('onGameOver', [],false);
-			if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) {
+			if(ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop) {
 				
 
 				if (opponentPlayer)
@@ -6268,7 +6269,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 		var ret:Dynamic = callOnLuas('onEndSong', [], false);
 		var ret2:Dynamic = callAllHScript('onEndSong', [SONG.song],false);
 		
-		if((ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) && !transitioning) {
+		if((ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop) && !transitioning) {
 			if (SONG.validScore && !botplay)
 			{
 				#if !switch
@@ -7789,7 +7790,7 @@ public var curNoteHitHealth:Float = 0;
 
 		var ret:Dynamic = callOnLuas('onRecalculateRating', [], false);
 		var ret2:Dynamic = callAllHScript('onRecalculateRating', [],false);
-		if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop)
+		if(ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop)
 		{
 			var rat:Int = 0;
 			#if HAD_DIFFERNET_LANGS
