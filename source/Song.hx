@@ -12,6 +12,14 @@ import sys.FileSystem;
 
 using StringTools;
 
+typedef SongFilesOMG =
+{
+	var fileName:Null<String>;
+	var wasPlayer:Null<Bool>;
+	var wasOpponent:Null<Bool>;
+	var wasBGM:Null<Bool>;
+}
+
 typedef SwagSong =
 {
 	var songFileNames:Null<Array<String>>;
@@ -39,6 +47,21 @@ class Song
 {
 	public var uiType:String = 'normal';
 	public var song:String;
+	/**
+	 public var songFileNames:Array<SongFilesOMG> = [
+		{
+		fileName : 'Inst',
+		wasBGM : true,
+		wasPlayer : false;
+		wasOpponent : false;
+	},
+	{
+		fileName : 'Voices',
+		wasBGM : true,
+		wasPlayer : false;
+		wasOpponent : false;
+	}];
+	 */
 	public var songFileNames:Array<String> = ['Inst','Voices'];
 	public var basedOldMode:Bool = false;
 	public var songNameChinese:String = '';

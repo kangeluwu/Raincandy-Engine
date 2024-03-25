@@ -383,12 +383,15 @@ function changeDiff(change)
 		var songLowercase = Paths.formatToSongPath(songs[curSelected].songName);
 		var poop = Highscore.formatSong(songLowercase, curDifficulty);
 
-		if (!FNFAssets.exists(Paths.json(Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase())))
+		if (!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase() + '.json')))
 			{
 				// assume we pecked up the difficulty, return to default difficulty
-				trace("UH OH SONG IN SPECIFIED DIFFICULTY DOESN'T EXIST\nUSING DEFAULT DIFFICULTY");
-				curDifficulty = 0;
-				poop =  Highscore.formatSong(songLowercase, curDifficulty);
+				trace("UH OH SONG IN SPECIFIED DIFFICULTY DOESN'T EXIST LOL");
+				if (change < 0)
+				changeDiff(curDifficulty-1);
+				else
+				changeDiff(curDifficulty+1);
+				return;
 			}
 			curSong = Song.loadFromJson(poop, songLowercase);
 			

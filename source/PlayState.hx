@@ -1580,6 +1580,12 @@ function camerabgAlphaShits(cam:FlxCamera)
 		}
 	
 
+		//AUTO PRECACHE LOL
+		var songsReal:Array<String> = [];
+        var files = [];
+		
+       
+
 		// "GLOBAL" SCRIPTS
 		#if LUA_ALLOWED
 		var filesPushed:Array<String> = [];
@@ -5013,7 +5019,7 @@ function eventPushed(event:EventNote) {
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
 		}*/
 
-		if (controls.PAUSE  #if android || FlxG.android.justReleased.BACK #end && startedCountdown && canPause)
+		if ((controls.PAUSE  #if android || FlxG.android.justReleased.BACK #end )&& startedCountdown && canPause)
 		{
 			var ret:Dynamic = callOnLuas('onPause', [], false);
 			var ret2:Dynamic = callAllHScript('onPause', [],false);
