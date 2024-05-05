@@ -391,8 +391,6 @@ function changeDiff(change)
 		var songLowercase = Paths.formatToSongPath(songs[curSelected].songName);
 		var poop = Highscore.formatSong(songLowercase, curDifficulty);
 
-		if (!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase() + '.json')))
-		curSong = Song.loadFromJson(poop, songLowercase);
 		if (!FNFAssets.exists(Paths.json(Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase())))
 			{
 				// assume we pecked up the difficulty, return to default difficulty
@@ -400,7 +398,8 @@ function changeDiff(change)
 				curDifficulty = 0;
 				poop =  Highscore.formatSong(songLowercase, curDifficulty);
 			}
-		
+			curSong = Song.loadFromJson(poop, songLowercase);
+
 			
 		lastDifficultyName = CoolUtil.difficulties[curDifficulty];
 
@@ -412,7 +411,7 @@ function changeDiff(change)
 		diffText.text = '< ' + CoolUtil.difficultyString() + ' >';
 		positionHighscore();
 		
-		if (songFileNames[0] != curSong.songFileNames[0] || songFileNames[1] != curSong.songFileNames[1])
+		if (songFileNames != null && (songFileNames[0] != curSong.songFileNames[0] || songFileNames[1] != curSong.songFileNames[1]))
 			{
 				if (preload){
 					destroyFreeplayVocals();

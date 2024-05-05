@@ -211,7 +211,7 @@ callInterp("init", [this]);
 				var spriteType = "sparrow";
 				var spilty = json.image.split('``');
 				var isMixTexfnf = false;
-				if (spilty != null && splity.length > 1)
+				if (spilty != null && spilty.length > 1)
 					isMixTexfnf =true;
 				//sparrow
 				//packer
@@ -302,10 +302,7 @@ callInterp("init", [this]);
 					
 					case "sparrow":
 						texs.push(Paths.getSparrowAtlas(fra));
-					
-					case "texture":
-						texs.push(AtlasFrameMaker.construct(fra));
-						isAnimateAtlas = true;
+				
 				}
 				}
 				var tex = texs[0];
