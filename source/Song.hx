@@ -129,6 +129,10 @@ class Song
 		if(FileSystem.exists(moddyFile)) {
 			rawJson = File.getContent(moddyFile).trim();
 		}
+		if(rawJson == null) {
+			if (formattedSong.toLowerCase().startsWith(formattedFolder.toLowerCase()))
+			rawJson = File.getContent(Paths.modsJson(formattedFolder + '/' + formattedFolder + '-chart')).trim();
+		}
 		#end
 
 		if(rawJson == null) {
@@ -139,6 +143,15 @@ class Song
 			#end
 		}
 
+		if(rawJson == null) {
+			if (formattedSong.toLowerCase().startsWith(formattedFolder.toLowerCase())){
+			#if sys
+			rawJson = File.getContent(SUtil.getPath() + Paths.json(formattedFolder + '/' + formattedFolder + '-chart')).trim();
+			#else
+			rawJson = Assets.getText(Paths.json(formattedFolder + '/' + formattedFolder + '-chart')).trim();
+			#end
+			}
+		}
 		while (!rawJson.endsWith("}"))
 		{
 			rawJson = rawJson.substr(0, rawJson.length - 1);
