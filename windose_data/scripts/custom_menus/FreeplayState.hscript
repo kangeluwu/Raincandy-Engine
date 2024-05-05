@@ -299,7 +299,15 @@ function update(elapsed)
 						destroyFreeplayVocals();
 						Paths.currentModDirectory = songs[curSelected].folder;
 						var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+
 						curSong = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+		if (!FNFAssets.exists(Paths.json(Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase())))
+			{
+				// assume we pecked up the difficulty, return to default difficulty
+				trace("UH OH SONG IN SPECIFIED DIFFICULTY DOESN'T EXIST\nUSING DEFAULT DIFFICULTY");
+				curSong = Song.loadFromJson(songs[curSelected].songName.toLowerCase(), songs[curSelected].songName.toLowerCase());
+				poop =  Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+			}
 						songFileNames = curSong.songFileNames;
 					FlixG.sound.music.volume = 0;
 					PlayState.SONG = curSong;
@@ -384,16 +392,15 @@ function changeDiff(change)
 		var poop = Highscore.formatSong(songLowercase, curDifficulty);
 
 		if (!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase() + '.json')))
+		curSong = Song.loadFromJson(poop, songLowercase);
+		if (!FNFAssets.exists(Paths.json(Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase())))
 			{
 				// assume we pecked up the difficulty, return to default difficulty
-				trace("UH OH SONG IN SPECIFIED DIFFICULTY DOESN'T EXIST LOL");
-				if (change < 0)
-				changeDiff(curDifficulty-1);
-				else
-				changeDiff(curDifficulty+1);
-				return;
+				trace("UH OH SONG IN SPECIFIED DIFFICULTY DOESN'T EXIST\nUSING DEFAULT DIFFICULTY");
+				curDifficulty = 0;
+				poop =  Highscore.formatSong(songLowercase, curDifficulty);
 			}
-			curSong = Song.loadFromJson(poop, songLowercase);
+		
 			
 		lastDifficultyName = CoolUtil.difficulties[curDifficulty];
 

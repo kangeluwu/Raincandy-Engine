@@ -10,6 +10,7 @@ import flixel.system.frontEnds.SoundFrontEnd;
 import openfl.display.DisplayObject;
 import flixel.input.keyboard.FlxKeyboard;
 import flixel.system.frontEnds.InputFrontEnd;
+import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxRect;
 import animateatlas.AtlasFrameMaker;
 import flixel.text.FlxText;
@@ -154,6 +155,7 @@ class PluginManager {
         interp.variables.set("FlxWaveMode", FlxWaveMode);
         interp.variables.set("FlxWaveDirection", FlxWaveDirection);
         interp.variables.set("FlxGlitchEffect", FlxGlitchEffect);
+
         return interp;
         
     }
@@ -162,7 +164,12 @@ class PluginManager {
 			@:privateAccess
 			cam._filters.push(value);
 		});
-        		interp.variables.set("SUtil", SUtil);
+        interp.variables.set("mixTex", function(frames1:FlxAtlasFrames, frames2:FlxAtlasFrames) {
+            for (frame in frames2.frames){
+                frames1.pushFrame(frame);
+            }
+            return frames1;
+        });
         interp.variables.set("SUtil", SUtil);
 		interp.variables.set("Conductor", Conductor);
 		interp.variables.set("FlxSprite", DynamicSprite);
@@ -255,6 +262,12 @@ interp.variables.set("mobile", false);
 			@:privateAccess
 			cam._filters.push(value);
 		});
+        interp.variables.set("mixTex", function(frames1:FlxAtlasFrames, frames2:FlxAtlasFrames) {
+            for (frame in frames2.frames){
+                frames1.pushFrame(frame);
+            }
+            return frames1;
+        });
 		interp.variables.set("Conductor", Conductor);
 		interp.variables.set("FlxSprite", DynamicSprite);
         interp.variables.set("AttachedSprite", AttachedSprite);

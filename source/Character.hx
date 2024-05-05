@@ -130,6 +130,12 @@ class Character extends FlxSprite
 				method(args[0], args[1]);
 		}
 	}
+	function mixtex(frames1:FlxAtlasFrames, frames2:FlxAtlasFrames) {
+		for (frame in frames2.frames){
+			frames1.pushFrame(frame);
+		}
+		return frames1;
+	}
 	public function new(x:Float, y:Float, ?character:String = 'bf', ?isPlayer:Bool = false)
 	{
 		super(x, y);
@@ -203,9 +209,14 @@ callInterp("init", [this]);
 
 				var json:CharacterFile = cast Json.parse(rawJson);
 				var spriteType = "sparrow";
+				var spilty = json.image.split('``');
+				var isMixTexfnf = false;
+				if (spilty != null && splity.length > 1)
+					isMixTexfnf =true;
 				//sparrow
 				//packer
 				//texture
+				if (!isMixTexfnf){
 				#if MODS_ALLOWED
 				var modTxtToFind:String = Paths.modsTxt(json.image);
 				var txtToFind:String = Paths.getPath('images/' + json.image + '.txt', TEXT);
@@ -250,7 +261,60 @@ callInterp("init", [this]);
 						isAnimateAtlas = true;
 				}
 				imageFile = json.image;
+			}else{
+				var texs = [];
+				for (fra in spilty){
+				#if MODS_ALLOWED
+				var modTxtToFind:String = Paths.modsTxt(fra);
+				var txtToFind:String = Paths.getPath('images/' + fra + '.txt', TEXT);
+				
+				//var modTextureToFind:String = Paths.modFolders("images/"+json.image);
+				//var textureToFind:String = Paths.getPath('images/' + json.image, new AssetType();
+				
+				if (FileSystem.exists(modTxtToFind) || FileSystem.exists(SUtil.getPath() + txtToFind) || Assets.exists(txtToFind))
+				#else
+				if (Assets.exists(Paths.getPath('images/' + fra + '.txt', TEXT)))
+				#end
+				{
+					
+					spriteType = "packer";
+				}
+				
+				#if MODS_ALLOWED
+				var modAnimToFind:String = Paths.modFolders('images/' + fra + '/Animation.json');
+				var animToFind:String = Paths.getPath('images/' + fra + '/Animation.json', TEXT);
+				
+				//var modTextureToFind:String = Paths.modFolders("images/"+json.image);
+				//var textureToFind:String = Paths.getPath('images/' + json.image, new AssetType();
+				
+				if (FileSystem.exists(modAnimToFind) || FileSystem.exists(SUtil.getPath() + animToFind) || Assets.exists(animToFind))
+				#else
+				if (Assets.exists(Paths.getPath('images/' + fra + '/Animation.json', TEXT)))
+				#end
+				{
+					spriteType = "texture";
+				}
 
+				switch (spriteType){
+					
+					case "packer":
+						texs.push(Paths.getPackerAtlas(fra));
+					
+					case "sparrow":
+						texs.push(Paths.getSparrowAtlas(fra));
+					
+					case "texture":
+						texs.push(AtlasFrameMaker.construct(fra));
+						isAnimateAtlas = true;
+				}
+				}
+				var tex = texs[0];
+				for (i in 1...texs.length)
+					{
+						frames = mixtex(tex,texs[i]);
+					}
+				imageFile = spilty[0];
+			}
 				if(json.scale != 1) {
 					jsonScale = json.scale;
 					setGraphicSize(Std.int(width * jsonScale));

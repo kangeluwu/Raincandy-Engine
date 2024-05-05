@@ -388,6 +388,7 @@ function coolURL(url:String):String
 		DiscordClient.changePresence("In the Menus", null);
 		#end
 		makeHaxeState("mainmenu", "windose_data/scripts/custom_menus/", "MainMenuState");
+		super.create();
 	}
 	override function update(elapsed:Float)
 		{

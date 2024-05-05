@@ -87,8 +87,6 @@ var optionShit:Array<String> = [
 		FlxG.cameras.add(camAchievement);
 		FlxCamera.defaultCameras = [camGame];
 
-		transIn = FlxTransitionableState.defaultTransIn;
-		transOut = FlxTransitionableState.defaultTransOut;
 
 		persistentUpdate = persistentDraw = true;
 	
