@@ -207,6 +207,8 @@ class Note extends FlxSprite
 	}
 
 	}
+	
+	public static var SUSTAIN_SIZE:Int = 44;
 	public var extraData:Map<String,Dynamic> = [];
 	public var oppMode:Bool = false;
 	public var strumTime:Float = 0;
