@@ -13,6 +13,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
 import flixel.FlxState;
 import flixel.FlxBasic;
+import flixel.util.FlxSort;
 #if mobile
 import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
@@ -103,6 +104,21 @@ class MusicBeatState extends FlxUIState
 		
 		super.destroy();
 	}
+	var stickerSubState:StickerSubState = null;
+	public function new(?stickers:StickerSubState = null){
+		super();
+
+		if (stickers != null)
+			{
+			  stickerSubState = stickers;
+			}
+		
+		
+	}
+	public function refresh()
+		{
+		  sort(CoolUtil.byZIndex, FlxSort.ASCENDING);
+		}
 	override function create() {
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
 		super.create();
@@ -110,6 +126,15 @@ class MusicBeatState extends FlxUIState
 		if(!skip) {
 			openSubState(new CustomFadeTransition(0.7, true));
 		}
+		if (stickerSubState != null)
+			{
+			
+			  this.persistentUpdate = true;
+			  this.persistentDraw = true;
+		
+			  openSubState(stickerSubState);
+			  stickerSubState.degenStickers();
+			}
 		FlxTransitionableState.skipNextTransOut = false;
 	}
 

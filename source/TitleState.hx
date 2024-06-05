@@ -231,6 +231,7 @@ var mobile = false;
 		var program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + path + filename));
 		var interp = PluginManager.createSimpleInterp();
 		// set vars
+		interp.variables.set("refresh", refresh);
 		interp.variables.set("doHidden", doHidden);
 		interp.variables.set("debugTarget", debugTarget);
 		interp.variables.set("CoolUtil", CoolUtil);

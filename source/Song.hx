@@ -19,7 +19,30 @@ typedef SongFilesOMG =
 	var wasOpponent:Null<Bool>;
 	var wasBGM:Null<Bool>;
 }
-
+/*
+typedef LegacySwagSong =
+{
+	var songFileNames:Null<Array<String>>;
+	var song:String;
+	var notes:Array<SwagSection>;
+	var songNameChinese:String;
+	var events:Array<Dynamic>;
+	var bpm:Float;
+	var uiType:String;
+	var needsVoices:Bool;
+	var speed:Float;
+	var cutsceneType:String;
+	var player1:String;
+	var player2:String;
+	var gfVersion:String;
+	var stage:String;
+	var arrowSkin:String;
+	var splashSkin:String;
+	var validScore:Bool;
+	var composer:String;
+	//var mania:Null<Int>;
+}
+*/
 typedef SwagSong =
 {
 	var songFileNames:Null<Array<String>>;
@@ -129,10 +152,6 @@ class Song
 		if(FileSystem.exists(moddyFile)) {
 			rawJson = File.getContent(moddyFile).trim();
 		}
-		if(rawJson == null) {
-			if (formattedSong.toLowerCase().startsWith(formattedFolder.toLowerCase()))
-			rawJson = File.getContent(Paths.modsJson(formattedFolder + '/' + formattedFolder + '-chart')).trim();
-		}
 		#end
 
 		if(rawJson == null) {
@@ -143,15 +162,6 @@ class Song
 			#end
 		}
 
-		if(rawJson == null) {
-			if (formattedSong.toLowerCase().startsWith(formattedFolder.toLowerCase())){
-			#if sys
-			rawJson = File.getContent(SUtil.getPath() + Paths.json(formattedFolder + '/' + formattedFolder + '-chart')).trim();
-			#else
-			rawJson = Assets.getText(Paths.json(formattedFolder + '/' + formattedFolder + '-chart')).trim();
-			#end
-			}
-		}
 		while (!rawJson.endsWith("}"))
 		{
 			rawJson = rawJson.substr(0, rawJson.length - 1);

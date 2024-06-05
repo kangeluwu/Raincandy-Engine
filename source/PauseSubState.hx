@@ -236,6 +236,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("YellowColor", FlxColor.YELLOW);
 		interp.variables.set("CyanColor", FlxColor.CYAN);
 		interp.variables.set("songName", songName);
+		interp.variables.set("refresh", refresh);
 		interp.variables.set('callAllHscript', function(func_name:String, args:Array<Dynamic>) {
 			return callAllHScript(func_name, args);
 		});

@@ -451,7 +451,7 @@ class PlayState extends MusicBeatState
 	}
 	catch (e)
 	{
-		Lib.application.window.alert(e.message, "Pretty Bad :(");
+		addTextToDebug("Function Issues:" + e.message,FlxColor.RED);
 		return FunkinLua.Function_Continue;
 	}
 	return returnVal;
@@ -472,7 +472,7 @@ class PlayState extends MusicBeatState
 	catch (e)
 		{
 			returnVal = null;
-			Lib.application.window.alert(e.message, "Hscript problem hmm");
+			addTextToDebug("Function Issues:" + e.message,FlxColor.RED);
 		}
 
 }
@@ -486,7 +486,7 @@ return returnVal;
 	}
 	catch (e)
 	{
-		Lib.application.window.alert(e.message, "Var problem hmm");
+		addTextToDebug("Variable Issues:" + e.message,FlxColor.RED);
 	}
 		
 	}
@@ -501,7 +501,7 @@ return returnVal;
 	}
 	catch (e)
 	{
-		Lib.application.window.alert(e.message, "Var problem hmm");
+		addTextToDebug("Variable Issues:" + e.message,FlxColor.RED);
 	}
 
 	}
@@ -526,7 +526,7 @@ return returnVal;
 	}
 	catch (e)
 	{
-		Lib.application.window.alert(e.message, "Module problem hmm");
+
 	}
 }
 	public function setHaxeModule(paths:String,name:String, usehaxe:String) {
@@ -536,7 +536,7 @@ return returnVal;
 	}
 	catch (e)
 	{
-		Lib.application.window.alert(e.message, "Module problem hmm");
+
 	}
 		
 }
@@ -615,6 +615,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 
 		var interp = PluginManager.createSimpleInterpEx();
 		// set vars
+		interp.variables.set("variables", variables);
 		interp.variables.set("BEHIND_GF", BEHIND_GF);
 		interp.variables.set("stressPercent", stressPercent);
 		interp.variables.set("camerabgAlphaShits", camerabgAlphaShits);
@@ -628,7 +629,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("BEHIND_NONE", 0);
 		interp.variables.set("difficulty", storyDifficulty);
 		interp.variables.set("difficultyText", storyDifficultyText);
-
+		interp.variables.set("refresh", refresh);
 		interp.variables.set("Highscore", Highscore);
 		interp.variables.set("PhillyGlowGradient", PhillyGlow.PhillyGlowGradient);
 		interp.variables.set("PhillyGlowParticle", PhillyGlow.PhillyGlowParticle);
@@ -880,12 +881,13 @@ function camerabgAlphaShits(cam:FlxCamera)
 				setAllHaxeVar(varName, Type.resolveClass(str + libName));
 			}
 			catch (e) {
-				Lib.application.window.alert(e.message, "ADD LIBRARY FAILED BRUH");
+				addTextToDebug("Adding library Failed:" + e.message,FlxColor.RED);
 			}
 		});
 		//Fow Ending Cutscenes lol
 		interp.variables.set("endSong", endSong);
-
+        for (name in variables.keys())
+			interp.variables.set(name, variables.get(name));
 		trace("set stuff");
 		try
 			{
@@ -908,7 +910,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 	}
 	catch (e)
 	{
-		Lib.application.window.alert(e.message, "OH NO IS GOD DAMN IT HSCRIPT ERROR FROM M+ OH NOOO!!!!!!!1");
+		addTextToDebug("Running Issue:" + e.message,FlxColor.RED);
 	}
 	}
 
@@ -2348,6 +2350,7 @@ if (!opponentPlayer)
 			}
 		}
 		CustomFadeTransition.nextCamera = camHUD2;
+		refresh();
 	}
 
 	#if sys
@@ -2370,6 +2373,25 @@ if (!opponentPlayer)
 		return null;
 		#end
 	}
+
+	public function createRuntimePostEffectShader(name:String,?glslVersion:String = '120'):RuntimePostEffectShader
+		{
+	
+	
+			#if (MODS_ALLOWED && sys)
+			if(!runtimeShaders.exists(name) && !initLuaShader(name))
+			{
+				FlxG.log.warn('Shader $name is missing!');
+				return new RuntimePostEffectShader();
+			}
+	
+			var arr:Array<String> = runtimeShaders.get(name);
+			return new RuntimePostEffectShader(arr[0], arr[1],glslVersion);
+			#else
+			FlxG.log.warn("Platform unsupported for Runtime Shaders!");
+			return null;
+			#end
+		}
 
 	public function initLuaShader(name:String, ?glslVersion:Int = 120)
 	{
@@ -2471,7 +2493,7 @@ if (!dadChar.beingControlled)
 				}
 			}
 	public function addTextToDebug(text:String, color:FlxColor) {
-		#if LUA_ALLOWED
+
 		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
 			spr.y += 20;
 		});
@@ -2482,7 +2504,7 @@ if (!dadChar.beingControlled)
 			luaDebugGroup.remove(blah);
 		}
 		luaDebugGroup.insert(0, new DebugLuaText(text, luaDebugGroup, color));
-		#end
+
 	}
 	public function fromRGB(red:Int, green:Int, blue:Int, alpha:Int = 255):FlxColor
 		{
@@ -2805,9 +2827,9 @@ if (!dadChar.beingControlled)
 				else
 					return false;
 			}
-	public function setGlobalVar(key:String, Rhodes_W:Dynamic):Void
+	public function setGlobalVar(key:String, vard:Dynamic):Void
 		{
-			haxeVars.set(key, Rhodes_W);
+			haxeVars.set(key, vard);
 		}
 		public function getGlobalFunctions(key:String, curfuntion:Void->Void):Void->Void
 			{
@@ -3344,7 +3366,7 @@ if (!dadChar.beingControlled)
 		}
 		var ret:Dynamic = callOnLuas('onStartCountdown', [], false);
 		var ret2:Dynamic = callAllHScript('onStartCountdown', [],false);
-		if(ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop) {
+		if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) {
 			if (skipCountdown || startOnTime > 0) skipArrowStartTween = true;
 			#if mobile 
 			androidc.visible = true;
@@ -3831,6 +3853,8 @@ var precacheNotes = [];
 				{
 					var daStrumTime:Float = preSongNotes[0];
 					var daNoteData:Int = Std.int(preSongNotes[1] % Note.NOTE_AMOUNT);
+					var daNoteStrum:Int = Math.floor(preSongNotes[1] / 4);
+					
 					var altNote:Bool = false;
 					var crossFade:Bool = false;
 					var gottaHitNote:Bool = sec.mustHitSection;
@@ -3838,8 +3862,11 @@ var precacheNotes = [];
 					if (preSongNotes[1] % 8 > 3)
 					{
 						gottaHitNote = !sec.mustHitSection;
+						
 					}
-	
+	                if (!sec.mustHitSection){
+						daNoteStrum =  Math.abs(Math.floor(preSongNotes[1] / 4) - 1);//YOOOOO
+					}
 					if (preSongNotes[4] || sec.altAnim)
 					{
 						altNote = true;
@@ -3907,7 +3934,8 @@ var precacheNotes = [];
 						oldNote = null;
 	
 					var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
-					swagNote.mustPress = gottaHitNote;
+					swagNote.currentStrum = daNoteStrum;
+					swagNote.mustPress = (daNoteStrum == 1);
 	
 					swagNote.altNote = altNote;
 	
@@ -3936,7 +3964,8 @@ var precacheNotes = [];
 							oldNote = precacheNotes[Std.int(precacheNotes.length - 1)];
 	
 							var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(songSpeed, 2)), daNoteData, oldNote, true);
-							sustainNote.mustPress = gottaHitNote;
+							sustainNote.currentStrum = daNoteStrum;
+					        sustainNote.mustPress = (daNoteStrum == 1);
 	
 							sustainNote.altNote = swagNote.altNote;
 							sustainNote.crossFade = swagNote.crossFade;
@@ -3952,7 +3981,7 @@ var precacheNotes = [];
 							sustainNote.parent = swagNote;
 							precacheNotes.push(sustainNote);
 					  if (!opponentPlayer){
-							if (sustainNote.mustPress)
+							if (sustainNote.daNoteStrum == 1)
 							{
 								sustainNote.x += FlxG.width / 2; // general offset
 							}
@@ -3966,7 +3995,7 @@ var precacheNotes = [];
 							}
 						}
 						else if (opponentPlayer){
-							if (!sustainNote.mustPress)
+							if (sustainNote.daNoteStrum == 0)
 							{
 								sustainNote.x += FlxG.width / 2; // general offset
 							}
@@ -3982,11 +4011,11 @@ var precacheNotes = [];
 						}
 					}
 					if (!opponentPlayer){
-					if (swagNote.mustPress)
+					if (swagNote.daNoteStrum == 0)
 					{
 						swagNote.x += FlxG.width / 2; // general offset
 					}
-					else if(ClientPrefs.middleScroll)
+					else if(ClientPrefs.middleScroll && swagNote.daNoteStrum == 1)
 					{
 						swagNote.x += 310;
 						if(daNoteData > 1) //Up and Right
@@ -3996,11 +4025,11 @@ var precacheNotes = [];
 					}
 				}
 				else if (opponentPlayer){
-					if (!swagNote.mustPress)
+					if (swagNote.daNoteStrum == 1)
 					{
 						swagNote.x -= FlxG.width / 2; // general offset
 					}
-					else if(ClientPrefs.middleScroll)
+					else if(ClientPrefs.middleScroll && swagNote.daNoteStrum == 0)
 					{
 						swagNote.x -= 310;
 						if(daNoteData <= 1) //Up and Right
@@ -4231,6 +4260,8 @@ var precacheNotes = [];
 			{
 				var daStrumTime:Float = songNotes[0];
 				var daNoteData:Int = Std.int(songNotes[1] % Note.NOTE_AMOUNT);
+				var daNoteStrum:Int = Math.floor(preSongNotes[1] / 4);
+
 				var altNote:Bool = false;
 				var crossFade:Bool = false;
 				var gottaHitNote:Bool = section.mustHitSection;
@@ -4239,7 +4270,9 @@ var precacheNotes = [];
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
-
+               if (!sec.mustHitSection){
+						daNoteStrum =  Math.abs(Math.floor(preSongNotes[1] / 4) - 1);//YOOOOO
+					}
 				if (songNotes[4] || section.altAnim)
 				{
 					altNote = true;
@@ -4307,7 +4340,8 @@ var precacheNotes = [];
 					oldNote = null;
 
 				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
-				swagNote.mustPress = gottaHitNote;
+				swagNote.currentStrum = daNoteStrum;
+				swagNote.mustPress = (daNoteStrum == 1);
 
 				swagNote.altNote = altNote;
 
@@ -4336,7 +4370,8 @@ var precacheNotes = [];
 						oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
 						var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(songSpeed, 2)), daNoteData, oldNote, true);
-						sustainNote.mustPress = gottaHitNote;
+						sustainNote.currentStrum = daNoteStrum;
+					    sustainNote.mustPress = (daNoteStrum == 1);
 
 						sustainNote.altNote = swagNote.altNote;
 						sustainNote.crossFade = swagNote.crossFade;
@@ -4352,7 +4387,7 @@ var precacheNotes = [];
 						sustainNote.parent = swagNote;
 						unspawnNotes.push(sustainNote);
                   if (!opponentPlayer){
-						if (sustainNote.mustPress)
+						if (sustainNote.daNoteStrum == 1)
 						{
 							sustainNote.x += FlxG.width / 2; // general offset
 						}
@@ -4366,7 +4401,7 @@ var precacheNotes = [];
 						}
 					}
 					else if (opponentPlayer){
-						if (!sustainNote.mustPress)
+						if (sustainNote.daNoteStrum == 0)
 						{
 							sustainNote.x += FlxG.width / 2; // general offset
 						}
@@ -4382,11 +4417,11 @@ var precacheNotes = [];
 					}
 				}
 				if (!opponentPlayer){
-				if (swagNote.mustPress)
+				if (swagNote.daNoteStrum == 1)
 				{
 					swagNote.x += FlxG.width / 2; // general offset
 				}
-				else if(ClientPrefs.middleScroll)
+				else if(ClientPrefs.middleScroll && swagNote.daNoteStrum == 0)
 				{
 					swagNote.x += 310;
 					if(daNoteData > 1) //Up and Right
@@ -4396,11 +4431,11 @@ var precacheNotes = [];
 				}
 			}
 			else if (opponentPlayer){
-				if (!swagNote.mustPress)
+				if (swagNote.daNoteStrum == 0)
 				{
 					swagNote.x -= FlxG.width / 2; // general offset
 				}
-				else if(ClientPrefs.middleScroll)
+				else if(ClientPrefs.middleScroll && swagNote.daNoteStrum == 1)
 				{
 					swagNote.x -= 310;
 					if(daNoteData <= 1) //Up and Right
@@ -5023,7 +5058,7 @@ function eventPushed(event:EventNote) {
 		{
 			var ret:Dynamic = callOnLuas('onPause', [], false);
 			var ret2:Dynamic = callAllHScript('onPause', [],false);
-			if(ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop) {
+			if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) {
 				openPauseMenu();
 			}
 		}
@@ -5236,10 +5271,19 @@ if (opponentPlayer){
 			notes.forEachAlive(function(daNote:Note)
 			{
 				var strumGroup:FlxTypedGroup<StrumNote> = playerStrums;
-				if(!daNote.mustPress) strumGroup = opponentStrums;
-
 				var breakGroup:FlxTypedGroup<FlxSprite> = playerComboBreak;
-				if(!daNote.mustPress) breakGroup = opponentComboBreak;
+				if(strumGroup == opponentStrums) 
+				switch (daNote.currentStrum){
+					case 0:
+						strumGroup = playerStrums;
+						breakGroup = playerComboBreak;
+					case 1:
+						strumGroup = opponentStrums;
+						breakGroup = opponentComboBreak;
+				}
+
+
+				
 
 				var strumX:Float = strumGroup.members[daNote.noteData].x;
 				var strumY:Float = strumGroup.members[daNote.noteData].y;
@@ -5450,7 +5494,7 @@ if (opponentPlayer){
 
 			var ret:Dynamic = callOnLuas('onGameOver', [], false);
 			var ret2:Dynamic = callAllHScript('onGameOver', [],false);
-			if(ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop) {
+			if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) {
 				
 
 				if (opponentPlayer)
@@ -6095,7 +6139,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 		else
 		{
 			moveCamera(false);
-			callOnLuas('onMoveCamera', ['boyfriend']);
+			callOnLuas('onMovingCamera', ['boyfriend']);
 			callAllHScript('onMovingCamera', ['boyfriend']);
 		}
 	}
@@ -6275,7 +6319,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 		var ret:Dynamic = callOnLuas('onEndSong', [], false);
 		var ret2:Dynamic = callAllHScript('onEndSong', [SONG.song],false);
 		
-		if((ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop) && !transitioning) {
+		if((ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) && !transitioning) {
 			if (SONG.validScore && !botplay)
 			{
 				#if !switch
@@ -6811,7 +6855,7 @@ currentTimingShown.cameras = [camHUD];
 				spr.resetAnim = 0;
 			}
 			callOnLuas('onKeyRelease', [key]);
-			setAllHaxeVar('onKeyRelease', [key]);
+			callAllHScript('onKeyRelease', [key]);
 		}
 		//trace('released: ' + controlArray);
 	}
@@ -7695,7 +7739,15 @@ public var curNoteHitHealth:Float = 0;
 		setAllHaxeVar('curBeat', curBeat);
 		callAllHScript('beatHit', [curBeat]);
 	}
-
+    function changeBpm(curBpm:Float){
+		Conductor.changeBPM(curBpm);
+		setOnLuas('curBpm', Conductor.bpm);
+		setOnLuas('crochet', Conductor.crochet);
+		setOnLuas('stepCrochet', Conductor.stepCrochet);
+		setAllHaxeVar('curBpm', Conductor.bpm);
+		setAllHaxeVar('crochet', Conductor.crochet);
+		setAllHaxeVar('stepCrochet', Conductor.stepCrochet);
+	}
 	override function sectionHit()
 	{
 		super.sectionHit();
@@ -7715,10 +7767,8 @@ public var curNoteHitHealth:Float = 0;
 
 			if (SONG.notes[curSection].changeBPM)
 			{
-				Conductor.changeBPM(SONG.notes[curSection].bpm);
-				setOnLuas('curBpm', Conductor.bpm);
-				setOnLuas('crochet', Conductor.crochet);
-				setOnLuas('stepCrochet', Conductor.stepCrochet);
+				changeBpm(SONG.notes[curSection].bpm);
+			
 			}
 			setOnLuas('mustHitSection', SONG.notes[curSection].mustHitSection);
 			setOnLuas('altAnim', SONG.notes[curSection].altAnim);
@@ -7796,7 +7846,7 @@ public var curNoteHitHealth:Float = 0;
 
 		var ret:Dynamic = callOnLuas('onRecalculateRating', [], false);
 		var ret2:Dynamic = callAllHScript('onRecalculateRating', [],false);
-		if(ret != FunkinLua.Function_Stop || ret2 != FunkinLua.Function_Stop)
+		if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop)
 		{
 			var rat:Int = 0;
 			#if HAD_DIFFERNET_LANGS

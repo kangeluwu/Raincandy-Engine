@@ -13,6 +13,10 @@ import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
 import lime.utils.Assets;
 import flixel.FlxSprite;
+#if flxanimate
+import flxanimate.FlxAnimate;
+import flxanimate.frames.FlxAnimateFrames;
+#end
 #if sys
 import sys.io.File;
 import sys.FileSystem;
@@ -383,6 +387,151 @@ class Paths
 	inline static public function formatToSongPath(path:String) {
 		return path.toLowerCase().replace(' ', '-');
 	}
+
+	static public function cacheBitmap(file:String, ?bitmap:BitmapData = null, ?allowGPU:Bool = true)
+		{
+			if(bitmap == null)
+			{
+				#if MODS_ALLOWED
+				if (FileSystem.exists(file))
+					bitmap = BitmapData.fromFile(file);
+				else
+				#end
+				{
+					if (OpenFlAssets.exists(file, IMAGE))
+						bitmap = OpenFlAssets.getBitmapData(file);
+				}
+	
+				if(bitmap == null) return null;
+			}
+	
+			localTrackedAssets.push(file);
+			if (allowGPU && ClientPrefs.cacheOnGPU)
+			{
+				var texture:RectangleTexture = FlxG.stage.context3D.createRectangleTexture(bitmap.width, bitmap.height, BGRA, true);
+				texture.uploadFromBitmapData(bitmap);
+				bitmap.image.data = null;
+				bitmap.dispose();
+				bitmap.disposeImage();
+				bitmap = BitmapData.fromTexture(texture);
+			}
+			var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, file);
+			newGraphic.persist = true;
+			newGraphic.destroyOnNoUse = false;
+			currentTrackedAssets.set(file, newGraphic);
+			return newGraphic;
+		}
+		#if flxanimate
+		public static function loadAnimateAtlas(spr:FlxAnimate, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null)
+		{
+			var changedAnimJson = false;
+			var changedAtlasJson = false;
+			var changedImage = false;
+			
+			if(spriteJson != null)
+			{
+				changedAtlasJson = true;
+				spriteJson = File.getContent(spriteJson);
+			}
+	
+			if(animationJson != null) 
+			{
+				changedAnimJson = true;
+				animationJson = File.getContent(animationJson);
+			}
+	
+			// is folder or image path
+			if(Std.isOfType(folderOrImg, String))
+			{
+				var originalPath:String = folderOrImg;
+				for (i in 0...10)
+				{
+					var st:String = '$i';
+					if(i == 0) st = '';
+	
+					if(!changedAtlasJson)
+					{
+						spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json');
+						if(spriteJson != null)
+						{
+							//trace('found Sprite Json');
+							changedImage = true;
+							changedAtlasJson = true;
+							folderOrImg = Paths.image('$originalPath/spritemap$st');
+							break;
+						}
+					}
+					else if(Paths.fileExists('images/$originalPath/spritemap$st.png', IMAGE))
+					{
+						//trace('found Sprite PNG');
+						changedImage = true;
+						folderOrImg = Paths.image('$originalPath/spritemap$st');
+						break;
+					}
+				}
+	
+				if(!changedImage)
+				{
+					//trace('Changing folderOrImg to FlxGraphic');
+					changedImage = true;
+					folderOrImg = Paths.image(originalPath);
+				}
+	
+				if(!changedAnimJson)
+				{
+					//trace('found Animation Json');
+					changedAnimJson = true;
+					animationJson = getTextFromFile('images/$originalPath/Animation.json');
+				}
+			}
+	
+			//trace(folderOrImg);
+			//trace(spriteJson);
+			//trace(animationJson);
+			spr.loadAtlasEx(folderOrImg, spriteJson, animationJson);
+		}
+	
+		/*private static function getContentFromFile(path:String):String
+		{
+			var onAssets:Bool = false;
+			var path:String = Paths.getPath(path, TEXT, true);
+			if(FileSystem.exists(path) || (onAssets = true && Assets.exists(path, TEXT)))
+			{
+				//trace('Found text: $path');
+				return !onAssets ? File.getContent(path) : Assets.getText(path);
+			}
+			return null;
+		}*/
+		#end
+
+		static public function getAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
+			{
+				var useMod = false;
+				var imageLoaded:FlxGraphic = image(key, library, allowGPU);
+		
+				var myXml:Dynamic = getPath('images/$key.xml', TEXT);
+				if(OpenFlAssets.exists(myXml) #if MODS_ALLOWED || (FileSystem.exists(myXml) && (useMod = true)) #end )
+				{
+					#if MODS_ALLOWED
+					return FlxAtlasFrames.fromSparrow(imageLoaded, (useMod ? File.getContent(myXml) : myXml));
+					#else
+					return FlxAtlasFrames.fromSparrow(imageLoaded, myXml);
+					#end
+				}
+				else
+				{
+					var myJson:Dynamic = getPath('images/$key.json', TEXT);
+					if(OpenFlAssets.exists(myJson) #if MODS_ALLOWED || (FileSystem.exists(myJson) && (useMod = true)) #end )
+					{
+						#if MODS_ALLOWED
+						return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, (useMod ? File.getContent(myJson) : myJson));
+						#else
+						return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, myJson);
+						#end
+					}
+				}
+				return getPackerAtlas(key, library);
+			}
 
 	// completely rewritten asset loading? fuck!
 	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];

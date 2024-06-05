@@ -146,6 +146,7 @@
 	<haxelib name="flixel-ui" />
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
 	<haxelib name="hxCodec" if="VIDEOS_ALLOWED"  unless="ios"/>
+	<haxelib name="flxanimate" /> <!-- Texture atlas rendering -->
 <section if="ios">
 	<haxelib name="hxvlc" if="VIDEOS_ALLOWED"/>
 		</section>
@@ -153,7 +154,7 @@
 	<haxelib name="hscript-ex"/>
 	<haxelib name="seedyrng"/> <!--haxelib install seedyrng-->
 	<haxelib name="random"/> <!--haxelib install random-->
-	<!--<haxelib name="polymod"/> -->
+	<haxelib name="polymod"/> 
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="linc_luajit" if="windows"/>
 	<haxelib name="haxeui-flixel"/>
@@ -172,7 +173,7 @@
 		<config:android gradle-version="7.6" gradle-plugin="7.3.1" />
 
 		<!--Audio Recording Fix-->
-		<config:android target-sdk-version="29" if="${lime <= 8.0.0}" />
+		<config:android target-sdk-version="29" if="${lime <= 8.0.2}" />
 	</section>
 <section if="ios">
 			<define name='objc' />
@@ -212,6 +213,8 @@
 
 	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
+		<haxeflag name="--macro" value="include('mar')" />
+	<haxeflag name="--macro" value="addMetadata('@:build(mar.FlxMacro.buildFlxBasic())', 'flixel.FlxBasic')" />
 
 	<!--Allow working memory greater than 1 Gig-->
 	<!--haxedef name="HXCPP_GC_BIG_BLOCKS"-->

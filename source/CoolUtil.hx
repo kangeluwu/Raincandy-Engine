@@ -6,8 +6,9 @@ import lime.utils.Assets as LimeAssets;
 import lime.utils.AssetLibrary;
 import lime.utils.AssetManifest;
 import flixel.system.FlxSound;
-
+import flixel.FlxBasic;
 import lime.system.System;
+import flixel.util.FlxSort;
 #if sys
 import sys.io.File;
 import sys.FileSystem;
@@ -37,7 +38,12 @@ class CoolUtil
 	public static final JSON_EXT:Array<String> = ['json', 'jsonc'];
 
 	
-	
+   public static inline function byZIndex(order:Int, a:FlxBasic, b:FlxBasic):Int
+	{
+	  if (a == null || b == null) return 0;
+	  return FlxSort.byValues(order, a.zIndex, b.zIndex);
+	}
+
 	public static function coolDynamicTextFile(path:String):Array<String>
 	{
 		return coolTextFile(path);

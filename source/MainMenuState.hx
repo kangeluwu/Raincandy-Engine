@@ -272,6 +272,7 @@ function makeHaxeState(usehaxe:String, path:String, filename:String) {
 	interp.variables.set("insert", insert);
 	interp.variables.set("pi", Math.PI);
 	interp.variables.set("curMusicName", Main.curMusicName);
+	interp.variables.set("refresh", refresh);
 	interp.variables.set("hscriptPath", SUtil.getPath() + path);
 	interp.variables.set('callAllHscript', function(func_name:String, args:Array<Dynamic>) {
 		return callAllHScript(func_name, args);

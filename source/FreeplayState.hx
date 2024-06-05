@@ -351,6 +351,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 	interp.variables.set("SongMetadata", SongMetadata);
 	interp.variables.set("GameplayChangersSubstate", GameplayChangersSubstate);
 	interp.variables.set("coolURL", coolURL);
+	interp.variables.set("refresh", refresh);
 	interp.variables.set("insert", insert);
 	interp.variables.set("pi", Math.PI);
 	interp.variables.set("curMusicName", Main.curMusicName);

@@ -2176,9 +2176,10 @@ case 'Alt Anim Note':
 				{
 					for (i in 0...controlArray.length)
 					{
-						if(controlArray[i])
+						if(controlArray[i]){
 							autosaveSong();
 							doANoteThing(conductorTime, i, style);
+						}
 					}
 				}
 

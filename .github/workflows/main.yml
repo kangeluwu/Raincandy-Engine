@@ -57,6 +57,7 @@ jobs:
           haxelib install uniontypes
           haxelib install random
           haxelib install haxeui-flixel
+          haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
@@ -104,6 +105,7 @@ jobs:
           haxelib install uniontypes
           haxelib install random
           haxelib install haxeui-flixel
+          haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
         shell: cmd
       - name: Create Version Tag
@@ -152,6 +154,7 @@ jobs:
           haxelib install uniontypes
           haxelib install random
           haxelib install haxeui-flixel
+          haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
@@ -228,6 +231,7 @@ jobs:
                   haxelib install uniontypes
                   haxelib install random
                   haxelib install haxeui-flixel
+                  haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
                   haxelib list
         
               - name: Configure Android
@@ -323,6 +327,7 @@ jobs:
           haxelib install uniontypes
           haxelib install random
           haxelib install haxeui-flixel
+          haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
 
       - name: Compile

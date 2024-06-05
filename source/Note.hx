@@ -278,7 +278,7 @@ class Note extends FlxSprite
 	public var copyScale:Bool = true;
 	public var altNote:Bool = false;
 	public var altNum:Int = 0;
-	
+	public var currentStrum:Int = 0;
 	public var hitHealth:Float = 0.023;
 	public var missHealth:Float = 0.0475;
 	public var rating:String = 'unknown';
@@ -438,7 +438,6 @@ else{
 		y -= 2000;
 		this.strumTime = strumTime;
 		if(!inEditor) this.strumTime += ClientPrefs.noteOffset;
-		
 		this.noteData = noteData % NOTE_AMOUNT;
 		if(noteData > -1) {
 			texture = '';

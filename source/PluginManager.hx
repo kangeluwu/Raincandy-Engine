@@ -142,7 +142,7 @@ class PluginManager {
     public static function instanceExClass(classname:String, args:Array<Dynamic> = null) {
 		return interp.createScriptClassInstance(classname, args);
 	}
-    static function addEffectSpriteVars<T:Interp>(interp:T):T{
+    static function addingBasicStuffsIthink<T:Interp>(interp:T):T{
         interp.variables.set("FlxEffectSprite", FlxEffectSprite);
 		interp.variables.set("FlxOutlineEffect", FlxOutlineEffect);
         interp.variables.set("FlxRainbowEffect", FlxRainbowEffect);
@@ -155,7 +155,15 @@ class PluginManager {
         interp.variables.set("FlxWaveMode", FlxWaveMode);
         interp.variables.set("FlxWaveDirection", FlxWaveDirection);
         interp.variables.set("FlxGlitchEffect", FlxGlitchEffect);
-
+        interp.variables.set("StickerSubState", StickerSubState);
+        #if flxanimate
+        interp.variables.set("FlxAnimate", flxanimate.FlxAnimate);
+        #end
+        interp.variables.set("MathUtil", MathUtil);
+        interp.variables.set("RuntimePostEffectShader", RuntimePostEffectShader);
+        interp.variables.set("RuntimeRainShader", RuntimeRainShader);
+        interp.variables.set("CustomSprite", customlize.CustomSprite);
+        interp.variables.set("Map", haxe.ds.StringMap);
         return interp;
         
     }
@@ -239,7 +247,7 @@ interp.variables.set("mobile", false);
 		#else
 		interp.variables.set("debug", false);
 		#end
-        addEffectSpriteVars(interp);
+        addingBasicStuffsIthink(interp);
         return interp;
     }
     public static function privateAccess(?funtion:Void->Void = null)
@@ -319,7 +327,7 @@ interp.variables.set("Paths", Paths);
 		#else
 		interp.variables.set("debug", false);
 		#end
-        addEffectSpriteVars(interp);
+        addingBasicStuffsIthink(interp);
         return interp;
     }
 }

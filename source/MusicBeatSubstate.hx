@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSubState;
 import flixel.FlxBasic;
 import flixel.FlxSprite;
+import flixel.util.FlxSort;
 #if mobile
 import flixel.input.actions.FlxActionInput;
 import android.FlxVirtualPad;
@@ -69,6 +70,10 @@ class MusicBeatSubstate extends FlxSubState
 		
 		super.destroy();
 	}
+	public function refresh()
+		{
+		  sort(CoolUtil.byZIndex, FlxSort.ASCENDING);
+		}
 	override function update(elapsed:Float)
 	{
 		//everyStep();
