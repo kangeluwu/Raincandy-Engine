@@ -858,7 +858,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 	
 	
 		interp.variables.set('StringTools', StringTools);
-		interp.variables.set('callAllHscript', function(func_name:String, args:Array<Dynamic>,ignoreStops) {
+		interp.variables.set('callAllHScript', function(func_name:String, args:Array<Dynamic>,ignoreStops) {
 			 callAllHScript(func_name, args,ignoreStops);
 		});
 		interp.variables.set('setHaxeVar', function(name:String, value:Dynamic, usehaxe:String) {
@@ -4068,7 +4068,7 @@ var precacheNotes = [];
 						}
 						}
 					
-					callAllHscript('onPreCreateNote',[swagNote]);
+					callAllHScript('onPreCreateNote',[swagNote]);
 					
 					if(!noteTypeMap.exists(swagNote.noteType)) {
 						noteTypeMap.set(swagNote.noteType, true);
@@ -4499,7 +4499,7 @@ var precacheNotes = [];
 									}
 								}
 								}
-								callAllHscript('onCreateNote',[swagNote]);
+								callAllHScript('onCreateNote',[swagNote]);
 				if(!noteTypeMap.exists(swagNote.noteType)) {
 					noteTypeMap.set(swagNote.noteType, true);
 				}
@@ -5377,7 +5377,7 @@ if (opponentPlayer){
 					}
 				}
 
-				if (daNote.currentStrum > 1& daNote.wasGoodHit && !daNote.ignoreNote)
+				if (daNote.currentStrum > 1&& daNote.wasGoodHit && !daNote.ignoreNote)
 					defaultNoteHit(daNote,daNote.currentStrum);
 				if(daNote.isSustainNote && strum.sustainReduce) daNote.clipToStrumNote(strum);
 
