@@ -16,7 +16,7 @@ class ClientPrefs {
 	public static var showFPS:Bool = true;
 	public static var showComboBreaks:Bool = true;
 	public static var flashing:Bool = true;
-	public static var skipChartTypeMenu:Bool = false;
+	public static var skipChartTypeMenu:Bool = true;
 	public static var globalAntialiasing:Bool = true;
 	public static var showCombos:Bool = false;
 	public static var showCombosNum:Bool = true;

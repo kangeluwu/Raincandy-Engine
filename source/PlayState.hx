@@ -956,8 +956,13 @@ function camerabgAlphaShits(cam:FlxCamera)
 	public var healthBarPath:String = '';
 	public var timeBarPath:String = '';
 	public var stageData:StageFile;
+	var playbackRate:Float = 1;
+	public var currentPlayerStrum:Int = 0;
+	public var currentOpponentStrum:Int = 1;
 	var uiSmelly:TUI;
 	var haxeModulePushed:Array<String> = [];
+	public var currentChars:Array<Character> = [];
+	public var currentStrums:Array<FlxTypedGroup<StrumNote>> = [];
 	override public function create()
 	{
 		#if MODS_ALLOWED
@@ -1028,7 +1033,10 @@ function camerabgAlphaShits(cam:FlxCamera)
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
 		botplay = ClientPrefs.getGameplaySetting('botplay', false);
 		opponentPlayer = ClientPrefs.getGameplaySetting('opponentPlayer', false);
-
+        if (opponentPlayer){
+			currentPlayerStrum = 1;
+			currentOpponentStrum = 0;
+		}
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
@@ -1552,7 +1560,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		luaDebugGroup.cameras = [camHUD2];
 		add(luaDebugGroup);
 		#end
-
+        currentChars= [boyfriend,dad,gf];
 		var haxefilesPushed:Array<String> = [];
 		var haxefoldersToCheck:Array<String> = [SUtil.getPath() + Paths.getPreloadPath('scripts/preloadScripts/')];
 
@@ -2302,7 +2310,7 @@ if (!opponentPlayer)
 		Conductor.safeZoneOffset = (ClientPrefs.safeFrames / 60) * 1000;
 		if (ClientPrefs.middleScroll)
 			{
-				if (opponentPlayer){
+				if (currentOpponentStrum == 0){
 					for (i in 0...opponentStrums.length) {
 						opponentStrums.members[i].x += 580;
 						}
@@ -2466,7 +2474,7 @@ if (!opponentPlayer)
 				if (type){
 					opponentPlayer = true;
 				
-				for (note in notes) note.oppMode = true;
+				
 				for (dadChar in dadMap.iterator()) {
 if (!dadChar.beingControlled)
 	dad.beingControlled = true;
@@ -2475,13 +2483,13 @@ if (!dadChar.beingControlled)
 					if (bfChar.beingControlled)
 						bfChar.beingControlled = false;
 									}
-				for (note in unspawnNotes) note.oppMode = true;
+			
 				}
 				else if (!type){
 					opponentPlayer = false;
 				
-				for (note in notes) note.oppMode = false;
-				for (note in unspawnNotes) note.oppMode = false;
+				
+				
 				for (dadChar in dadMap.iterator()) {
 					if (dadChar.beingControlled)
 						dad.beingControlled = false;
@@ -3373,9 +3381,9 @@ if (!dadChar.beingControlled)
 			#end
 			if (!summonNotesAlready){
 				summonNotesAlready = true;
-			generateStaticArrows(0);
-			generateStaticArrows(1);
-			
+				for (i in 0...SONG.strums){
+			generateStaticArrows(i,SONG.strums);
+				}
 
 
 			for (i in 0...playerStrums.length) {
@@ -3517,7 +3525,7 @@ if (!dadChar.beingControlled)
 				}
 
 				notes.forEachAlive(function(note:Note) {
-					var coolMustPress = !opponentPlayer ? note.mustPress : !note.mustPress;
+					var coolMustPress = !note.mustPress;
 					if(ClientPrefs.opponentStrums || coolMustPress)
 					{
 						note.copyAlpha = false;
@@ -3852,50 +3860,49 @@ var precacheNotes = [];
 				for (preSongNotes in sec.sectionNotes)
 				{
 					var daStrumTime:Float = preSongNotes[0];
+					if (!sec.mustHitSection){
+						if (preSongNotes[1] < Note.NOTE_AMOUNT*2){
+						if (preSongNotes[1] >= Note.NOTE_AMOUNT)
+							{
+								preSongNotes[1] -= Note.NOTE_AMOUNT;
+							}
+							else
+							{
+								preSongNotes[1] += Note.NOTE_AMOUNT;
+							}
+						}
+					}
 					var daNoteData:Int = Std.int(preSongNotes[1] % Note.NOTE_AMOUNT);
-					var daNoteStrum:Int = Math.floor(preSongNotes[1] / 4);
+				
+					var daNoteStrum:Int = Math.floor(preSongNotes[1] / Note.NOTE_AMOUNT);
 					
 					var altNote:Bool = false;
 					var crossFade:Bool = false;
-					var gottaHitNote:Bool = sec.mustHitSection;
+					var gottaHitNote:Bool = if (daNoteStrum == currentPlayerStrum) true else false;
 	                if (preSongNotes[1] != -1){
-					if (preSongNotes[1] % 8 > 3)
-					{
-						gottaHitNote = !sec.mustHitSection;
-						
-					}
-	                if (!sec.mustHitSection){
-						daNoteStrum =  Math.abs(Math.floor(preSongNotes[1] / 4) - 1);//YOOOOO
-					}
+					
 					if (preSongNotes[4] || sec.altAnim)
 					{
 						altNote = true;
-					}
-	
-					if (preSongNotes[12] || (gottaHitNote && sec.crossfadeBf) || (!gottaHitNote && sec.crossfadeDad))
-					{
-						crossFade = true;
 					}
 	
 					
 					switch (chartType)
 					{
 						case "standard":
-								daNoteData = Std.int(preSongNotes[1] % 4);
+								daNoteData = Std.int(preSongNotes[1] % Note.NOTE_AMOUNT);
 						case "flip":
-							if (gottaHitNote)
-							{
-								// B-SIDE FLIP???? Rozebud be damned lmao
-									daNoteData = 3 - Std.int(preSongNotes[1] % 4);
-							}
+						
+									daNoteData = Note.NOTE_AMOUNT - 1 - Std.int(preSongNotes[1] % Note.NOTE_AMOUNT);
+							
 	
 						case "chaos":
-								daNoteData = random.randomInt(0, 3);
+								daNoteData = random.randomInt(0, Note.NOTE_AMOUNT-1);
 	
 						case "onearrow":
 							daNoteData = arrowLane;
 						case "stair":
-								daNoteData = stair % 4;
+								daNoteData = stair % Note.NOTE_AMOUNT;
 							stair++;
 						case "dualarrow":
 							switch (stair)
@@ -3935,8 +3942,18 @@ var precacheNotes = [];
 	
 					var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
 					swagNote.currentStrum = daNoteStrum;
-					swagNote.mustPress = (daNoteStrum == 1);
-	
+					swagNote.mustPress = if (daNoteStrum == currentPlayerStrum) true else false;
+	                switch (swagNote.currentStrum){
+						case 0:
+							swagNote.whoShouldSing = boyfriend;
+							swagNote.whoIsOpponent = dad;
+							case 1:
+								swagNote.whoShouldSing = dad;
+								swagNote.whoIsOpponent = boyfriend;
+							default:
+								swagNote.whoShouldSing = boyfriend;
+								swagNote.whoIsOpponent = dad;
+					}
 					swagNote.altNote = altNote;
 	
 					swagNote.sustainLength = preSongNotes[2];
@@ -3947,9 +3964,7 @@ var precacheNotes = [];
 					swagNote.gfNote = (sec.gfSection && (preSongNotes[1]%8<4));
 					swagNote.noteType = preSongNotes[3];
 					if(!Std.isOfType(preSongNotes[3], String)) swagNote.noteType = editors.ChartingState.noteTypeList[preSongNotes[3]]; //Backward compatibility + compatibility with Week 7 charts
-					if (opponentPlayer) {
-						swagNote.oppMode = true;
-					}
+				
 					swagNote.scrollFactor.set();
 	
 					var susLength:Float = swagNote.sustainLength;
@@ -3965,15 +3980,22 @@ var precacheNotes = [];
 	
 							var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(songSpeed, 2)), daNoteData, oldNote, true);
 							sustainNote.currentStrum = daNoteStrum;
-					        sustainNote.mustPress = (daNoteStrum == 1);
-	
+					        sustainNote.mustPress =  if (daNoteStrum == 1) true else false;
+							switch (sustainNote.currentStrum){
+								case 0:
+									sustainNote.whoShouldSing = boyfriend;
+									sustainNote.whoIsOpponent = dad;
+							case 1:
+								sustainNote.whoShouldSing = dad;
+								sustainNote.whoIsOpponent = boyfriend;
+							default:
+								sustainNote.whoShouldSing = boyfriend;
+								sustainNote.whoIsOpponent = dad;
+							}
 							sustainNote.altNote = swagNote.altNote;
 							sustainNote.crossFade = swagNote.crossFade;
 							sustainNote.altNum = swagNote.altNum;
-							if (opponentPlayer)
-								{
-									sustainNote.oppMode = true;
-								}
+						
 							sustainNote.gfNote = (sec.gfSection && (preSongNotes[1]%8<4));
 							sustainNote.noteType = swagNote.noteType;
 							sustainNote.scrollFactor.set();
@@ -3998,64 +4020,56 @@ var precacheNotes = [];
 									oldNote.scale.y /= playbackRate;
 									oldNote.updateHitbox();
 								}
-					  if (!opponentPlayer){
-							if (sustainNote.daNoteStrum == 1)
+					
+							if (sustainNote.currentStrum == currentPlayerStrum)
 							{
 								sustainNote.x += FlxG.width / 2; // general offset
 							}
-							else if(ClientPrefs.middleScroll)
+							else if(ClientPrefs.middleScroll && sustainNote.currentStrum == currentOpponentStrum)
 							{
+								switch (currentOpponentStrum){
+									case 1:
 								sustainNote.x += 310;
 								if(daNoteData > 1) //Up and Right
 								{
 									sustainNote.x += FlxG.width / 2 + 25;
 								}
-							}
-						}
-						else if (opponentPlayer){
-							if (sustainNote.daNoteStrum == 0)
-							{
-								sustainNote.x += FlxG.width / 2; // general offset
-							}
-							else if(ClientPrefs.middleScroll)
-							{
-								sustainNote.x -= 310;
+                                  case 0:
+									sustainNote.x -= 310;
 								if(daNoteData <= 1) //Up and Right
 								{
 									sustainNote.x -= -FlxG.width / 2 - 25;
 								}
 							}
-						}
+							}
+						
 						}
 					}
-					if (!opponentPlayer){
-					if (swagNote.daNoteStrum == 0)
-					{
-						swagNote.x += FlxG.width / 2; // general offset
-					}
-					else if(ClientPrefs.middleScroll && swagNote.daNoteStrum == 1)
-					{
-						swagNote.x += 310;
-						if(daNoteData > 1) //Up and Right
+
+					if (swagNote.currentStrum == currentPlayerStrum)
 						{
-							swagNote.x += FlxG.width / 2 + 25;
+							swagNote.x += FlxG.width / 2; // general offset
 						}
-					}
-				}
-				else if (opponentPlayer){
-					if (swagNote.daNoteStrum == 1)
-					{
-						swagNote.x -= FlxG.width / 2; // general offset
-					}
-					else if(ClientPrefs.middleScroll && swagNote.daNoteStrum == 0)
-					{
-						swagNote.x -= 310;
-						if(daNoteData <= 1) //Up and Right
+						else if(ClientPrefs.middleScroll && swagNote.currentStrum == currentOpponentStrum)
 						{
-							swagNote.x -= FlxG.width / 2 - 25;
+							switch (currentOpponentStrum){
+								case 1:
+									swagNote.x += 310;
+							if(daNoteData > 1) //Up and Right
+							{
+								swagNote.x += FlxG.width / 2 + 25;
+							}
+							  case 0:
+								swagNote.x -= 310;
+							if(daNoteData <= 1) //Up and Right
+							{
+								swagNote.x -= -FlxG.width / 2 - 25;
+							}
 						}
-					}
-				}
+						}
+					
+					callAllHscript('onPreCreateNote',[swagNote]);
+					
 					if(!noteTypeMap.exists(swagNote.noteType)) {
 						noteTypeMap.set(swagNote.noteType, true);
 					}
@@ -4277,49 +4291,51 @@ var precacheNotes = [];
 			for (songNotes in section.sectionNotes)
 			{
 				var daStrumTime:Float = songNotes[0];
+				if (!section.mustHitSection){
+					if (songNotes[1] < Note.NOTE_AMOUNT*2){
+					if (songNotes[1] >= Note.NOTE_AMOUNT)
+						{
+							songNotes[1] -= Note.NOTE_AMOUNT;
+						}
+						else
+						{
+							songNotes[1] += Note.NOTE_AMOUNT;
+						}
+					}
+				}
 				var daNoteData:Int = Std.int(songNotes[1] % Note.NOTE_AMOUNT);
-				var daNoteStrum:Int = Math.floor(preSongNotes[1] / 4);
+
+				var daNoteStrum:Int = Math.floor(songNotes[1] / Note.NOTE_AMOUNT);
 
 				var altNote:Bool = false;
 				var crossFade:Bool = false;
-				var gottaHitNote:Bool = section.mustHitSection;
+				var gottaHitNote:Bool = if (daNoteStrum == currentPlayerStrum) true else false;
               if (songNotes[1] != -1){
-				if (songNotes[1] % 8 > 3)
-				{
-					gottaHitNote = !section.mustHitSection;
-				}
-               if (!sec.mustHitSection){
-						daNoteStrum =  Math.abs(Math.floor(preSongNotes[1] / 4) - 1);//YOOOOO
-					}
+	
+				
 				if (songNotes[4] || section.altAnim)
 				{
 					altNote = true;
 				}
 
-				if (songNotes[12] || (gottaHitNote && section.crossfadeBf) || (!gottaHitNote && section.crossfadeDad))
-				{
-					crossFade = true;
-				}
 
 				
 				switch (chartType)
 				{
 					case "standard":
-							daNoteData = Std.int(songNotes[1] % 4);
+							daNoteData = Std.int(songNotes[1] % Note.NOTE_AMOUNT);
 					case "flip":
-						if (gottaHitNote)
-						{
-							// B-SIDE FLIP???? Rozebud be damned lmao
-								daNoteData = 3 - Std.int(songNotes[1] % 4);
-						}
+					
+								daNoteData = Note.NOTE_AMOUNT - 1 - Std.int(songNotes[1] % Note.NOTE_AMOUNT);
+						
 
 					case "chaos":
-							daNoteData = random.randomInt(0, 3);
+							daNoteData = random.randomInt(0, Note.NOTE_AMOUNT - 1);
 
 					case "onearrow":
 						daNoteData = arrowLane;
 					case "stair":
-							daNoteData = stair % 4;
+							daNoteData = stair % Note.NOTE_AMOUNT;
 						stair++;
 					case "dualarrow":
 						switch (stair)
@@ -4359,8 +4375,18 @@ var precacheNotes = [];
 
 				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
 				swagNote.currentStrum = daNoteStrum;
-				swagNote.mustPress = (daNoteStrum == 1);
-
+				swagNote.mustPress = if (daNoteStrum == currentPlayerStrum) true else false;
+				switch (swagNote.currentStrum){
+					case 0:
+						swagNote.whoShouldSing = boyfriend;
+								swagNote.whoIsOpponent = dad;
+							case 1:
+								swagNote.whoShouldSing = dad;
+								swagNote.whoIsOpponent = boyfriend;
+							default:
+								swagNote.whoShouldSing = boyfriend;
+								swagNote.whoIsOpponent = dad;
+				}
 				swagNote.altNote = altNote;
 
 				swagNote.sustainLength = songNotes[2];
@@ -4371,9 +4397,7 @@ var precacheNotes = [];
 				swagNote.gfNote = (section.gfSection && (songNotes[1]%8<4));
 				swagNote.noteType = songNotes[3];
 				if(!Std.isOfType(songNotes[3], String)) swagNote.noteType = editors.ChartingState.noteTypeList[songNotes[3]]; //Backward compatibility + compatibility with Week 7 charts
-				if (opponentPlayer) {
-					swagNote.oppMode = true;
-				}
+			
 				swagNote.scrollFactor.set();
 
 				var susLength:Float = swagNote.sustainLength;
@@ -4389,15 +4413,22 @@ var precacheNotes = [];
 
 						var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(songSpeed, 2)), daNoteData, oldNote, true);
 						sustainNote.currentStrum = daNoteStrum;
-					    sustainNote.mustPress = (daNoteStrum == 1);
-
+					    sustainNote.mustPress = if (daNoteStrum == currentPlayerStrum) true else false;
+						switch (sustainNote.currentStrum){
+							case 0:
+								sustainNote.whoShouldSing = boyfriend;
+								sustainNote.whoIsOpponent = dad;
+							case 1:
+								sustainNote.whoShouldSing = dad;
+								sustainNote.whoIsOpponent = boyfriend;
+							default:
+								sustainNote.whoShouldSing = boyfriend;
+								sustainNote.whoIsOpponent = dad;
+						}
 						sustainNote.altNote = swagNote.altNote;
 						sustainNote.crossFade = swagNote.crossFade;
 						sustainNote.altNum = swagNote.altNum;
-						if (opponentPlayer)
-							{
-								sustainNote.oppMode = true;
-							}
+						
 						sustainNote.gfNote = (section.gfSection && (songNotes[1]%8<4));
 						sustainNote.noteType = swagNote.noteType;
 						sustainNote.scrollFactor.set();
@@ -4405,82 +4436,70 @@ var precacheNotes = [];
 						sustainNote.parent = swagNote;
 						unspawnNotes.push(sustainNote);
 						sustainNote.correctionOffset = swagNote.height / 2;
-						if(!PlayState.isPixelStage)
-						{
-							if(oldNote.isSustainNote)
-							{
-								oldNote.scale.y *= Note.SUSTAIN_SIZE / oldNote.frameHeight;
-								oldNote.scale.y /= playbackRate;
-								oldNote.updateHitbox();
+							if(!PlayState.isPixelStage)
+								{
+									if(oldNote.isSustainNote)
+									{
+										oldNote.scale.y *= Note.SUSTAIN_SIZE / oldNote.frameHeight;
+										oldNote.scale.y /= playbackRate;
+										oldNote.updateHitbox();
+									}
+		
+									if(ClientPrefs.downScroll)
+										sustainNote.correctionOffset = 0;
+								}
+								else if(oldNote.isSustainNote)
+								{
+									oldNote.scale.y /= playbackRate;
+									oldNote.updateHitbox();
+								}
+								if (sustainNote.currentStrum == currentPlayerStrum)
+									{
+										sustainNote.x += FlxG.width / 2; // general offset
+									}
+									else if(ClientPrefs.middleScroll && sustainNote.currentStrum == currentOpponentStrum)
+									{
+										switch (currentOpponentStrum){
+											case 1:
+										sustainNote.x += 310;
+										if(daNoteData > 1) //Up and Right
+										{
+											sustainNote.x += FlxG.width / 2 + 25;
+										}
+										  case 0:
+											sustainNote.x -= 310;
+										if(daNoteData <= 1) //Up and Right
+										{
+											sustainNote.x -= -FlxG.width / 2 - 25;
+										}
+									}
+									}
+								
+								}
 							}
-
-							if(ClientPrefs.downScroll)
-								sustainNote.correctionOffset = 0;
-						}
-						else if(oldNote.isSustainNote)
-						{
-							oldNote.scale.y /= playbackRate;
-							oldNote.updateHitbox();
-						}
-
-                  if (!opponentPlayer){
-						if (sustainNote.daNoteStrum == 1)
-						{
-							sustainNote.x += FlxG.width / 2; // general offset
-						}
-						else if(ClientPrefs.middleScroll)
-						{
-							sustainNote.x += 310;
-							if(daNoteData > 1) //Up and Right
-							{
-								sustainNote.x += FlxG.width / 2 + 25;
-							}
-						}
-					}
-					else if (opponentPlayer){
-						if (sustainNote.daNoteStrum == 0)
-						{
-							sustainNote.x += FlxG.width / 2; // general offset
-						}
-						else if(ClientPrefs.middleScroll)
-						{
-							sustainNote.x -= 310;
-							if(daNoteData <= 1) //Up and Right
-							{
-								sustainNote.x -= -FlxG.width / 2 - 25;
-							}
-						}
-					}
-					}
-				}
-				if (!opponentPlayer){
-				if (swagNote.daNoteStrum == 1)
-				{
-					swagNote.x += FlxG.width / 2; // general offset
-				}
-				else if(ClientPrefs.middleScroll && swagNote.daNoteStrum == 0)
-				{
-					swagNote.x += 310;
-					if(daNoteData > 1) //Up and Right
-					{
-						swagNote.x += FlxG.width / 2 + 25;
-					}
-				}
-			}
-			else if (opponentPlayer){
-				if (swagNote.daNoteStrum == 0)
-				{
-					swagNote.x -= FlxG.width / 2; // general offset
-				}
-				else if(ClientPrefs.middleScroll && swagNote.daNoteStrum == 1)
-				{
-					swagNote.x -= 310;
-					if(daNoteData <= 1) //Up and Right
-					{
-						swagNote.x -= FlxG.width / 2 - 25;
-					}
-				}
-			}
+		
+							if (swagNote.currentStrum == currentPlayerStrum)
+								{
+									swagNote.x += FlxG.width / 2; // general offset
+								}
+								else if(ClientPrefs.middleScroll && swagNote.currentStrum == currentOpponentStrum)
+								{
+									switch (currentOpponentStrum){
+										case 1:
+											swagNote.x += 310;
+									if(daNoteData > 1) //Up and Right
+									{
+										swagNote.x += FlxG.width / 2 + 25;
+									}
+									  case 0:
+										swagNote.x -= 310;
+									if(daNoteData <= 1) //Up and Right
+									{
+										swagNote.x -= -FlxG.width / 2 - 25;
+									}
+								}
+								}
+								callAllHscript('onCreateNote',[swagNote]);
 				if(!noteTypeMap.exists(swagNote.noteType)) {
 					noteTypeMap.set(swagNote.noteType, true);
 				}
@@ -4642,13 +4661,19 @@ function eventPushed(event:EventNote) {
 	}
 
 	public var skipArrowStartTween:Bool = false; //for lua
-	public function generateStaticArrows(player:Int):Void
+	public function generateStaticArrows(player:Int,strumNum:Int = 2):Void
 	{
+		var strum = new FlxTypedGroup<StrumNote>();
+		if (player == 0)
+			strum = playerStrums;
+		else if (player == 1)
+			strum = opponentStrums;
+		
 		for (i in 0...4)
 		{
 			// FlxG.log.add(i);
 			var targetAlpha:Float = 1;
-			if (player < 1 && !opponentPlayer)
+			if (player == 0 && !opponentPlayer)
 			{
 				if(!ClientPrefs.opponentStrums) targetAlpha = 0;
 				else if(ClientPrefs.middleScroll) targetAlpha = 0.35;
@@ -4659,7 +4684,7 @@ function eventPushed(event:EventNote) {
 					if(!ClientPrefs.opponentStrums) targetAlpha = 0;
 					else if(ClientPrefs.middleScroll) targetAlpha = 0.35;
 				}
-			var babyArrow:StrumNote = new StrumNote(ClientPrefs.middleScroll ? STRUM_X_MIDDLESCROLL : (ClientPrefs.classicStyle ? 0 : STRUM_X), strumLine.y, i, player);
+			var babyArrow:StrumNote = new StrumNote(ClientPrefs.middleScroll ? STRUM_X_MIDDLESCROLL : (ClientPrefs.classicStyle ? 0 : STRUM_X), strumLine.y, i, player,strumNum);
 			babyArrow.downScroll = ClientPrefs.downScroll;
 
 			if (!isStoryMode && !skipArrowStartTween)
@@ -4684,7 +4709,7 @@ function eventPushed(event:EventNote) {
 
 					playerStrums.add(babyArrow);
 				}
-				else
+				else if (player == 0)
 				{
 					if(ClientPrefs.middleScroll && !opponentPlayer)
 					{
@@ -4695,6 +4720,8 @@ function eventPushed(event:EventNote) {
 					}
 
 					opponentStrums.add(babyArrow);
+				}else{
+					strum.add(babyArrow);
 				}
 				var comboBreakThing = new FlxSprite(babyArrow.x, 0).makeGraphic(Std.int(babyArrow.width), FlxG.height, FlxColor.WHITE);
 				comboBreakThing.visible = false;
@@ -4707,6 +4734,7 @@ function eventPushed(event:EventNote) {
 			strumLineNotes.add(babyArrow);
 			babyArrow.postAddedToGroup();
 		}
+           currentStrums.push(strum);
 	}
 
 	override function openSubState(SubState:FlxSubState)
@@ -5289,7 +5317,7 @@ if (opponentPlayer){
 		if (generatedMusic)
 		{
 			if (!inCutscene) {
-				var onActing = opponentPlayer ? dad : boyfriend;
+			//	var onActing = opponentPlayer ? dad : boyfriend;
 				if(!botplay) {
 					if (!opponentPlayer){
 				keyShit(true);
@@ -5298,47 +5326,48 @@ if (opponentPlayer){
 			{
 				keyShit(false);
 			}
-				} else if(onActing.holdTimer > Conductor.stepCrochet * 0.0011 * onActing.singDuration && onActing.animation.curAnim.name.startsWith('sing') && !onActing.animation.curAnim.name.endsWith('miss')) {
-					onActing.dance();
+				}  
+				if(botplay) {
+					for (char in currentChars){
+				if(char!= null &&
+					char.beingControlled &&char.holdTimer > Conductor.stepCrochet * 0.0011 * char.singDuration && char.animation.curAnim.name.startsWith('sing') && !char.animation.curAnim.name.endsWith('miss')) {
+					char.dance();
+					//Fixed dumbass controlled
 					//boyfriend.animation.curAnim.finish();
 				}
+			}
+			}
 			}
 
 			var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
 			notes.forEachAlive(function(daNote:Note)
 			{
-				var strumGroup:FlxTypedGroup<StrumNote> = playerStrums;
+				var strumGroup:FlxTypedGroup<StrumNote> = currentStrums[daNote.currentStrum];
 				var breakGroup:FlxTypedGroup<FlxSprite> = playerComboBreak;
-				if(strumGroup == opponentStrums) 
 				switch (daNote.currentStrum){
 					case 0:
-						strumGroup = playerStrums;
 						breakGroup = playerComboBreak;
 					case 1:
-						strumGroup = opponentStrums;
 						breakGroup = opponentComboBreak;
 				}
-
-
-				
 
 				var strum:StrumNote = strumGroup.members[daNote.noteData];
 
 				daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate);
+
 				var coolMustPress = daNote.mustPress;
-				if (opponentPlayer)
-					coolMustPress = !daNote.mustPress;
+				//if (opponentPlayer)
+				//	coolMustPress = !daNote.mustPress;
 				var boyfriendOrOPP = true;
 				if (opponentPlayer)
 					boyfriendOrOPP = false;
 
-
-				if (!coolMustPress && daNote.wasGoodHit && !daNote.hitByOpponent && !daNote.ignoreNote)
+				if (!coolMustPress && daNote.wasGoodHit && !daNote.hitByOpponent && !daNote.ignoreNote && daNote.currentStrum == 1)
 				{
-					oppSing(daNote,boyfriendOrOPP);
+					opponentNoteHit(daNote,boyfriendOrOPP);
 				}
 
-				if(coolMustPress && botplay) {
+				if(coolMustPress && botplay && daNote.currentStrum == 0) {
 					if(daNote.isSustainNote) {
 						if(daNote.canBeHit) {
 							goodNoteHit(daNote,boyfriendOrOPP);
@@ -5347,7 +5376,11 @@ if (opponentPlayer){
 						goodNoteHit(daNote,boyfriendOrOPP);
 					}
 				}
+
+				if (daNote.currentStrum > 1& daNote.wasGoodHit && !daNote.ignoreNote)
+					defaultNoteHit(daNote,daNote.currentStrum);
 				if(daNote.isSustainNote && strum.sustainReduce) daNote.clipToStrumNote(strum);
+
 			
 
 				// Kill extremely late notes and cause misses
@@ -6697,8 +6730,8 @@ currentTimingShown.cameras = [camHUD];
 	private function onKeyPress(event:KeyboardEvent):Void
 	{
 		var actingOn:Character = opponentPlayer ? dad : boyfriend;
-		var strums = opponentPlayer ? opponentStrums : playerStrums;
-		
+		//var strums = opponentPlayer ? opponentStrums : playerStrums;
+		var strums = currentStrums[currentPlayerStrum];
 		var eventKey:FlxKey = event.keyCode;
 		var key:Int = getKeyFromEvent(eventKey);
 		//trace('Pressed: ' + eventKey);
@@ -6721,7 +6754,7 @@ currentTimingShown.cameras = [camHUD];
 				var sortedNotesList:Array<Note> = [];
 				notes.forEachAlive(function(daNote:Note)
 				{
-					var coolMustPress = opponentPlayer ? !daNote.mustPress : daNote.mustPress;
+					var coolMustPress = daNote.mustPress;
 					if (daNote.canBeHit && coolMustPress && !daNote.tooLate && !daNote.wasGoodHit && !daNote.isSustainNote)
 					{
 						if(daNote.noteData == key)
@@ -6797,7 +6830,7 @@ currentTimingShown.cameras = [camHUD];
 
 	private function onKeyRelease(event:KeyboardEvent):Void
 	{
-		var strums = !opponentPlayer ? playerStrums : opponentStrums;
+		var strums = currentStrums[currentPlayerStrum];
 		var eventKey:FlxKey = event.keyCode;
 		var key:Int = getKeyFromEvent(eventKey);
 		if(!botplay && startedCountdown && !paused && key > -1)
@@ -6836,7 +6869,7 @@ currentTimingShown.cameras = [camHUD];
 	private function keyShit(?playerOne:Bool=true):Void
 	{
 		// HOLDING
-		var coolControls = playerOne ? controls : controlsPlayerTwo;
+		var coolControls = controls;
 		var up = coolControls.NOTE_UP;
 		var right = coolControls.NOTE_RIGHT;
 		var down = coolControls.NOTE_DOWN;
@@ -6864,7 +6897,10 @@ currentTimingShown.cameras = [camHUD];
 			notes.forEachAlive(function(daNote:Note)
 			{
 				// hold note functions
-				var coolShouldPress = playerOne ? daNote.mustPress : !daNote.mustPress;
+				//var coolShouldPress = playerOne ? daNote.mustPress : !daNote.mustPress;
+				//If i kill coolShouldPress will case many of script errors damn
+				//but you know what idc lol
+				var coolShouldPress =  daNote.mustPress;
 				if (daNote.isSustainNote && controlHoldArray[daNote.noteData] && daNote.canBeHit
 				&& coolShouldPress && !daNote.tooLate && !daNote.wasGoodHit) {
 					goodNoteHit(daNote,playerOne);
@@ -6903,9 +6939,12 @@ currentTimingShown.cameras = [camHUD];
 
 	function noteMiss(daNote:Note,playerOne:Bool):Void { //You didn't hit the key and let it go offscreen, also used by Hurt Notes
 		//Dupe note remove
-		var actingOn = playerOne ? boyfriend : dad;
-		var onActing = playerOne ? dad : boyfriend;
-		var coolMustPress = playerOne ? daNote.mustPress : !daNote.mustPress;
+
+		var actingOn =  daNote.whoShouldSing;
+			var onActing =  daNote.whoIsOpponent;
+			
+		//var coolMustPress = playerOne ? daNote.mustPress : !daNote.mustPress;
+		var coolMustPress = daNote.mustPress;
 		notes.forEachAlive(function(note:Note) {
 			if (daNote != note && coolMustPress && daNote.noteData == note.noteData && daNote.isSustainNote == note.isSustainNote && Math.abs(daNote.strumTime - note.strumTime) < 1) {
 				note.kill();
@@ -7030,10 +7069,11 @@ currentTimingShown.cameras = [camHUD];
 	}
 
 	var altNum:Int = 0;
-	function oppSing(note:Note,playerTwo:Bool):Void
+	function opponentNoteHit(note:Note,playerTwo:Bool):Void
 	{
-		var actingOn = playerTwo ? dad : boyfriend;
-		var onActing = playerTwo ? boyfriend : dad;
+		var actingOn = note.whoShouldSing;
+		var onActing = note.whoIsOpponent;
+		
 		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
 			camZooming = true;
 
@@ -7107,9 +7147,9 @@ currentTimingShown.cameras = [camHUD];
 		if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
 			time += 0.15;
 		}
-		var onActingNum = playerTwo ? 0 : 4;
+
 		if (!ClientPrefs.classicStyle)
-		StrumPlayAnim(true, (Std.int(Math.abs(note.noteData)) % 4 + onActingNum), time,!playerTwo);
+		StrumPlayAnim(true, (Std.int(Math.abs(note.noteData)) % 4), time,note.currentStrum);
 
 		note.hitByOpponent = true;
 
@@ -7127,10 +7167,25 @@ currentTimingShown.cameras = [camHUD];
 		}
 	}
 public var curNoteHitHealth:Float = 0;
+function defaultNoteHit(note:Note, strum:Int):Void
+	{
+		if(!note.noAnimation) {
+
+		callOnLuas('defaultNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote,note, strum]);
+		callAllHScript('defaultNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote, note, strum]);
+		if (!note.isSustainNote)
+		{
+			note.kill();
+			notes.remove(note, true);
+			note.destroy();
+		}
+		}
+	}
 	function goodNoteHit(note:Note, playerOne:Bool):Void
 		{
-			var actingOn = playerOne ? boyfriend : dad;
-			var onActing = playerOne ? dad : boyfriend;
+			var actingOn =  note.whoShouldSing;
+			var onActing =  note.whoIsOpponent;
+		
 			var altAnim:String = note.animSuffix;
 			altNum = note.altNum;
 			if (altNum == 1) {
@@ -7275,7 +7330,7 @@ public var curNoteHitHealth:Float = 0;
 						FlxG.sound.play(Paths.sound("shoot"));
 					}
 				}
-				var strums = playerOne ? playerStrums : opponentStrums;
+				var strums = currentStrums[note.currentStrum];
 				if(botplay) {
 					var time:Float = 0.05;
 					if (note.tail.length > 0)
@@ -7283,7 +7338,7 @@ public var curNoteHitHealth:Float = 0;
 					if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
 						time += 0.1;
 					}
-					StrumPlayAnim(false, Std.int(Math.abs(note.noteData)) % 4, time,playerOne);
+					StrumPlayAnim(false, Std.int(Math.abs(note.noteData)) % 4, time,note.currentStrum);
 				} else {
 					strums.forEach(function(spr:StrumNote)
 					{
@@ -7319,7 +7374,7 @@ public var curNoteHitHealth:Float = 0;
 	function spawnNoteSplashOnNote(note:Note) {
 		if(ClientPrefs.noteSplashes && note != null) {
 			
-			var strums = !opponentPlayer ? playerStrums : opponentStrums;
+			var strums = currentStrums[note.currentStrum];
 			var strum:StrumNote = strums.members[note.noteData];
 			if(strum != null) {
 				spawnNoteSplash(strum.x, strum.y, note.noteData, note);
@@ -7766,14 +7821,11 @@ public var curNoteHitHealth:Float = 0;
 		}
 		#end
 	}
-	function StrumPlayAnim(isOpp:Bool, id:Int, time:Float,isNormal:Bool) {
+	function StrumPlayAnim(isOpp:Bool, id:Int, time:Float,daStrum:Int) {
 		var spr:StrumNote = null;
-		var strums = isNormal ? playerStrums : opponentStrums;
-		if(isOpp) {
-			spr = strumLineNotes.members[id];
-		} else {
+		var strums = currentStrums[daStrum % currentStrums.length];
+	
 			spr = strums.members[id];
-		}
 
 		if(spr != null) {
 			spr.playAnim('confirm', true);

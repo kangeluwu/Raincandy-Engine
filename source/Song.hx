@@ -63,6 +63,7 @@ typedef SwagSong =
 	var splashSkin:String;
 	var validScore:Bool;
 	var composer:String;
+	var strums:Int;
 	//var mania:Null<Int>;
 }
 
@@ -96,6 +97,7 @@ class Song
 	public var arrowSkin:String;
 	public var splashSkin:String;
 	public var speed:Float = 1;
+	public var strums:Int = 2;
 	public var stage:String;
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';

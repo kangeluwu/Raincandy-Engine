@@ -15,6 +15,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.system.FlxSound;
 using StringTools;
+import flixel.math.FlxRect;
 import flixel.text.FlxText;
 typedef EventNote = {
 	strumTime:Float,
@@ -224,7 +225,8 @@ class Note extends FlxSprite
 	public var noteWasHit:Bool = false;
 	public var prevNote:Note;
 	public var nextNote:Note;
-
+	public var whoShouldSing:Character;
+	public var whoIsOpponent:Character;
 	public var spawned:Bool = false;
 
 	public var tail:Array<Note> = []; // for sustains
@@ -446,37 +448,7 @@ else{
 			texture = '';
 			colorSwap = new ColorSwap();
 			shader = colorSwap.shader;
-
-			if (noteData >= NOTE_AMOUNT * 2 && noteData < NOTE_AMOUNT * 4) {
-				noteType = 'Hurt Note';
-			}
-			if (noteData >= NOTE_AMOUNT * 4 && noteData < NOTE_AMOUNT * 6) {
-				//isLiftNote = true;
-				//I HATE LIFT NOTE EEEEEEEEEEEEEEEE
-				noteType = 'No Animation';
-			}
-			// die : )
-			if (noteData >= NOTE_AMOUNT * 6 && noteData < NOTE_AMOUNT * 8) {
-				noteType = 'Death Note';
-			}
-		if (noteData >= NOTE_AMOUNT * 8 && noteData < NOTE_AMOUNT * 10) {
-			noteType = 'Static Note';
-		}
-		if (noteData >= NOTE_AMOUNT * 10 && noteData < NOTE_AMOUNT * 12) {
-			noteType = 'Warning Note';
-		}
-		if (noteData >= NOTE_AMOUNT * 12 && noteData < NOTE_AMOUNT * 14) {
-			noteType = 'GF Sing';
-		}
-		if (noteData >= NOTE_AMOUNT * 14 && noteData < NOTE_AMOUNT * 16) {
-			noteType = 'Both Sing';
-		}
-		if (noteData >= NOTE_AMOUNT * 16 && noteData < NOTE_AMOUNT * 18) {
-			noteType = 'Drain Note';
-		}
-		if (noteData >= NOTE_AMOUNT * 18) {
-			noteType = '';
-		}
+            
 			x += swagWidth * (noteData % NOTE_AMOUNT);
 			if(!isSustainNote) { //Doing this 'if' check to fix the warnings on Senpai songs
 				var animToPlay:String = '';

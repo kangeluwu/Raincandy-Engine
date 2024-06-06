@@ -30,7 +30,7 @@ class MusicBeatState extends FlxUIState
 	public var curDecStep:Float = 0;
 	public var curDecBeat:Float = 0;
 	public var controls(get, never):Controls;
-	private var controlsPlayerTwo(get, never):Controls;
+	public var controlsPlayerTwo(get, never):Controls;
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 	inline function get_controlsPlayerTwo():Controls

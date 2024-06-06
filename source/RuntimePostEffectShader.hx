@@ -94,8 +94,9 @@ class RuntimePostEffectShader extends FlxRuntimeShader
 	camera.scroll.x + (camera.width - camera.viewOffsetX),
 	camera.scroll.y + (camera.height - camera.viewOffsetX)
 ];
+uCameraBounds.value = daValue;
 	}
-	uCameraBounds.value = daValue;
+	
   }
 
   override function __createGLProgram(vertexSource:String, fragmentSource:String):GLProgram

@@ -1,6 +1,6 @@
 
 # Friday Night Funkin' - Raincandy Engine
-My "own" Engine for friday night funkin!!!!1 yeah kinda werid i know
+My "own" Engine for friday night funkin!!!!1 yeah kinda werid i know its just a HEAVLIY modded psych 0.6.2
 
 This engine kinda like modding plus & psych in one engine(used psych as default)
 And modding plus stuffs are mod supports lmao
@@ -20,7 +20,7 @@ uniontypes
 flixel-addons
 tjson
 hxjsonast
-hxCodec(if you want)
+hxCodec
 linc_luajit
 discord_rpc
 hxcpp-debug-server
@@ -68,16 +68,11 @@ _____________________________________
 
 # Features
 
-## WE HAD PSYCH 0.6.2 n M+'S EVERYTHING(only playstate i know)
-
 ## Mod Support
-* modding plus's ui,stages code,modchart,cutscence support!
+* hscript ui,stages code,modchart,cutscence support..
 
 ## Chart Editor change
-* We used modding plus's chart editor lmao(i mean chars).
-* DON'T PRESSED O and I PLS.
+* Adding customlized strum,YOOOOOOO STURMLINE FREEDOM
 
-## Other gameplay features:
+## Other features:
 * CAN CHOOSE VANILLA ENGINE STYLE!!!!1(dumb i know)
-
-this is bored when i was bored to make a engine
