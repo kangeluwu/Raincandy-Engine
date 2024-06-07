@@ -120,10 +120,7 @@ jobs:
           name: windowsBuild
           path: export/release/windows/bin
   buildMac:
-    runs-on: macos-${{matrix.version}}
-    strategy:
-      matrix:
-        version: [11, 12, 13]
+    runs-on: macos-12
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -322,7 +319,7 @@ jobs:
           haxelib install flixel-addons 2.11.0
           haxelib install tjson
           haxelib install hxjsonast
-          haxelib git hxvlc
+          haxelib install hxvlc
           haxelib install polymod
           haxelib git linc_luajit https://github.com/superpowers04/linc_luajit
           haxelib install hscript 2.5.0
