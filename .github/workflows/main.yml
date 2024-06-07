@@ -57,6 +57,7 @@ jobs:
           haxelib install uniontypes
           haxelib install random
           haxelib install haxeui-flixel
+          haxelib install polymod
           haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
       - name: Create Version Tag
@@ -105,6 +106,7 @@ jobs:
           haxelib install uniontypes
           haxelib install random
           haxelib install haxeui-flixel
+          haxelib install polymod
           haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
         shell: cmd
@@ -118,13 +120,16 @@ jobs:
           name: windowsBuild
           path: export/release/windows/bin
   buildMac:
-    runs-on: macos-latest
-
+    runs-on: macos-${{matrix.version}}
+    strategy:
+      matrix:
+        version: [11, 12, 13]
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@main
 
-      - uses: krdlab/setup-haxe@master
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
         with:
           haxe-version: 4.2.5
       # Runs a set of commands using the runners shell
@@ -153,6 +158,7 @@ jobs:
           haxelib install haxeui-core
           haxelib install uniontypes
           haxelib install random
+          haxelib install polymod
           haxelib install haxeui-flixel
           haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
@@ -230,6 +236,7 @@ jobs:
                   haxelib git extension-androidtools https://github.com/MaysLastPlay77/extension-androidtools
                   haxelib install uniontypes
                   haxelib install random
+                  haxelib install polymod
                   haxelib install haxeui-flixel
                   haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
                   haxelib list
@@ -245,7 +252,7 @@ jobs:
                   ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         
               - name: Building
-                run: haxelib run lime build android -D NO_PRECOMPILED_HEADERS -final
+                run: haxelib run lime build Project.xml android -D NO_PRECOMPILED_HEADERS -final
         
               - name: Clear Previous Cache
                 uses: actions/github-script@main
@@ -315,7 +322,8 @@ jobs:
           haxelib install flixel-addons 2.11.0
           haxelib install tjson
           haxelib install hxjsonast
-          haxelib git hxvlc https://github.com/mcagabe19-stuff/hxvlc
+          haxelib git hxvlc
+          haxelib install polymod
           haxelib git linc_luajit https://github.com/superpowers04/linc_luajit
           haxelib install hscript 2.5.0
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
@@ -341,12 +349,12 @@ jobs:
           cd export/release/ios/build/Release-iphoneos
           mkdir Payload
           mv *.app Payload
-          zip -r PsychEngine.ipa Payload
+          zip -r RaincandyEngine.ipa Payload
 
       - name: Make Zip For Release
         run: |
            cd export/release/ios/build/Release-iphoneos
-           zip PsychEngine-iOS.zip PsychEngine.ipa
+           zip RaincandyEngine-iOS.zip RaincandyEngine.ipa
 
       - name: Upload Artifact
         if: ${{ success() }}
