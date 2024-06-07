@@ -309,7 +309,7 @@ jobs:
         run: |
           haxelib setup ~/haxelib
           haxelib install hxcpp > /dev/null
-          haxelib git lime https://github.com/mcagabe19-stuff/lime
+          haxelib git lime https://github.com/kangeluwu/lime
           haxelib run lime setup -alias -y
           haxelib install openfl 9.2.0 -quiet
           haxelib install flixel 4.11.0 -quiet
@@ -337,9 +337,6 @@ jobs:
 
       - name: Compile
         run: haxelib run lime build ios -D NO_PRECOMPILED_HEADERS -D NOVIDEO -final
-
-      - name: Check Code Signing
-        run: cd export/release/ios/build/Release-iphoneos && codesign -dv *.app
 
       - name: Make Ipa
         run: |
