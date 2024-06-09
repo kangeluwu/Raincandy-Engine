@@ -427,6 +427,7 @@ class PlayState extends MusicBeatState
 			var returnVal:Dynamic = FunkinLua.Function_Continue;
 		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
 			//trace("Function doesn't exist, silently skipping...");
+			//addTextToDebug(func_name+"Function doesn't exist!",FlxColor.RED);
 			return FunkinLua.Function_Continue;
 		}
 		try
@@ -434,20 +435,8 @@ class PlayState extends MusicBeatState
 
 
 		var method = hscriptStates.get(usehaxe).variables.get(func_name);
-		switch(args.length) {
-			case 0:
-				returnVal = method();
-			case 1:
-				returnVal = method(args[0]);
-			case 2:
-				returnVal = method(args[0], args[1]);
-			case 3:
-				returnVal = method(args[0], args[1], args[2]);
-			case 4:
-				returnVal = method(args[0], args[1], args[2], args[3]);
-			case 5:
-				returnVal = method(args[0], args[1], args[2], args[3], args[4]);
-		}
+		returnVal =  Reflect.callMethod(null,method,args);
+	
 	}
 	catch (e)
 	{
@@ -785,6 +774,8 @@ function camerabgAlphaShits(cam:FlxCamera)
 		//interp.variables.set("noteHit", function(player1:Bool, note:Note, wasGoodHit:Bool) {});
 		interp.variables.set("opponentNoteHit", function(id:Note, direction:Int, noteType:String, isSustainNote:Bool, note:Note) {});
 		interp.variables.set("goodNoteHit", function(id:Note, direction:Int, noteType:String, isSustainNote:Bool, note:Note) {});
+		interp.variables.set("defaultNoteHit", function(id:Note, direction:Int, noteType:String, isSustainNote:Bool, note:Note,strum:Int) {});
+
 		interp.variables.set("onSpawnNote", function(id:Note, direction:Int, noteType:String, isSustainNote:Bool, note:Note) {});
 		//var isSus:Bool = note.isSustainNote; //GET OUT OF MY HEAD, GET OUT OF MY HEAD, GET OUT OF MY HEAD
 			//var leData:Int = Math.round(Math.abs(note.noteData));
@@ -5328,7 +5319,8 @@ if (opponentPlayer){
 			}
 				}  
 				if(botplay) {
-					for (char in currentChars){
+					var chars = [boyfriend,dad,gf];
+					for (char in chars){
 				if(char!= null &&
 					char.beingControlled &&char.holdTimer > Conductor.stepCrochet * 0.0011 * char.singDuration && char.animation.curAnim.name.startsWith('sing') && !char.animation.curAnim.name.endsWith('miss')) {
 					char.dance();
@@ -5362,12 +5354,12 @@ if (opponentPlayer){
 				if (opponentPlayer)
 					boyfriendOrOPP = false;
 
-				if (!coolMustPress && daNote.wasGoodHit && !daNote.hitByOpponent && !daNote.ignoreNote && daNote.currentStrum == 1)
+				if (!coolMustPress && daNote.wasGoodHit && !daNote.hitByOpponent && !daNote.ignoreNote && daNote.currentStrum == currentOpponentStrum)
 				{
 					opponentNoteHit(daNote,boyfriendOrOPP);
 				}
 
-				if(coolMustPress && botplay && daNote.currentStrum == 0) {
+				if(coolMustPress && botplay && daNote.currentStrum == currentPlayerStrum) {
 					if(daNote.isSustainNote) {
 						if(daNote.canBeHit) {
 							goodNoteHit(daNote,boyfriendOrOPP);
@@ -5376,9 +5368,17 @@ if (opponentPlayer){
 						goodNoteHit(daNote,boyfriendOrOPP);
 					}
 				}
+                var checkIsPlayerOrOpponentStrum = false;
 
-				if (daNote.currentStrum > 1&& daNote.wasGoodHit && !daNote.ignoreNote)
+				if (daNote.currentStrum == currentOpponentStrum)
+					checkIsPlayerOrOpponentStrum = true;
+
+				if (daNote.currentStrum == currentPlayerStrum)
+					checkIsPlayerOrOpponentStrum = true;
+
+				if (!checkIsPlayerOrOpponentStrum && daNote.wasGoodHit && !daNote.ignoreNote){
 					defaultNoteHit(daNote,daNote.currentStrum);
+					}
 				if(daNote.isSustainNote && strum.sustainReduce) daNote.clipToStrumNote(strum);
 
 			
@@ -5986,6 +5986,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 				if (!ClientPrefs.classicStyle)
 				reloadHealthBarColors();
 
+				currentChars= [boyfriend,dad,gf];
 			case 'BG Freaks Expression':
 				if(bgGirls != null) bgGirls.swapDanceType();
 
@@ -7167,19 +7168,23 @@ currentTimingShown.cameras = [camHUD];
 		}
 	}
 public var curNoteHitHealth:Float = 0;
-function defaultNoteHit(note:Note, strum:Int):Void
+function defaultNoteHit(note:Note, strum:Int = 2):Void
 	{
-		if(!note.noAnimation) {
-
-		callOnLuas('defaultNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote,note, strum]);
-		callAllHScript('defaultNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote, note, strum]);
+		var isSus:Bool = note.isSustainNote; //GET OUT OF MY HEAD, GET OUT OF MY HEAD, GET OUT OF MY HEAD
+	
+		var leData:Int = Math.round(Math.abs(note.noteData));
+		var leType:String = note.noteType;
+		var daStrum = note.currentStrum;
+		//callOnLuas('defaultNoteHit', [notes.members.indexOf(note), leData, leType, isSus,note]);
+		callAllHScript('defaultNoteHit', [notes.members.indexOf(note), leData, leType, isSus, note,daStrum]);
 		if (!note.isSustainNote)
 		{
 			note.kill();
 			notes.remove(note, true);
 			note.destroy();
+			
 		}
-		}
+		
 	}
 	function goodNoteHit(note:Note, playerOne:Bool):Void
 		{

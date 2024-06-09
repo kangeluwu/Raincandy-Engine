@@ -63,7 +63,7 @@ typedef SwagSong =
 	var splashSkin:String;
 	var validScore:Bool;
 	var composer:String;
-	var strums:Int;
+	var strums:Null<Int>;
 	//var mania:Null<Int>;
 }
 
@@ -190,6 +190,8 @@ class Song
 		if(jsonInput != 'events') StageData.loadDirectory(songJson);
 		onLoadJson(songJson);
 		if (songJson.song != null){
+			if (songJson.strums == null) songJson.strums = 2;
+
 			if (songJson.songFileNames == null) songJson.songFileNames = ['Inst','Voices'];
 		if (songJson.uiType == null) {
 
@@ -263,7 +265,8 @@ class Song
 				'milf' | 'high' | 'satin panties'| 'satin-panties' |
 				'cocoa' | 'eggnog' |
 				'senpai' | 'roses' | 'thorns' | 
-				'ugh' | 'stress' | 'guns':
+				'ugh' | 'stress' | 'guns' |
+				'darnell' | 'lit-up' | 'litup' | 'lits up' | 'lit up' | 'lits-up' | '2hot' | 'blazin':
 					songJson.composer = 'Kawai Sprite';
 					default:
 					songJson.composer = 'IDK';

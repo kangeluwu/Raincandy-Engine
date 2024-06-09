@@ -175,7 +175,8 @@ class ChartingState extends MusicBeatState
 
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
-
+    var camIcon:HealthIcon;
+	var cam:FlxText;
 	var value1InputText:FlxUIInputText;
 	var value2InputText:FlxUIInputText;
 	var value3InputText:FlxUIInputText;
@@ -246,6 +247,7 @@ class ChartingState extends MusicBeatState
     var curStrums:Int = 2;
 	var strums:Array<FlxTypedGroup<StrumNote>> = [];
 	var text:String = "";
+	var bothyNote = [];
 	public static var vortex:Bool = false;
 	public var mouseQuant:Bool = false;
 var instStuff:String = '';
@@ -361,8 +363,8 @@ var voicesStuff:String = '';
 		add(waveformSprite);
 
 		var eventIcon:FlxSprite = new FlxSprite(-GRID_SIZE - 5, -90).loadGraphic(Paths.image('eventArrow'));
-		leftIcon = new HealthIcon('bf');
-		rightIcon = new HealthIcon('dad');
+		leftIcon = new HealthIcon('dad');
+		rightIcon = new HealthIcon('bf');
 		eventIcon.scrollFactor.set(1, 1);
 		leftIcon.scrollFactor.set(1, 1);
 		rightIcon.scrollFactor.set(1, 1);
@@ -442,6 +444,7 @@ var voicesStuff:String = '';
 		UI_box.x = 640 + GRID_SIZE / 2;
 		UI_box.y = 25;
 		UI_box.scrollFactor.set();
+		UI_box.zIndex = 114514;
 #if !mobile
 		text =
 		"W/S or Mouse Wheel - Change Conductor's strum time
@@ -476,9 +479,22 @@ Left/Right - Go to the previous/next section
 			//tipText.borderSize = 2;
 			tipText.scrollFactor.set();
 			add(tipText);
+			tipText.zIndex = 114514;
 		}
+		cam = new FlxText(10, 25, 0, "camera pos:", 16);
+		cam.scrollFactor.set();
+	
+		cam.zIndex = 114514;
 		add(UI_box);
+		add(cam);
 
+		camIcon = new HealthIcon('dad');
+		camIcon.scrollFactor.set();
+	
+		add(camIcon);
+		camIcon.setGraphicSize(0, 45);
+		camIcon.setPosition(cam.x + 80, cam.y-60);
+		camIcon.zIndex = 114514;
 		addSongUI();
 		addSectionUI();
 		addNoteUI();
@@ -502,12 +518,14 @@ Left/Right - Go to the previous/next section
 
 		zoomTxt = new FlxText(10, 10, 0, "Zoom: 1 / 1", 16);
 		zoomTxt.scrollFactor.set();
+		zoomTxt.zIndex = 114514;
 		add(zoomTxt);
        
 		updateGrid();
 		#if mobile
 		addVirtualPad(FULL, FULL);
         #end
+	
 		super.create();
 
 	}
@@ -527,6 +545,7 @@ Left/Right - Go to the previous/next section
 	var check_warnings:FlxUICheckBox = null;
 	var playSoundBf:FlxUICheckBox = null;
 	var playSoundDad:FlxUICheckBox = null;
+	var playSoundExtra:FlxUICheckBox = null;
 	var UI_songTitle:FlxUIInputText;
 	var noteSkinInputText:FlxUIInputText;
 	var noteSplashesInputText:FlxUIInputText;
@@ -1020,6 +1039,7 @@ Left/Right - Go to the previous/next section
 			for (i in 0..._song.notes[curSec].sectionNotes.length)
 			{
 				var note:Array<Dynamic> = _song.notes[curSec].sectionNotes[i];
+				if (Math.floor(note[1] / 4) < 2)
 				note[1] = (note[1] + 4) % 8;
 				_song.notes[curSec].sectionNotes[i] = note;
 			}
@@ -1549,9 +1569,19 @@ Left/Right - Go to the previous/next section
 				FlxG.save.data.chart_playSoundDad = playSoundDad.checked;
 			}
 		);
+
+	
 		if (FlxG.save.data.chart_playSoundDad == null) FlxG.save.data.chart_playSoundDad = false;
 		playSoundDad.checked = FlxG.save.data.chart_playSoundDad;
 
+		playSoundExtra = new FlxUICheckBox(check_mute_inst.x + 120, check_mute_vocals.y - 30, null, null, 'Play Sound (Extra STRUM NOTES)', 100,
+		function() {
+			FlxG.save.data.chart_playSoundExtra = playSoundExtra.checked;
+		}
+	);
+	
+	if (FlxG.save.data.chart_playSoundExtra == null) FlxG.save.data.chart_playSoundExtra = false;
+	playSoundExtra.checked = FlxG.save.data.chart_playSoundExtra;
 
 		metronome = new FlxUICheckBox(10, 15, null, null, "Metronome Enabled", 100,
 			function() {
@@ -1605,6 +1635,7 @@ Left/Right - Go to the previous/next section
 		tab_group_chart.add(check_warnings);
 		tab_group_chart.add(playSoundBf);
 		tab_group_chart.add(playSoundDad);
+		tab_group_chart.add(playSoundExtra);
 		UI_box.addGroup(tab_group_chart);
 	}
 
@@ -1664,7 +1695,8 @@ Left/Right - Go to the previous/next section
 		var title:FlxText = new FlxText(UI_box.x + 20, UI_box.y + 20, 0);
 		bullshitUI.add(title);
 	}
-
+	var noway = -1;
+	var oldstrum = 2;
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)
 	{
 		if (id == FlxUICheckBox.CLICK_EVENT)
@@ -1736,6 +1768,26 @@ case 'Alt Anim Note':
 				{
 					curStrums = Std.int(nums.value);
 					_song.strums = curStrums;
+					
+					if (curStrums < oldstrum){
+					
+						noway = _song.notes.length -1;
+				while(noway > -1) {
+					var dasec = _song.notes[noway].sectionNotes;
+					for (x in dasec){
+				
+						var danoteStrum = Math.floor(x[1] / Note.NOTE_AMOUNT);
+                                    if (danoteStrum >= oldstrum-1){
+										dasec.remove(x);
+									}
+					
+				}
+					--noway;
+				
+				}
+			}
+					
+					oldstrum = curStrums;
 					reloadGridLayer();
 				}
 			else if (wname == 'inst_volume')
@@ -1825,6 +1877,7 @@ case 'Alt Anim Note':
 	var colorSine:Float = 0;
 	override function update(elapsed:Float)
 	{
+		refresh();
 		curStep = recalculateSteps();
 
 		if(FlxG.sound.music.time < 0) {
@@ -1867,7 +1920,57 @@ case 'Alt Anim Note':
 		FlxG.watch.addQuick('daBeat', curBeat);
 		FlxG.watch.addQuick('daStep', curStep);
 
+		var blockInput:Bool = false;
+		for (inputText in blockPressWhileTypingOn) {
+			if(inputText.hasFocus) {
+				FlxG.sound.muteKeys = [];
+				FlxG.sound.volumeDownKeys = [];
+				FlxG.sound.volumeUpKeys = [];
+				blockInput = true;
+				break;
+			}
+		}
 
+		if(!blockInput) {
+			for (stepper in blockPressWhileTypingOnStepper) {
+				@:privateAccess
+				var leText:Dynamic = stepper.text_field;
+				var leText:FlxUIInputText = leText;
+				if(leText.hasFocus) {
+					FlxG.sound.muteKeys = [];
+					FlxG.sound.volumeDownKeys = [];
+					FlxG.sound.volumeUpKeys = [];
+					blockInput = true;
+					break;
+				}
+				@:privateAccess
+				var buttons = [stepper.button_plus,stepper.button_plus];
+				for (button in buttons)
+				{
+					if (FlxG.mouse.overlaps(button))
+						{
+					FlxG.sound.muteKeys = [];
+					FlxG.sound.volumeDownKeys = [];
+					FlxG.sound.volumeUpKeys = [];
+					blockInput = true;
+					break;
+						}
+				}
+			}
+		}
+
+		if(!blockInput) {
+			FlxG.sound.muteKeys = TitleState.muteKeys;
+			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
+			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
+			for (dropDownMenu in blockPressWhileScrolling) {
+				if(dropDownMenu.dropPanel.visible) {
+					blockInput = true;
+					break;
+				}
+			}
+		}
+		if(!blockInput) {
 		if (FlxG.mouse.x > gridBG.x
 			&& FlxG.mouse.x < gridBG.x + gridBG.width
 			&& FlxG.mouse.y > gridBG.y
@@ -1927,58 +2030,10 @@ case 'Alt Anim Note':
 				}
 			}
 		}
+	}
+		
 
-		var blockInput:Bool = false;
-		for (inputText in blockPressWhileTypingOn) {
-			if(inputText.hasFocus) {
-				FlxG.sound.muteKeys = [];
-				FlxG.sound.volumeDownKeys = [];
-				FlxG.sound.volumeUpKeys = [];
-				blockInput = true;
-				break;
-			}
-		}
-
-		if(!blockInput) {
-			for (stepper in blockPressWhileTypingOnStepper) {
-				@:privateAccess
-				var leText:Dynamic = stepper.text_field;
-				var leText:FlxUIInputText = leText;
-				if(leText.hasFocus) {
-					FlxG.sound.muteKeys = [];
-					FlxG.sound.volumeDownKeys = [];
-					FlxG.sound.volumeUpKeys = [];
-					blockInput = true;
-					break;
-				}
-				@:privateAccess
-				var buttons = [stepper.button_plus,stepper.button_plus];
-				for (button in buttons)
-				{
-					if (FlxG.mouse.overlaps(button))
-						{
-					FlxG.sound.muteKeys = [];
-					FlxG.sound.volumeDownKeys = [];
-					FlxG.sound.volumeUpKeys = [];
-					blockInput = true;
-					break;
-						}
-				}
-			}
-		}
-
-		if(!blockInput) {
-			FlxG.sound.muteKeys = TitleState.muteKeys;
-			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
-			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			for (dropDownMenu in blockPressWhileScrolling) {
-				if(dropDownMenu.dropPanel.visible) {
-					blockInput = true;
-					break;
-				}
-			}
-		}
-
+	
 		if (!blockInput)
 		{
 			if (FlxG.keys.justPressed.ESCAPE #if android   || FlxG.android.justReleased.BACK #end)
@@ -2050,7 +2105,16 @@ case 'Alt Anim Note':
 						UI_box.selected_tab = 0;
 				}
 			}
-
+			
+					if (FlxG.keys.pressed.J)
+					{
+						camPos.x -=10;
+					}
+					else if (FlxG.keys.pressed.K)
+					{
+						camPos.x +=10;
+					}
+				
 			if (FlxG.keys.justPressed.SPACE #if mobile   || _virtualpad.buttonX.justPressed #end)
 			{
 				if (FlxG.sound.music.playing)
@@ -2349,7 +2413,7 @@ case 'Alt Anim Note':
 						var soundToPlay = 'hitsound';
 						var dadsoundToPlay = 'tick';
 
-						if((playSoundBf.checked && note.currentStrum == 0) || (playSoundDad.checked && note.currentStrum == 1)){
+						if((playSoundBf.checked && note.currentStrum == 0) || (playSoundDad.checked && note.currentStrum == 1) || playSoundExtra.checked){
 
 							if(_song.player1 == 'gf') { //Easter egg
 								soundToPlay = 'GF_' + Std.string(data + 1);
@@ -2387,7 +2451,7 @@ case 'Alt Anim Note':
 							lilBf.animation.play("" + (data), true);
 							playedSound[data] = true;
 						   }
-						 if (note.currentStrum>1){
+						 if (playSoundExtra.checked && note.currentStrum>1){
 							switch (note.currentStrum % 1){
 								case 0:
 							FlxG.sound.play(Paths.sound('hitNoteOpponent'));
@@ -2900,18 +2964,20 @@ case 'Alt Anim Note':
 		var healthIconP1:String = loadHealthIconFromCharacter(_song.player1);
 		var healthIconP2:String = loadHealthIconFromCharacter(_song.player2);
 
-		if (_song.notes[curSec].mustHitSection)
-		{
-			leftIcon.changeIcon(healthIconP1);
-			rightIcon.changeIcon(healthIconP2);
+		leftIcon.changeIcon(healthIconP2);
+		rightIcon.changeIcon(healthIconP1);
 			if (_song.notes[curSec].gfSection) leftIcon.changeIcon('gf');
-		}
-		else
+		if (!_song.notes[curSec].mustHitSection)
 		{
-			leftIcon.changeIcon(healthIconP2);
-			rightIcon.changeIcon(healthIconP1);
-			if (_song.notes[curSec].gfSection) leftIcon.changeIcon('gf');
+			camIcon.changeIcon('dad');
+			
+			
+	    }
+		else 
+		{
+			camIcon.changeIcon('bf');
 		}
+		if (_song.notes[curSec].gfSection)  camIcon.changeIcon('gf');
 	}
 
 	function loadHealthIconFromCharacter(char:String) {
@@ -3020,16 +3086,7 @@ case 'Alt Anim Note':
 				daText.sprTracker = note;
 			}
 			note.mustPress = if (note.currentStrum == 0) true else false;
-			if(i[1] % 8 > 3 && i[1] < 9) 
-				{
-					note.mustPress = !note.mustPress;
-					switch (note.mustPress){
-						case true:
-							note.currentStrum == 0;
-							case false:
-							note.currentStrum == 1;
-					}
-				}
+			
 		}
 
 		// CURRENT EVENTS
@@ -3239,16 +3296,16 @@ for (i in _song.events)
 
 		note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 		note.updateHitbox();
-		note.x = Math.floor(((daNoteInfo % Note.NOTE_AMOUNT) + 4*danoteStrum) * GRID_SIZE) + GRID_SIZE;
-		if(isNextSection && _song.notes[curSec].mustHitSection != _song.notes[curSec+1].mustHitSection) {
-			if (daNoteInfo < Note.NOTE_AMOUNT*2){
-			if(daNoteInfo > 3) {
-				note.x -= GRID_SIZE * 4;
-			} else if(daSus != null) {
-				note.x += GRID_SIZE * 4;
-			}
-		}
-		}
+		var noteS = danoteStrum;
+		if (danoteStrum == 0)
+			noteS = 1;
+		if (danoteStrum == 1)
+			noteS = 0;
+		
+		if (daNoteInfo <= -1)
+			noteS = 0;
+		note.x = Math.floor(((daNoteInfo % Note.NOTE_AMOUNT) + 4*noteS) * GRID_SIZE) + GRID_SIZE;
+		
 
 		var beats:Float = getSectionBeats(isNextSection ? 1 : 0);
 		note.y = getYfromStrumNotes(daStrumTime - sectionStartTime(), beats);
@@ -3402,15 +3459,17 @@ for (i in _song.events)
 	}
 	function changeNoteType(noteType1:String,noteType2:String):Void
 		{
-		for (daSection in 0..._song.notes.length)
+			var secs = _song.notes.length-1;
+		while (secs > -1)
 			{
-				for (i in _song.notes[daSection].sectionNotes){
+				for (i in _song.notes[secs].sectionNotes){
 				if (i[3] == noteType1){
 					i[3] = noteType2;
 				}
 			}
+			--secs;
 		}
-		updateNoteidk();
+		updateGrid();
 	}
 	function changeKeyType(change:Int) {
 		noteType += change;
@@ -3431,11 +3490,23 @@ for (i in _song.events)
 		var noteSus = 0;
 		var daAlt = false;
 		var daType = currentType;
-
+        var noteStrumPlay = Math.floor(noteData/4);
 		if (strum != null) noteStrum = strum;
 		if (data != null) noteData = data;
 		if (type != null) daType = type;
 		
+		var noteS = noteStrumPlay;
+		if(noteData > -1){
+		if (noteStrumPlay == 0)
+			{
+             noteData += 4;
+			}
+		if (noteStrumPlay == 1)
+			{
+				noteData -= 4;
+			}
+		}
+
 		if(noteData > -1)
 		{
 			_song.notes[curSec].sectionNotes.push([noteStrum, noteData, noteSus, noteTypeIntMap.get(daType)]);
