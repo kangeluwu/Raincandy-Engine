@@ -412,7 +412,7 @@ var voicesStuff:String = '';
 		quant = new AttachedSprite('chart_quant','chart_quant');
 		quant.animation.addByPrefix('q','chart_quant',0,false);
 		quant.animation.play('q', true, false, 0);
-		quant.sprTracker = strumLine;
+
 		quant.xAdd = -32;
 		quant.yAdd = 8;
 		add(quant);
@@ -2578,7 +2578,7 @@ case 'Alt Anim Note':
 		if (strumLine != null) remove(strumLine);
 		strumLine = new FlxSprite(0, 50).makeGraphic(Std.int(GRID_SIZE * ((curStrums) *4 + 1)), 4);
 		add(strumLine);
-
+		quant.sprTracker = strumLine;
 		if (strumLineNotes != null)
 			{
 				strums = [];
