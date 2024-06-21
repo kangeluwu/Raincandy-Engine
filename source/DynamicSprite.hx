@@ -49,7 +49,7 @@ class DynamicAtlasFrames {
     public static function fromTexturePackerJson(png:FlxGraphicAsset, json:String) {
 		if (FNFAssets.exists(json))
 		{
-			json = FNFAssets.getText(txt);
+			json = FNFAssets.getText(json);
 		}
 		if ((png is String))
 		{

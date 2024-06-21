@@ -374,16 +374,16 @@ class Paths
 
 	inline static public function getAsepriteAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
 		{
-			var imageLoaded:FlxGraphic = image(key, library, allowGPU);
+			var imageLoaded:FlxGraphic = returnGraphic(key,allowGPU);
 			#if MODS_ALLOWED
 			var jsonExists:Bool = false;
 	
 			var json:String = modsImagesJson(key);
 			if(FileSystem.exists(json)) jsonExists = true;
 	
-			return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, (jsonExists ? File.getContent(json) : getPath('images/$key.json', library)));
+			return FlxAtlasFrames.fromTexturePackerJson((imageLoaded != null ? imageLoaded : image(key, library,allowGPU)), (jsonExists ? File.getContent(json) : getPath('images/$key.json', TEXT,library)));
 			#else
-			return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, getPath('images/$key.json', library));
+			return FlxAtlasFrames.fromTexturePackerJson(image(key, library,allowGPU), getPath('images/$key.json', TEXT,library));
 			#end
 		}
 		

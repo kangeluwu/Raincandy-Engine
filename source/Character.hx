@@ -23,6 +23,7 @@ import haxe.format.JsonParser;
 import flixel.util.FlxColor;
 using StringTools;
 import tjson.TJSON;
+import flixel.util.FlxDestroyUtil;
 import hscript.Interp;
 import hscript.ParserEx;
 import haxe.xml.Parser;
@@ -34,6 +35,9 @@ import openfl.Lib;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
+#if flxanimate
+import flxanimate.FlxAnimate;
+#end
 #if VIDEOS_ALLOWED
 #if !ios
 #if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideo as FlxVideo;
@@ -147,7 +151,7 @@ class Character extends FlxSprite
 		#end
 		curCharacter = character;
 		this.isPlayer = isPlayer;
-		antialiasing = ClientPrefs.globalAntialiasing;
+
 		var library:String = null;
 		var hscriptChars:Array<Array<String>> = [];
 		if (FNFAssets.exists(SUtil.getPath() + Paths.getLibraryPath("hscriptCharList.txt")))
@@ -186,7 +190,7 @@ callInterp("init", [this]);
 			default:
 				var characterPath:String = 'characters/$curCharacter.json';
 
-				var path:String = Paths.getPath(characterPath, TEXT, null, true);
+				var path:String = Paths.getPath(characterPath, TEXT, null);
 				#if MODS_ALLOWED
 				if (!FileSystem.exists(path))
 				#else
@@ -270,7 +274,7 @@ callInterp("init", [this]);
 			isAnimateAtlas = false;
 	
 			#if flxanimate
-			var animToFind:String = Paths.getPath('images/' + json.image + '/Animation.json', TEXT, null, true);
+			var animToFind:String = Paths.getPath('images/' + json.image + '/Animation.json', TEXT);
 			if (#if MODS_ALLOWED FileSystem.exists(animToFind) || #end Assets.exists(animToFind))
 				isAnimateAtlas = true;
 			#end
@@ -322,7 +326,7 @@ callInterp("init", [this]);
 	
 			// antialiasing
 			noAntialiasing = (json.no_antialiasing == true);
-			antialiasing = ClientPrefs.antialiasing ? !noAntialiasing : false;
+			antialiasing = ClientPrefs.globalAntialiasing ? !noAntialiasing : false;
 	
 			// animations
 			animationsArray = json.animations;
