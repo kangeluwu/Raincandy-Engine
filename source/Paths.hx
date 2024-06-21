@@ -198,6 +198,10 @@ class Paths
 				
 				return getPath('data/$key.hscript', TEXT, library);
 			}
+			inline public static function getSharedPath(file:String = '')
+				{
+					return 'assets/shared/$file';
+				}
 	inline static public function xml(key:String, ?library:String)
 	{
 		return getPath('data/$key.xml', TEXT, library);
@@ -368,6 +372,21 @@ class Paths
 		#end
 	}
 
+	inline static public function getAsepriteAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
+		{
+			var imageLoaded:FlxGraphic = image(key, library, allowGPU);
+			#if MODS_ALLOWED
+			var jsonExists:Bool = false;
+	
+			var json:String = modsImagesJson(key);
+			if(FileSystem.exists(json)) jsonExists = true;
+	
+			return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, (jsonExists ? File.getContent(json) : getPath('images/$key.json', library)));
+			#else
+			return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, getPath('images/$key.json', library));
+			#end
+		}
+		
 
 	inline static public function getPackerAtlas(key:String, ?library:String, ?allowGPU:Bool = true)
 	{
@@ -631,6 +650,10 @@ class Paths
 	}
 	inline static public function modsHscriptStages(key:String) {
 		return modFolders('stages/custom_Hscript_stages/' + key);
+	}
+
+	inline static public function modsImagesJson(key:String) {
+		return modFolders('images/' + key + '.json');
 	}
 
 	inline static public function modsJson(key:String) {

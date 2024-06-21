@@ -55,7 +55,7 @@ typedef CharacterFile = {
 
 	var position:Array<Float>;
 	var camera_position:Array<Float>;
-	var hasGunned:Bool;
+	var hasGunned:Null<Bool>;
 	var flip_x:Bool;
 	var no_antialiasing:Bool;
 	var healthbar_colors:Array<Int>;
@@ -184,210 +184,39 @@ callInterp("init", [this]);
 }switch (curCharacter)
 		{
 			default:
-				var characterPath:String = 'characters/' + curCharacter + '.json';
+				var characterPath:String = 'characters/$curCharacter.json';
 
+				var path:String = Paths.getPath(characterPath, TEXT, null, true);
 				#if MODS_ALLOWED
-				var path:String = Paths.modFolders(characterPath);
-				if (!FileSystem.exists(path)) {
-					path = SUtil.getPath() + Paths.getPreloadPath(characterPath);
-				}
-
 				if (!FileSystem.exists(path))
 				#else
-				var path:String = Paths.getPreloadPath(characterPath);
 				if (!Assets.exists(path))
 				#end
 				{
-					path = SUtil.getPath() + Paths.getPreloadPath('characters/' + DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
+					path = Paths.getSharedPath('characters/' + DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
+					color = FlxColor.BLACK;
+					alpha = 0.6;
 				}
-
-				#if MODS_ALLOWED
-				var rawJson = File.getContent(path);
-				#else
-				var rawJson = Assets.getText(path);
-				#end
-
-				var json:CharacterFile = cast Json.parse(rawJson);
-				var spriteType = "sparrow";
-				var spilty = json.image.split('``');
-				var isMixTexfnf = false;
-				if (spilty != null && spilty.length > 1)
-					isMixTexfnf =true;
-				//sparrow
-				//packer
-				//texture
-				if (!isMixTexfnf){
-				#if MODS_ALLOWED
-				var modTxtToFind:String = Paths.modsTxt(json.image);
-				var txtToFind:String = Paths.getPath('images/' + json.image + '.txt', TEXT);
-				
-				//var modTextureToFind:String = Paths.modFolders("images/"+json.image);
-				//var textureToFind:String = Paths.getPath('images/' + json.image, new AssetType();
-				
-				if (FileSystem.exists(modTxtToFind) || FileSystem.exists(SUtil.getPath() + txtToFind) || Assets.exists(txtToFind))
-				#else
-				if (Assets.exists(Paths.getPath('images/' + json.image + '.txt', TEXT)))
-				#end
-				{
-					
-					spriteType = "packer";
-				}
-				
-				#if MODS_ALLOWED
-				var modAnimToFind:String = Paths.modFolders('images/' + json.image + '/Animation.json');
-				var animToFind:String = Paths.getPath('images/' + json.image + '/Animation.json', TEXT);
-				
-				//var modTextureToFind:String = Paths.modFolders("images/"+json.image);
-				//var textureToFind:String = Paths.getPath('images/' + json.image, new AssetType();
-				
-				if (FileSystem.exists(modAnimToFind) || FileSystem.exists(SUtil.getPath() + animToFind) || Assets.exists(animToFind))
-				#else
-				if (Assets.exists(Paths.getPath('images/' + json.image + '/Animation.json', TEXT)))
-				#end
-				{
-					spriteType = "texture";
-				}
-
-				switch (spriteType){
-					
-					case "packer":
-						frames = Paths.getPackerAtlas(json.image);
-					
-					case "sparrow":
-						frames = Paths.getSparrowAtlas(json.image);
-					
-					case "texture":
-						frames = AtlasFrameMaker.construct(json.image);
-						isAnimateAtlas = true;
-				}
-				imageFile = json.image;
-			}else{
-				var texs = [];
-				for (fra in spilty){
-				#if MODS_ALLOWED
-				var modTxtToFind:String = Paths.modsTxt(fra);
-				var txtToFind:String = Paths.getPath('images/' + fra + '.txt', TEXT);
-				
-				//var modTextureToFind:String = Paths.modFolders("images/"+json.image);
-				//var textureToFind:String = Paths.getPath('images/' + json.image, new AssetType();
-				
-				if (FileSystem.exists(modTxtToFind) || FileSystem.exists(SUtil.getPath() + txtToFind) || Assets.exists(txtToFind))
-				#else
-				if (Assets.exists(Paths.getPath('images/' + fra + '.txt', TEXT)))
-				#end
-				{
-					
-					spriteType = "packer";
-				}
-				
-				#if MODS_ALLOWED
-				var modAnimToFind:String = Paths.modFolders('images/' + fra + '/Animation.json');
-				var animToFind:String = Paths.getPath('images/' + fra + '/Animation.json', TEXT);
-				
-				//var modTextureToFind:String = Paths.modFolders("images/"+json.image);
-				//var textureToFind:String = Paths.getPath('images/' + json.image, new AssetType();
-				
-				if (FileSystem.exists(modAnimToFind) || FileSystem.exists(SUtil.getPath() + animToFind) || Assets.exists(animToFind))
-				#else
-				if (Assets.exists(Paths.getPath('images/' + fra + '/Animation.json', TEXT)))
-				#end
-				{
-					spriteType = "texture";
-				}
-
-				switch (spriteType){
-					
-					case "packer":
-						texs.push(Paths.getPackerAtlas(fra));
-					
-					case "sparrow":
-						texs.push(Paths.getSparrowAtlas(fra));
-				
-				}
-				}
-				var tex = texs[0];
-				for (i in 1...texs.length)
-					{
-						frames = mixtex(tex,texs[i]);
-					}
-				imageFile = spilty[0];
-			}
-				if(json.scale != 1) {
-					jsonScale = json.scale;
-					setGraphicSize(Std.int(width * jsonScale));
-					updateHitbox();
-				}
-
-				hasGun = json.hasGunned;
-				
-				positionArray = json.position;
-				cameraPosition = json.camera_position;
-				crossFadeColor = json.crossColor;
-				healthIcon = json.healthicon;
-				singDuration = json.sing_duration;
-				flipX = !!json.flip_x;
-				if(json.no_antialiasing) {
-					antialiasing = false;
-					noAntialiasing = true;
-				}
-
-				if(json.healthbar_colors != null && json.healthbar_colors.length > 2)
-					healthColorArray = json.healthbar_colors;
-
-				if(json.crossColor == null) 
-					crossFadeColor = FlxColor.fromRGB(healthColorArray[0],healthColorArray[1],healthColorArray[2]);
-				else
-					crossFadeColor = json.crossColor;
-
-				antialiasing = !noAntialiasing;
-				if(!ClientPrefs.globalAntialiasing) antialiasing = false;
-
-				animationsArray = json.animations;
-				if(animationsArray != null && animationsArray.length > 0) {
-					for (anim in animationsArray) {
-						var animAnim:String = '' + anim.anim;
-						var animName:String = '' + anim.name;
-						var animFps:Int = anim.fps;
-						var animLoop:Bool = !!anim.loop; //Bruh
-						var animIndices:Array<Int> = anim.indices;
-						if(animIndices != null && animIndices.length > 0) {
-							animation.addByIndices(animAnim, animName, animIndices, "", animFps, animLoop);
-						} else {
-							animation.addByPrefix(animAnim, animName, animFps, animLoop);
-						}
-					
-						if(anim.offsets != null && anim.offsets.length > 1) {
-							addOffset(anim.anim, anim.offsets[0], anim.offsets[1]);
-						}
-					}
-				} else {
-					quickAnimAdd('idle', 'BF idle dance');
-				}
-				//trace('Loaded file to character ' + curCharacter);
 				if (curCharacter.startsWith('gf'))
 					likeGf = true;
-				var interppath:String = '';
+				try
+				{
+					#if MODS_ALLOWED
+					loadCharacterFile(Json.parse(File.getContent(path)));
+					#else
+					loadCharacterFile(Json.parse(Assets.getText(path)));
+					#end
+				}
+				catch(e:Dynamic)
+				{
+					trace('Error loading character file of "$character": $e');
+				}
 
-		#if MODS_ALLOWED
-		if(FNFAssets.exists(Paths.modFolders('characters/') + curCharacter, Hscript)) {
-			interppath = Paths.modFolders('characters/');
-		} else {
-			interppath = SUtil.getPath() + Paths.getPreloadPath('characters/');
-		}
-		#else
-		interppath = SUtil.getPath() + Paths.getPreloadPath('characters/');
-		#end
 
-		if (FNFAssets.exists(interppath + curCharacter, Hscript)){
-		interp = Character.getAnimInterp(curCharacter);
-		}
-		else{
-			interp = null;	
-		}
-		callInterp("init", [this]);
+
+		
 		}
 
-		originalFlipX = flipX;
 
 		if(animOffsets.exists('singLEFTmiss') || animOffsets.exists('singDOWNmiss') || animOffsets.exists('singUPmiss') || animOffsets.exists('singRIGHTmiss')) hasMissAnimations = true;
 		recalculateDanceIdle();
@@ -431,13 +260,137 @@ callInterp("init", [this]);
 		loadMappedAnims();
 		playAnim("shoot1");
 		}
-		followCamX = positionArray[0];
-		followCamY = positionArray[1];
+
 	}
+	
+	public function loadCharacterFile(json:Dynamic)
+		{
+							
+			var interppath:String = '';
+			isAnimateAtlas = false;
+	
+			#if flxanimate
+			var animToFind:String = Paths.getPath('images/' + json.image + '/Animation.json', TEXT, null, true);
+			if (#if MODS_ALLOWED FileSystem.exists(animToFind) || #end Assets.exists(animToFind))
+				isAnimateAtlas = true;
+			#end
+	
+			scale.set(1, 1);
+			updateHitbox();
+	
+			if(!isAnimateAtlas)
+				frames = Paths.getAtlas(json.image);
+			#if flxanimate
+			else
+			{
+				atlas = new FlxAnimate();
+				atlas.showPivot = false;
+				try
+				{
+					Paths.loadAnimateAtlas(atlas, json.image);
+				}
+				catch(e:Dynamic)
+				{
+					FlxG.log.warn('Could not load atlas ${json.image}: $e');
+				}
+			}
+			#end
+	
+			imageFile = json.image;
+			jsonScale = json.scale;
+			if(json.scale != 1) {
+				scale.set(jsonScale, jsonScale);
+				updateHitbox();
+			}
+	
+			// positioning
+			positionArray = json.position;
+			cameraPosition = json.camera_position;
+	
+			// data
+			healthIcon = json.healthicon;
+			singDuration = json.sing_duration;
+			hasGun = (json.hasGunned == null) ? false : json.hasGun;
+			flipX = (json.flip_x != isPlayer);
+			healthColorArray = (json.healthbar_colors != null && json.healthbar_colors.length > 2) ? json.healthbar_colors : [161, 161, 161];
+			if(json.crossColor == null) 
+				crossFadeColor = FlxColor.fromRGB(healthColorArray[0],healthColorArray[1],healthColorArray[2]);
+			else
+				crossFadeColor = json.crossColor;
+
+			originalFlipX = (json.flip_x == true);
+	
+			// antialiasing
+			noAntialiasing = (json.no_antialiasing == true);
+			antialiasing = ClientPrefs.antialiasing ? !noAntialiasing : false;
+	
+			// animations
+			animationsArray = json.animations;
+			if(animationsArray != null && animationsArray.length > 0) {
+				for (anim in animationsArray) {
+					var animAnim:String = '' + anim.anim;
+					var animName:String = '' + anim.name;
+					var animFps:Int = anim.fps;
+					var animLoop:Bool = !!anim.loop; //Bruh
+					var animIndices:Array<Int> = anim.indices;
+	
+					if(!isAnimateAtlas)
+					{
+						if(animIndices != null && animIndices.length > 0)
+							animation.addByIndices(animAnim, animName, animIndices, "", animFps, animLoop);
+						else
+							animation.addByPrefix(animAnim, animName, animFps, animLoop);
+					}
+					#if flxanimate
+					else
+					{
+						if(animIndices != null && animIndices.length > 0)
+							atlas.anim.addBySymbolIndices(animAnim, animName, animIndices, animFps, animLoop);
+						else
+							atlas.anim.addBySymbol(animAnim, animName, animFps, animLoop);
+					}
+					#end
+	
+					if(anim.offsets != null && anim.offsets.length > 1) addOffset(anim.anim, anim.offsets[0], anim.offsets[1]);
+					else addOffset(anim.anim, 0, 0);
+				}
+			}
+			#if flxanimate
+			if(isAnimateAtlas) copyAtlasValues();
+			#end
+			//trace('Loaded file to character ' + curCharacter);
+			followCamX = positionArray[0];
+			followCamY = positionArray[1];
+
+			#if MODS_ALLOWED
+		if(FNFAssets.exists(Paths.modFolders('characters/') + curCharacter, Hscript)) {
+			interppath = Paths.modFolders('characters/');
+		} else {
+			interppath = SUtil.getPath() + Paths.getPreloadPath('characters/');
+		}
+		#else
+		interppath = SUtil.getPath() + Paths.getPreloadPath('characters/');
+		#end
+
+		if (FNFAssets.exists(interppath + curCharacter, Hscript)){
+		interp = Character.getAnimInterp(curCharacter);
+		}
+		else{
+			interp = null;	
+		}
+		callInterp("init", [this]);
+		}
 
 	override function update(elapsed:Float)
 	{
-		
+		if(isAnimateAtlas) atlas.update(elapsed);
+
+		if(debugMode || (!isAnimateAtlas && animation.curAnim == null) || (isAnimateAtlas && atlas.anim.curSymbol == null))
+		{
+			super.update(elapsed);
+			return;
+		}
+
 		if(!debugMode && animation.curAnim != null)
 		{
 			if(heyTimer > 0)
@@ -445,34 +398,37 @@ callInterp("init", [this]);
 				heyTimer -= elapsed;
 				if(heyTimer <= 0)
 				{
-					if(specialAnim && animation.curAnim.name == 'hey' || animation.curAnim.name == 'cheer')
-					{
-						specialAnim = false;
-						dance();
-					}
+					var anim:String = getAnimationName();
+				if(specialAnim && (anim == 'hey' || anim == 'cheer'))
+				{
+					specialAnim = false;
+					dance();
+				}
 					heyTimer = 0;
 				}
-			} else if(specialAnim && animation.curAnim.finished)
+			} else if(specialAnim && isAnimationFinished())
 			{
 				specialAnim = false;
 				dance();
 			}
+
 			
 			if (beingControlled)
 				{
-					if (animation.curAnim.name.startsWith('sing'))
+					if (getAnimationName().startsWith('sing'))
 						{
 							holdTimer += elapsed;
 						}
 						else
 							holdTimer = 0;
 			
-						if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode)
-						{
-							playAnim('idle', true, false, 10);
-						}
+						if (getAnimationName().endsWith('miss') && isAnimationFinished() && !debugMode)
+							{
+								dance();
+								
+							}
 			
-						if (animation.curAnim.name == 'firstDeath' && animation.curAnim.finished && startedDeath)
+						if (getAnimationName() == 'firstDeath' && isAnimationFinished() && startedDeath)
 						{
 							playAnim('deathLoop');
 						}
@@ -488,13 +444,13 @@ callInterp("init", [this]);
 						playAnim('shoot' + noteData, true);
 						animationNotes.shift();
 					}
-					if(animation.curAnim != null && animation.curAnim.finished) playAnim(animation.curAnim.name, false, false, animation.curAnim.frames.length - 3);
+					if(!isAnimationNull() && isAnimationFinished()) playAnim(getAnimationName(), false, false, animation.curAnim.frames.length - 3);
 			}
 			
 
 			if (!beingControlled)
 			{
-				if (animation.curAnim.name.startsWith('sing'))
+				if (getAnimationName().startsWith('sing'))
 				{
 					holdTimer += elapsed;
 				}
@@ -506,13 +462,56 @@ callInterp("init", [this]);
 				}
 			}
 
-			if(animation.curAnim.finished && animation.getByName(animation.curAnim.name + '-loop') != null)
-			{
-				playAnim(animation.curAnim.name + '-loop');
-			}
+			var name:String = getAnimationName();
+		if(isAnimationFinished() && animOffsets.exists('$name-loop'))
+			playAnim('$name-loop');
 		}
 		callInterp("update", [elapsed, this]);
-		super.update(elapsed);
+	
+	}
+
+	inline public function isAnimationNull():Bool
+		return !isAnimateAtlas ? (animation.curAnim == null) : (atlas.anim.curSymbol == null);
+
+	inline public function getAnimationName():String
+	{
+		var name:String = '';
+		@:privateAccess
+		if(!isAnimationNull()) name = !isAnimateAtlas ? animation.curAnim.name : atlas.anim.lastPlayedAnim;
+		return (name != null) ? name : '';
+	}
+
+	public function isAnimationFinished():Bool
+	{
+		if(isAnimationNull()) return false;
+		return !isAnimateAtlas ? animation.curAnim.finished : atlas.anim.finished;
+	}
+
+	public function finishAnimation():Void
+	{
+		if(isAnimationNull()) return;
+
+		if(!isAnimateAtlas) animation.curAnim.finish();
+		else atlas.anim.curFrame = atlas.anim.length - 1;
+	}
+
+	public var animPaused(get, set):Bool;
+	private function get_animPaused():Bool
+	{
+		if(isAnimationNull()) return false;
+		return !isAnimateAtlas ? animation.curAnim.paused : atlas.anim.isPlaying;
+	}
+	private function set_animPaused(value:Bool):Bool
+	{
+		if(isAnimationNull()) return value;
+		if(!isAnimateAtlas) animation.curAnim.paused = value;
+		else
+		{
+			if(value) atlas.anim.pause();
+			else atlas.anim.resume();
+		} 
+
+		return value;
 	}
 
 	public var danced:Bool = false;
@@ -545,7 +544,9 @@ callInterp("init", [this]);
 	{
 
 		specialAnim = false;
-		animation.play(AnimName, Force, Reversed, Frame);
+			if(!isAnimateAtlas) animation.play(AnimName, Force, Reversed, Frame);
+		else atlas.anim.play(AnimName, Force, Reversed, Frame);
+
 
 		var daOffset = animOffsets.get(AnimName);
 		if (animOffsets.exists(AnimName))
@@ -576,6 +577,8 @@ callInterp("init", [this]);
 	
 	function loadMappedAnims():Void
 	{
+		try
+			{
 		var file:String = curCharacter;
 		switch(curCharacter)
 		{
@@ -595,6 +598,8 @@ callInterp("init", [this]);
 		TankmenBG.animationNotes = animationNotes;
 		}
 		animationNotes.sort(sortAnims);
+	}
+	catch(e){}
 	}
 
 	function sortAnims(Obj1:Array<Dynamic>, Obj2:Array<Dynamic>):Int
@@ -690,4 +695,52 @@ callInterp("init", [this]);
 	}
 	return interp;
 	}
+	#if flxanimate
+	public var atlas:FlxAnimate;
+	public override function draw()
+	{
+		if(isAnimateAtlas)
+		{
+			copyAtlasValues();
+			atlas.draw();
+			return;
+		}
+		super.draw();
+	}
+
+	public function copyAtlasValues()
+	{
+		@:privateAccess
+		{
+			atlas.cameras = cameras;
+			atlas.scrollFactor = scrollFactor;
+			atlas.scale = scale;
+			atlas.offset = offset;
+			atlas.origin = origin;
+			atlas.x = x;
+			atlas.y = y;
+			atlas.angle = angle;
+			atlas.alpha = alpha;
+			atlas.visible = visible;
+			atlas.flipX = flipX;
+			atlas.flipY = flipY;
+			atlas.shader = shader;
+			atlas.antialiasing = antialiasing;
+			atlas.colorTransform = colorTransform;
+			atlas.color = color;
+		}
+	}
+
+	public override function destroy()
+	{
+		super.destroy();
+		destroyAtlas();
+	}
+
+	public function destroyAtlas()
+	{
+		if (atlas != null)
+			atlas = FlxDestroyUtil.destroy(atlas);
+	}
+	#end
 }
