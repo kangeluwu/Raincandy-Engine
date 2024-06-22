@@ -136,7 +136,7 @@ class ChartingState extends MusicBeatState
 
 	var camPos:FlxObject;
 	var strumLine:FlxSprite = null;
-	var quant:AttachedSprite;
+	var quant:AttachedSprite = null;
 	var strumLineNotes:FlxTypedGroup<StrumNote> = null;
 	var curSong:String = 'Test';
 	var amountSteps:Int = 0;
@@ -409,13 +409,7 @@ var voicesStuff:String = '';
 		add(bpmTxt);
 
 	
-		quant = new AttachedSprite('chart_quant','chart_quant');
-		quant.animation.addByPrefix('q','chart_quant',0,false);
-		quant.animation.play('q', true, false, 0);
-
-		quant.xAdd = -32;
-		quant.yAdd = 8;
-		add(quant);
+	
 
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		for (i in 0...curStrums){
@@ -2578,6 +2572,14 @@ case 'Alt Anim Note':
 		if (strumLine != null) remove(strumLine);
 		strumLine = new FlxSprite(0, 50).makeGraphic(Std.int(GRID_SIZE * ((curStrums) *4 + 1)), 4);
 		add(strumLine);
+		if (quant != null) remove(quant);
+		quant = new AttachedSprite('chart_quant','chart_quant');
+		quant.animation.addByPrefix('q','chart_quant',0,false);
+		quant.animation.play('q', true, false, 0);
+
+		quant.xAdd = -32;
+		quant.yAdd = 8;
+		add(quant);
 		quant.sprTracker = strumLine;
 		if (strumLineNotes != null)
 			{

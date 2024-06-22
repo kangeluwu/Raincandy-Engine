@@ -1,6 +1,5 @@
 package;
 import flixel.graphics.FlxGraphic;
-import animateatlas.AtlasFrameMaker;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.effects.FlxTrail;
@@ -190,17 +189,26 @@ callInterp("init", [this]);
 			default:
 				var characterPath:String = 'characters/$curCharacter.json';
 
-				var path:String = Paths.getPath(characterPath, TEXT, null);
+				var characterPath:String = 'characters/' + curCharacter + '.json';
+
 				#if MODS_ALLOWED
+				var path:String = Paths.modFolders(characterPath);
+				if (!FileSystem.exists(path)) {
+					path = SUtil.getPath() + Paths.getPreloadPath(characterPath);
+				}
+
 				if (!FileSystem.exists(path))
 				#else
+				var path:String = Paths.getPreloadPath(characterPath);
 				if (!Assets.exists(path))
 				#end
 				{
-					path = Paths.getSharedPath('characters/' + DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
+					path = Paths.getPreloadPath('characters/' + DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
 					color = FlxColor.BLACK;
 					alpha = 0.6;
 				}
+
+			
 				if (curCharacter.startsWith('gf'))
 					likeGf = true;
 				try
@@ -228,30 +236,6 @@ callInterp("init", [this]);
 		
 		dance();
 
-		if (isPlayer)
-		{
-			flipX = !flipX;
-
-			/*// Doesn't flip for BF, since his are already in the right place???
-			if (!curCharacter.startsWith('bf'))
-			{
-				// var animArray
-				if(animation.getByName('singLEFT') != null && animation.getByName('singRIGHT') != null)
-				{
-					var oldRight = animation.getByName('singRIGHT').frames;
-					animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
-					animation.getByName('singLEFT').frames = oldRight;
-				}
-
-				// IF THEY HAVE MISS ANIMATIONS??
-				if (animation.getByName('singLEFTmiss') != null && animation.getByName('singRIGHTmiss') != null)
-				{
-					var oldMiss = animation.getByName('singRIGHTmiss').frames;
-					animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
-					animation.getByName('singLEFTmiss').frames = oldMiss;
-				}
-			}*/
-		}
 
 		switch(curCharacter)
 		{
@@ -314,7 +298,7 @@ callInterp("init", [this]);
 			// data
 			healthIcon = json.healthicon;
 			singDuration = json.sing_duration;
-			hasGun = (json.hasGunned == null) ? false : json.hasGun;
+			hasGun = (json.hasGunned == null) ? false : json.hasGunned;
 			flipX = (json.flip_x != isPlayer);
 			healthColorArray = (json.healthbar_colors != null && json.healthbar_colors.length > 2) ? json.healthbar_colors : [161, 161, 161];
 			if(json.crossColor == null) 
@@ -471,7 +455,7 @@ callInterp("init", [this]);
 			playAnim('$name-loop');
 		}
 		callInterp("update", [elapsed, this]);
-	
+		super.update(elapsed);
 	}
 
 	inline public function isAnimationNull():Bool

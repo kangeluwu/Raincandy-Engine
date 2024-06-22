@@ -123,8 +123,20 @@ class Paths
 		currentLevel = name.toLowerCase();
 	}
 
-	public static function getPath(file:String, type:AssetType, ?library:Null<String> = null)
+	public static function getPath(file:String, type:AssetType, ?library:Null<String> = null, ?modsAllowed:Bool = false)
 	{
+		#if MODS_ALLOWED
+		if(modsAllowed)
+		{
+			var customFile:String = file;
+			if (library != null)
+				customFile = '$library/$file';
+
+			var modded:String = modFolders(customFile);
+			if(FileSystem.exists(modded)) return modded;
+		}
+		#end
+
 		if (library != null)
 			return getLibraryPath(file, library);
 
@@ -473,7 +485,7 @@ class Paths
 						spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json');
 						if(spriteJson != null)
 						{
-							//trace('found Sprite Json');
+							trace('found Sprite Json');
 							changedImage = true;
 							changedAtlasJson = true;
 							folderOrImg = Paths.image('$originalPath/spritemap$st');
@@ -482,7 +494,7 @@ class Paths
 					}
 					else if(Paths.fileExists('images/$originalPath/spritemap$st.png', IMAGE))
 					{
-						//trace('found Sprite PNG');
+						trace('found Sprite PNG');
 						changedImage = true;
 						folderOrImg = Paths.image('$originalPath/spritemap$st');
 						break;
@@ -525,28 +537,20 @@ class Paths
 
 		static public function getAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
 			{
-				var useMod = false;
+				var useMod = #if MODS_ALLOWED true; #else false; #end
 				var imageLoaded:FlxGraphic = image(key, library, allowGPU);
 		
-				var myXml:Dynamic = getPath('images/$key.xml', TEXT);
-				if(OpenFlAssets.exists(myXml) #if MODS_ALLOWED || (FileSystem.exists(myXml) && (useMod = true)) #end )
+				var myXml:Dynamic = getPath('images/$key.xml', TEXT,true);
+				if(OpenFlAssets.exists(myXml) #if MODS_ALLOWED || (FileSystem.exists(myXml) && (useMod)) #end )
 				{
-					#if MODS_ALLOWED
-					return FlxAtlasFrames.fromSparrow(imageLoaded, (useMod ? File.getContent(myXml) : myXml));
-					#else
-					return FlxAtlasFrames.fromSparrow(imageLoaded, myXml);
-					#end
+					return getSparrowAtlas(key,library);
 				}
 				else
 				{
-					var myJson:Dynamic = getPath('images/$key.json', TEXT);
-					if(OpenFlAssets.exists(myJson) #if MODS_ALLOWED || (FileSystem.exists(myJson) && (useMod = true)) #end )
+					var myJson:Dynamic = getPath('images/$key.json', TEXT,true);
+					if(OpenFlAssets.exists(myJson) #if MODS_ALLOWED || (FileSystem.exists(myJson) && (useMod)) #end )
 					{
-						#if MODS_ALLOWED
-						return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, (useMod ? File.getContent(myJson) : myJson));
-						#else
-						return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, myJson);
-						#end
+						return getAsepriteAtlas(key,library);
 					}
 				}
 				return getPackerAtlas(key, library);

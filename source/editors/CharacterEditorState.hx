@@ -680,15 +680,7 @@ class CharacterEditorState extends MusicBeatState
 				indices: indices,
 				offsets: lastOffsets
 			};
-			if(indices != null && indices.length > 0) {
-				char.animation.addByIndices(newAnim.anim, newAnim.name, newAnim.indices, "", newAnim.fps, newAnim.loop);
-			} else {
-				char.animation.addByPrefix(newAnim.anim, newAnim.name, newAnim.fps, newAnim.loop);
-			}
-
-			if(!char.animOffsets.exists(newAnim.anim)) {
-				char.addOffset(newAnim.anim, 0, 0);
-			}
+			addAnimation(newAnim.anim, newAnim.name, newAnim.fps, newAnim.loop, newAnim.indices);
 			char.animationsArray.push(newAnim);
 
 			if(lastAnim == animationInputText.text) {
@@ -828,51 +820,70 @@ class CharacterEditorState extends MusicBeatState
 		}
 	}
 
-	function reloadCharacterImage() {
-		var lastAnim:String = '';
-		if(char.animation.curAnim != null) {
-			lastAnim = char.animation.curAnim.name;
-		}
-		var anims:Array<AnimArray> = char.animationsArray.copy();
-		if(Paths.fileExists('images/' + char.imageFile + '/Animation.json', TEXT)) {
-			char.frames = AtlasFrameMaker.construct(char.imageFile);
-		} else if(Paths.fileExists('images/' + char.imageFile + '.txt', TEXT)) {
-			char.frames = Paths.getPackerAtlas(char.imageFile);
-		} else {
-			char.frames = Paths.getSparrowAtlas(char.imageFile);
-		}
-
-
-
-
-
-
-
-		if(char.animationsArray != null && char.animationsArray.length > 0) {
-			for (anim in char.animationsArray) {
+	function reloadCharacterImage()
+		{
+			var lastAnim:String = char.getAnimationName();
+			var anims:Array<AnimArray> = char.animationsArray.copy();
+	
+			char.destroyAtlas();
+			char.isAnimateAtlas = false;
+	
+			if(Paths.fileExists('images/' + char.imageFile + '/Animation.json', TEXT))
+			{
+				char.atlas = new flxanimate.FlxAnimate();
+				char.atlas.showPivot = false;
+				try
+				{
+					Paths.loadAnimateAtlas(char.atlas, char.imageFile);
+				}
+				catch(e:Dynamic)
+				{
+					FlxG.log.warn('Could not load atlas ${char.imageFile}: $e');
+				}
+				char.isAnimateAtlas = true;
+			}
+			else if(Paths.fileExists('images/' + char.imageFile + '.txt', TEXT)) char.frames = Paths.getPackerAtlas(char.imageFile);
+			else char.frames = Paths.getSparrowAtlas(char.imageFile);
+	
+			for (anim in anims) {
 				var animAnim:String = '' + anim.anim;
 				var animName:String = '' + anim.name;
 				var animFps:Int = anim.fps;
 				var animLoop:Bool = !!anim.loop; //Bruh
 				var animIndices:Array<Int> = anim.indices;
-				if(animIndices != null && animIndices.length > 0) {
-					char.animation.addByIndices(animAnim, animName, animIndices, "", animFps, animLoop);
-				} else {
-					char.animation.addByPrefix(animAnim, animName, animFps, animLoop);
-				}
+				addAnimation(animAnim, animName, animFps, animLoop, animIndices);
 			}
-		} else {
-			char.quickAnimAdd('idle', 'BF idle dance');
+	
+			if(anims.length > 0)
+			{
+				if(lastAnim != '') char.playAnim(lastAnim, true);
+				else char.dance();
+			}
+			ghostDropDown.selectedLabel = '';
+			reloadGhost();
 		}
-
-		if(lastAnim != '') {
-			char.playAnim(lastAnim, true);
-		} else {
-			char.dance();
+	
+		
+	function addAnimation(anim:String, name:String, fps:Int, loop:Bool, indices:Array<Int>)
+		{
+			if(!char.isAnimateAtlas)
+			{
+				if(indices != null && indices.length > 0)
+					char.animation.addByIndices(anim, name, indices, "", fps, loop);
+				else
+					char.animation.addByPrefix(anim, name, fps, loop);
+			}
+			else
+			{
+				if(indices != null && indices.length > 0)
+					char.atlas.anim.addBySymbolIndices(anim, name, indices, fps, loop);
+				else
+					char.atlas.anim.addBySymbol(anim, name, fps, loop);
+			}
+	
+			if(!char.animOffsets.exists(anim))
+				char.addOffset(anim, 0, 0);
 		}
-		ghostDropDown.selectedLabel = '';
-		reloadGhost();
-	}
 
 	function genBoyOffsets():Void
 	{
