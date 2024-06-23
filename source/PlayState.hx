@@ -3955,14 +3955,14 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 					swagNote.mustPress = if (daNoteStrum == currentPlayerStrum) true else false;
 	                switch (swagNote.currentStrum){
 						case 0:
-							swagNote.whoShouldSing = boyfriend;
-							swagNote.whoIsOpponent = dad;
+							swagNote.whoShouldSing = 'boyfriend';
+							swagNote.whoIsOpponent = 'dad';
 							case 1:
-								swagNote.whoShouldSing = dad;
-								swagNote.whoIsOpponent = boyfriend;
+								swagNote.whoShouldSing = 'dad';
+								swagNote.whoIsOpponent = 'boyfriend';
 							default:
-								swagNote.whoShouldSing = boyfriend;
-								swagNote.whoIsOpponent = dad;
+								swagNote.whoShouldSing = 'boyfriend';
+								swagNote.whoIsOpponent = 'dad';
 					}
 					swagNote.altNote = altNote;
 	
@@ -3996,14 +3996,14 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 					        sustainNote.mustPress =  if (daNoteStrum == 1) true else false;
 							switch (sustainNote.currentStrum){
 								case 0:
-									sustainNote.whoShouldSing = boyfriend;
-									sustainNote.whoIsOpponent = dad;
+									sustainNote.whoShouldSing = 'boyfriend';
+									sustainNote.whoIsOpponent = 'dad';
 							case 1:
-								sustainNote.whoShouldSing = dad;
-								sustainNote.whoIsOpponent = boyfriend;
+								sustainNote.whoShouldSing = 'dad';
+								sustainNote.whoIsOpponent = 'boyfriend';
 							default:
-								sustainNote.whoShouldSing = boyfriend;
-								sustainNote.whoIsOpponent = dad;
+								sustainNote.whoShouldSing = 'boyfriend';
+								sustainNote.whoIsOpponent = 'dad';
 							}
 							sustainNote.altNote = swagNote.altNote;
 							sustainNote.crossFade = swagNote.crossFade;
@@ -4378,14 +4378,14 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 				swagNote.mustPress = if (daNoteStrum == currentPlayerStrum) true else false;
 				switch (swagNote.currentStrum){
 					case 0:
-						swagNote.whoShouldSing = boyfriend;
-								swagNote.whoIsOpponent = dad;
+						swagNote.whoShouldSing = 'boyfriend';
+								swagNote.whoIsOpponent = 'dad';
 							case 1:
-								swagNote.whoShouldSing = dad;
-								swagNote.whoIsOpponent = boyfriend;
+								swagNote.whoShouldSing = 'dad';
+								swagNote.whoIsOpponent = 'boyfriend';
 							default:
-								swagNote.whoShouldSing = boyfriend;
-								swagNote.whoIsOpponent = dad;
+								swagNote.whoShouldSing = 'boyfriend';
+								swagNote.whoIsOpponent = 'dad';
 				}
 				swagNote.altNote = altNote;
 
@@ -4419,14 +4419,14 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 					    sustainNote.mustPress = if (daNoteStrum == currentPlayerStrum) true else false;
 						switch (sustainNote.currentStrum){
 							case 0:
-								sustainNote.whoShouldSing = boyfriend;
-								sustainNote.whoIsOpponent = dad;
+								sustainNote.whoShouldSing = 'boyfriend';
+								sustainNote.whoIsOpponent = 'dad';
 							case 1:
-								sustainNote.whoShouldSing = dad;
-								sustainNote.whoIsOpponent = boyfriend;
+								sustainNote.whoShouldSing = 'dad';
+								sustainNote.whoIsOpponent = 'boyfriend';
 							default:
-								sustainNote.whoShouldSing = boyfriend;
-								sustainNote.whoIsOpponent = dad;
+								sustainNote.whoShouldSing = 'boyfriend';
+								sustainNote.whoIsOpponent = 'dad';
 						}
 						sustainNote.altNote = swagNote.altNote;
 						sustainNote.crossFade = swagNote.crossFade;
@@ -5987,6 +5987,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 			case 'Change Character':
 				var oldChar:Character;
 				var charType:Int = 0;
+				var char:Character = null;
 				switch(value1) {
 					case 'gf' | 'girlfriend':
 						charType = 2;
@@ -6010,7 +6011,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 							var lastAlpha:Float = boyfriend.alpha;
 							boyfriend.alpha = 0.00001;
 							boyfriend = boyfriendMap.get(value2);
-
+							char = boyfriend;
 							if(!boyfriend.likeGf) {
 								if(wasGf && gf != null) {
 									gf.visible = true;
@@ -6018,6 +6019,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 							} else if(gf != null) {
 								gf.visible = false;
 							}
+
 							boyfriend.alpha = lastAlpha;
 							iconP1.changeIcon(boyfriend.healthIcon);
 
@@ -6078,7 +6080,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 								gf = gfMap.get(value2);
 								gf.alpha = lastAlpha;
 							}
-
+							char = gf;
 							if ((value3 == 'true' || value3 == '1') && oldChar != gf)
 								{
 									if (gfMap.exists(oldChar.curCharacter))
@@ -6090,6 +6092,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 							setAllHaxeVar('gfName', gf.curCharacter);
 						}
 				}
+				
 				if (!ClientPrefs.classicStyle)
 				reloadHealthBarColors();
 
@@ -7048,9 +7051,30 @@ currentTimingShown.cameras = [camHUD];
 	function noteMiss(daNote:Note,playerOne:Bool):Void { //You didn't hit the key and let it go offscreen, also used by Hurt Notes
 		//Dupe note remove
 
-		var actingOn =  daNote.whoShouldSing;
-			var onActing =  daNote.whoIsOpponent;
-			
+		var actingOn =  boyfriend;
+			var onActing =  dad;
+			switch (daNote.whoShouldSing){
+				case 'boyfriend' | 'bf':
+					actingOn = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+						actingOn = gf;
+						case 'dad'|'dearest':
+								actingOn = dad;
+				default:
+					actingOn = boyfriend;
+			}
+			switch (daNote.whoIsOpponent){
+				case 'boyfriend' | 'bf':
+					onActing = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+							onActing = gf;
+						case 'dad'|'dearest':
+							onActing = dad;
+				default:
+					onActing = dad;
+			}
 		//var coolMustPress = playerOne ? daNote.mustPress : !daNote.mustPress;
 		var coolMustPress = daNote.mustPress;
 		notes.forEachAlive(function(note:Note) {
@@ -7179,8 +7203,30 @@ currentTimingShown.cameras = [camHUD];
 	var altNum:Int = 0;
 	function opponentNoteHit(note:Note,playerTwo:Bool):Void
 	{
-		var actingOn = note.whoShouldSing;
-		var onActing = note.whoIsOpponent;
+		var actingOn =  dad;
+		var onActing =  boyfriend;
+			switch (note.whoShouldSing){
+				case 'boyfriend' | 'bf':
+					actingOn = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+						actingOn = gf;
+						case 'dad'|'dearest':
+								actingOn = dad;
+				default:
+					actingOn = dad;
+			}
+			switch (note.whoIsOpponent){
+				case 'boyfriend' | 'bf':
+					onActing = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+							onActing = gf;
+						case 'dad'|'dearest':
+							onActing = dad;
+				default:
+					onActing = boyfriend;
+			}
 		
 		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
 			camZooming = true;
@@ -7295,9 +7341,31 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 	}
 	function goodNoteHit(note:Note, playerOne:Bool):Void
 		{
-			var actingOn =  note.whoShouldSing;
-			var onActing =  note.whoIsOpponent;
-		
+			var actingOn =  boyfriend;
+			var onActing =  dad;
+			switch (note.whoShouldSing){
+				case 'boyfriend' | 'bf':
+					actingOn = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+						actingOn = gf;
+						case 'dad'|'dearest':
+								actingOn = dad;
+				default:
+					actingOn = boyfriend;
+			}
+			switch (note.whoIsOpponent){
+				case 'boyfriend' | 'bf':
+					onActing = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+							onActing = gf;
+						case 'dad'|'dearest':
+							onActing = dad;
+				default:
+					onActing = dad;
+			}
+
 			var altAnim:String = note.animSuffix;
 			altNum = note.altNum;
 			if (altNum == 1) {

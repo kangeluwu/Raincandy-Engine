@@ -247,8 +247,8 @@ class Note extends FlxSprite
 	public var noteWasHit:Bool = false;
 	public var prevNote:Note;
 	public var nextNote:Note;
-	public var whoShouldSing:Character;
-	public var whoIsOpponent:Character;
+	public var whoShouldSing:String = 'bf';
+	public var whoIsOpponent:String= 'dad';
 	public var spawned:Bool = false;
 
 	public var tail:Array<Note> = []; // for sustains

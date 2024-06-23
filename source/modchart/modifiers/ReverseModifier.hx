@@ -124,9 +124,9 @@ class ReverseModifier extends NoteModifier {
                 {
 					daY += 10.5 * (fakeCrochet * 0.0025) * 1.5 * songSpeed + (46 * (songSpeed - 1));
 					daY -= 46 * (1 - (fakeCrochet / 600)) * songSpeed;
-                    /*if (PlayState.isPixelStage)
-						daY += 8;
-                    else*/
+                    if (note.isPixelNote)
+						daY += 8 + (6 - note.originalHeightForCalcs) * PlayState.daPixelZoom;
+                    else
 						daY -= 19;
                 }
 				daY += (Note.swagWidth* 0.5) - (60.5 * (songSpeed - 1));
