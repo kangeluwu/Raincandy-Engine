@@ -45,4 +45,17 @@ class DynamicAtlasFrames {
 		}
         return FlxAtlasFrames.fromSpriteSheetPacker(png,txt);
     }
+
+    public static function fromTexturePackerJson(png:FlxGraphicAsset, json:String) {
+		if (FNFAssets.exists(json))
+		{
+			json = FNFAssets.getText(json);
+		}
+		if ((png is String))
+		{
+			// show time again
+			png = FNFAssets.getBitmapData(png);
+		}
+        return FlxAtlasFrames.fromTexturePackerJson(png,json);
+    }
 }

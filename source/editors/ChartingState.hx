@@ -2598,6 +2598,7 @@ case 'Alt Anim Note':
 		if (quant != null) remove(quant);
 		strumLine = new FlxSprite(0, 50).makeGraphic(Std.int(GRID_SIZE * ((curStrums) *4 + 1)), 4);
 		add(strumLine);
+		if (quant != null) remove(quant);
 		quant = new AttachedSprite('chart_quant','chart_quant');
 		quant.animation.addByPrefix('q','chart_quant',0,false);
 		quant.animation.play('q', true, false, 0);

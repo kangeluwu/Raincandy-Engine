@@ -16,7 +16,9 @@ import flixel.tweens.FlxTween;
 import flixel.system.FlxSound;
 using StringTools;
 import flixel.math.FlxRect;
+import flixel.math.FlxPoint;
 import flixel.text.FlxText;
+import math.*;
 typedef EventNote = {
 	strumTime:Float,
 	event:String,
@@ -27,6 +29,24 @@ typedef EventNote = {
 
 class Note extends FlxSprite
 {
+	public var vec3Cache:Vector3 = new Vector3(); // for vector3 operations in modchart code
+	public var defScale:FlxPoint = FlxPoint.get(); // for modcharts to keep the scaling
+
+	override function destroy()
+	{
+		defScale.put();
+		super.destroy();
+	}	
+	public var zIndexFloat:Float = 0;
+	public var desiredZIndex:Float = 0;
+	public var z:Float = 0;
+	public var garbage:Bool = false; // if this is true, the note will be removed in the next update cycle
+	public var alphaMod:Float = 1;
+	public var alphaMod2:Float = 1; // TODO: unhardcode this shit lmao
+
+	public var mAngle:Float = 0;
+	public var bAngle:Float = 0;
+
 	var hscriptStates:Map<String, Interp> = [];
 	var exInterp:InterpEx = new InterpEx();
 	var haxeSprites:Map<String, FlxSprite> = [];
@@ -209,6 +229,8 @@ class Note extends FlxSprite
 
 	}
 	
+	public var typeOffsetX:Float = 0; // used to offset notes, mainly for note types. use in place of offset.x and offset.y when offsetting notetypes
+	public var typeOffsetY:Float = 0;
 	public static var SUSTAIN_SIZE:Int = 44;
 	public var extraData:Map<String,Dynamic> = [];
 	public var oppMode:Bool = false;
@@ -225,8 +247,8 @@ class Note extends FlxSprite
 	public var noteWasHit:Bool = false;
 	public var prevNote:Note;
 	public var nextNote:Note;
-	public var whoShouldSing:Character;
-	public var whoIsOpponent:Character;
+	public var whoShouldSing:String = 'bf';
+	public var whoIsOpponent:String= 'dad';
 	public var spawned:Bool = false;
 
 	public var tail:Array<Note> = []; // for sustains
@@ -321,6 +343,7 @@ class Note extends FlxSprite
 		{
 			scale.y *= ratio;
 			updateHitbox();
+			defScale.copyFrom(scale);
 		}
 	}
 
@@ -529,6 +552,7 @@ else{
 					prevNote.scale.y *= (6 / height); //Auto adjust note size
 				}
 				prevNote.updateHitbox();
+				prevNote.defScale.copyFrom(prevNote.scale);
 				// prevNote.setGraphicSize();
 			}
 
@@ -539,6 +563,7 @@ else{
 		} else if(!isSustainNote) {
 			earlyHitMult = 1;
 		}
+		defScale.copyFrom(scale);
 		x += offsetX;
 		
 		callAllHScript('onCreate', [strumTime, noteData, prevNote, sustainNote, inEditor,this]);
@@ -607,6 +632,7 @@ else{
 		if(isSustainNote) {
 			scale.y = lastScaleY;
 		}
+		defScale.copyFrom(scale);
 		updateHitbox();
 
 		if(animName != null)
@@ -666,6 +692,20 @@ else{
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		if (isSustainNote)
+			{
+				if (prevNote != null && prevNote.isSustainNote)
+					zIndex = Math.floor(z + prevNote.zIndex);
+				else if (prevNote != null && !prevNote.isSustainNote)
+					zIndex = Math.floor(z + prevNote.zIndex - 1);
+			}
+			else
+				zIndex = Math.floor(z);
+	
+			zIndex += Math.floor(desiredZIndex);
+			zIndex -= currentStrum;
+	
+			colorSwap.daAlpha = alphaMod * alphaMod2;
 		callAllHScript('update', [elapsed,this]);
 		if ((mustPress && !oppMode) || (oppMode && !mustPress))
 		{

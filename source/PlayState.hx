@@ -124,6 +124,8 @@ import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
 import android.FlxVirtualPad;
 #end
+import modchart.*;
+
 enum abstract DisplayLayer(Int) from Int to Int {
 	var BEHIND_GF = 1;
 	var BEHIND_BF = 1 << 1;
@@ -132,6 +134,7 @@ enum abstract DisplayLayer(Int) from Int to Int {
 }
 class PlayState extends MusicBeatState
 {
+	public var modManager:ModManager;
 
 	public static var STRUM_X = 42;
 	public static var STRUM_X_MIDDLESCROLL = -278;
@@ -213,6 +216,7 @@ class PlayState extends MusicBeatState
 
 	public var notes:FlxTypedGroup<Note>;
 	public var unspawnNotes:Array<Note> = [];
+	public var notesToSpawn:Array<Array<Note>> = []; // too lazy to redo all unspawnNotes code so this'll handle the spawning and thats it lol
 	public var eventNotes:Array<EventNote> = [];
 
 	private var strumLine:FlxSprite;
@@ -406,6 +410,7 @@ class PlayState extends MusicBeatState
 
 	var precacheList:Map<String, String> = new Map<String, String>();
     //Hscript shits
+	public var modchartMode:Bool = false;
 	var isHscript:Bool = false;
 	public var hscriptgfhide:Bool = false;
 	var disibleIconMoving:Bool = false;
@@ -1892,7 +1897,7 @@ if (OpenFlAssets.exists(file)) {
 		
 		
 		generateSong(SONG.song);
-
+		modManager = new ModManager(this);
 		
 		var eventhaxefilesPushed:Array<String> = [];
 		var eventhaxefoldersToCheck:Array<String> = [SUtil.getPath() + Paths.getPreloadPath('custom_events/')];
@@ -3388,7 +3393,17 @@ if (!dadChar.beingControlled)
 				setOnLuas('defaultOpponentStrumY' + i, opponentStrums.members[i].y);
 				//if(ClientPrefs.middleScroll) opponentStrums.members[i].visible = false;
 			}
+			var recotors = [];
+            for (strum in currentStrums){
+				recotors.push(strum.members);
+			}
+			modManager.receptors = recotors;
 		}
+
+	
+			callOnLuas('preModifierRegister', []);
+			modManager.registerDefaultModifiers();
+			callOnLuas('postModifierRegister', []);
 			startedCountdown = true;
 			Conductor.songPosition = 0;
 			Conductor.songPosition -= Conductor.crochet * 5;
@@ -3762,6 +3777,7 @@ var data:Map<String,Dynamic> = new Map<String,Dynamic>();
 var difficulty:String = CoolUtil.getDifficultyFilePath(storyDifficulty);
 var preEvents = [];
 var precacheNotes = [];
+var preNotesToSpawn:Array<Array<Note>> = [];
 			var songData = Song.loadFromJson(dataPath.toLowerCase() + difficulty, dataPath.toLowerCase());
            data.set("song",songData);
 		   var preVocal = new FlxSound();
@@ -3847,7 +3863,8 @@ var precacheNotes = [];
 					}
 				}
 			}
-			
+			for(i in 0...4)
+				preNotesToSpawn[i] = [];
 			for (sec in noteData)
 			{
 				for (preSongNotes in sec.sectionNotes)
@@ -3941,14 +3958,14 @@ var precacheNotes = [];
 					swagNote.mustPress = if (daNoteStrum == currentPlayerStrum) true else false;
 	                switch (swagNote.currentStrum){
 						case 0:
-							swagNote.whoShouldSing = boyfriend;
-							swagNote.whoIsOpponent = dad;
+							swagNote.whoShouldSing = 'boyfriend';
+							swagNote.whoIsOpponent = 'dad';
 							case 1:
-								swagNote.whoShouldSing = dad;
-								swagNote.whoIsOpponent = boyfriend;
+								swagNote.whoShouldSing = 'dad';
+								swagNote.whoIsOpponent = 'boyfriend';
 							default:
-								swagNote.whoShouldSing = boyfriend;
-								swagNote.whoIsOpponent = dad;
+								swagNote.whoShouldSing = 'boyfriend';
+								swagNote.whoIsOpponent = 'dad';
 					}
 					swagNote.altNote = altNote;
 	
@@ -3967,7 +3984,10 @@ var precacheNotes = [];
 	
 					susLength = susLength / Conductor.stepCrochet;
 					precacheNotes.push(swagNote);
+					if(preNotesToSpawn[swagNote.noteData]==null)
+						preNotesToSpawn[swagNote.noteData] = [];
 	
+					preNotesToSpawn[swagNote.noteData].push(swagNote);
 					var floorSus:Int = Math.floor(susLength);
 					if(floorSus > 0) {
 						for (susNote in 0...floorSus+1)
@@ -3979,14 +3999,14 @@ var precacheNotes = [];
 					        sustainNote.mustPress =  if (daNoteStrum == 1) true else false;
 							switch (sustainNote.currentStrum){
 								case 0:
-									sustainNote.whoShouldSing = boyfriend;
-									sustainNote.whoIsOpponent = dad;
+									sustainNote.whoShouldSing = 'boyfriend';
+									sustainNote.whoIsOpponent = 'dad';
 							case 1:
-								sustainNote.whoShouldSing = dad;
-								sustainNote.whoIsOpponent = boyfriend;
+								sustainNote.whoShouldSing = 'dad';
+								sustainNote.whoIsOpponent = 'boyfriend';
 							default:
-								sustainNote.whoShouldSing = boyfriend;
-								sustainNote.whoIsOpponent = dad;
+								sustainNote.whoShouldSing = 'boyfriend';
+								sustainNote.whoIsOpponent = 'dad';
 							}
 							sustainNote.altNote = swagNote.altNote;
 							sustainNote.crossFade = swagNote.crossFade;
@@ -3998,15 +4018,7 @@ var precacheNotes = [];
 							swagNote.tail.push(sustainNote);
 							sustainNote.parent = swagNote;
 							precacheNotes.push(sustainNote);
-							//sustainNote.correctionOffset = swagNote.height / 2;
-							if(!PlayState.isPixelStage)
-								{
-	
-									//if(ClientPrefs.downScroll)
-									//	sustainNote.correctionOffset = 0;
-								}
-								
-					
+							preNotesToSpawn[swagNote.noteData].push(sustainNote);
 							if (sustainNote.currentStrum == currentPlayerStrum)
 							{
 								sustainNote.x += FlxG.width / 2; // general offset
@@ -4104,6 +4116,7 @@ var precacheNotes = [];
 			}
 
 			data.set('eventNotes',preEvents);
+			data.set('preCommons',preNotesToSpawn);
 			data.set('notes',precacheNotes);
 			data.set('voices',preVocal);
 			data.set('inst',preInst);
@@ -4170,6 +4183,7 @@ var precacheNotes = [];
 	}
 
 	vocals = preSongData.get('voices');
+	notesToSpawn = preSongData.get('preCommons');
 	unspawnNotes = preSongData.get('notes');
 	eventNotes = preSongData.get('eventNotes');
 	startedCountdown = false;
@@ -4271,7 +4285,8 @@ var precacheNotes = [];
 				}
 			}
 		}
-
+		for(i in 0...4)
+			notesToSpawn[i] = [];
 		for (section in noteData)
 		{
 			for (songNotes in section.sectionNotes)
@@ -4368,14 +4383,14 @@ var precacheNotes = [];
 				swagNote.mustPress = if (daNoteStrum == currentPlayerStrum) true else false;
 				switch (swagNote.currentStrum){
 					case 0:
-						swagNote.whoShouldSing = boyfriend;
-								swagNote.whoIsOpponent = dad;
+						swagNote.whoShouldSing = 'boyfriend';
+								swagNote.whoIsOpponent = 'dad';
 							case 1:
-								swagNote.whoShouldSing = dad;
-								swagNote.whoIsOpponent = boyfriend;
+								swagNote.whoShouldSing = 'dad';
+								swagNote.whoIsOpponent = 'boyfriend';
 							default:
-								swagNote.whoShouldSing = boyfriend;
-								swagNote.whoIsOpponent = dad;
+								swagNote.whoShouldSing = 'boyfriend';
+								swagNote.whoIsOpponent = 'dad';
 				}
 				swagNote.altNote = altNote;
 
@@ -4394,7 +4409,10 @@ var precacheNotes = [];
 
 				susLength = susLength / Conductor.stepCrochet;
 				unspawnNotes.push(swagNote);
+				if(notesToSpawn[swagNote.noteData]==null)
+					notesToSpawn[swagNote.noteData] = [];
 
+				notesToSpawn[swagNote.noteData].push(swagNote);
 				var floorSus:Int = Math.floor(susLength);
 				if(floorSus > 0) {
 					for (susNote in 0...floorSus+1)
@@ -4406,14 +4424,14 @@ var precacheNotes = [];
 					    sustainNote.mustPress = if (daNoteStrum == currentPlayerStrum) true else false;
 						switch (sustainNote.currentStrum){
 							case 0:
-								sustainNote.whoShouldSing = boyfriend;
-								sustainNote.whoIsOpponent = dad;
+								sustainNote.whoShouldSing = 'boyfriend';
+								sustainNote.whoIsOpponent = 'dad';
 							case 1:
-								sustainNote.whoShouldSing = dad;
-								sustainNote.whoIsOpponent = boyfriend;
+								sustainNote.whoShouldSing = 'dad';
+								sustainNote.whoIsOpponent = 'boyfriend';
 							default:
-								sustainNote.whoShouldSing = boyfriend;
-								sustainNote.whoIsOpponent = dad;
+								sustainNote.whoShouldSing = 'boyfriend';
+								sustainNote.whoIsOpponent = 'dad';
 						}
 						sustainNote.altNote = swagNote.altNote;
 						sustainNote.crossFade = swagNote.crossFade;
@@ -4433,6 +4451,8 @@ var precacheNotes = [];
 									//	sustainNote.correctionOffset = 0;
 								}
 								
+						notesToSpawn[swagNote.noteData].push(sustainNote);
+					
 								if (sustainNote.currentStrum == currentPlayerStrum)
 									{
 										sustainNote.x += FlxG.width / 2; // general offset
@@ -5269,8 +5289,11 @@ if (opponentPlayer){
 			trace("RESET = True");
 		}
 		doDeathCheck();
+		modManager.updateTimeline(curDecStep);
+		modManager.update(elapsed);
 
-		if (unspawnNotes[0] != null)
+		// TODO: re-do unspawnNotes to be per-column so you can have them spawn at different timings n all that shit w/ modifiers
+		/*if (unspawnNotes[0] != null)
 		{
 			var time:Float = spawnTime;
 			if(songSpeed < 1) time /= songSpeed;
@@ -5286,7 +5309,74 @@ if (opponentPlayer){
 				var index:Int = unspawnNotes.indexOf(dunceNote);
 				unspawnNotes.splice(index, 1);
 			}
+		}*/
+		for(column in notesToSpawn){
+			if(column[0]!=null){
+				var time:Float = (modManager.getValue("noteSpawnTime", 0) + modManager.getValue("noteSpawnTime", 1)) / 2;
+				if (!modchartMode)time = spawnTime;
+				if (songSpeed < 1)
+					time /= songSpeed;
+				while (column.length > 0 && column[0].strumTime - Conductor.songPosition < time / ((column[0].multSpeed<1) ? column[0].multSpeed : 1))
+				{
+					var dunceNote:Note = column[0];
+					notes.insert(0, dunceNote);
+					dunceNote.spawned = true;
+					callOnLuas('onSpawnNote', [
+						notes.members.indexOf(dunceNote),
+						dunceNote.noteData,
+						dunceNote.noteType,
+						dunceNote.isSustainNote
+					]);
+					callAllHScript('onSpawnNote', [
+						notes.members.indexOf(dunceNote),
+						dunceNote.noteData,
+						dunceNote.noteType,
+						dunceNote.isSustainNote,
+						dunceNote
+					]);
+					var index:Int = unspawnNotes.indexOf(dunceNote);
+					unspawnNotes.splice(index, 1);
+					column.splice(column.indexOf(dunceNote), 1);
+				}
+			}
 		}
+		if (modchartMode){
+        for (curStrums in 0...currentStrums.length){
+			var strumTADA = currentStrums[curStrums];
+	switch (curStrums){
+	case 0:
+		strumTADA.forEachAlive(function(strum:StrumNote)
+			{
+				var pos = modManager.getPos(0, 0, 0, curDecBeat, strum.noteData, 0, strum, [], strum.vec3Cache);
+				modManager.updateObject(curDecBeat, strum, pos, 0);
+				strum.x = pos.x;
+				strum.y = pos.y;
+				strum.z = pos.z;
+			});
+			case 1:
+		strumTADA.forEachAlive(function(strum:StrumNote)
+			{
+				var pos = modManager.getPos(0, 0, 0, curDecBeat, strum.noteData, 1, strum, [], strum.vec3Cache);
+				modManager.updateObject(curDecBeat, strum, pos, 0);
+				strum.x = pos.x;
+				strum.y = pos.y;
+				strum.z = pos.z;
+			});
+	    default:
+			strumTADA.forEachAlive(function(strum:StrumNote)
+			{
+				var pos = modManager.getPos(0, 0, 0, curDecBeat, strum.noteData, strum.player, strum, [], strum.vec3Cache);
+				modManager.updateObject(curDecBeat, strum, pos, 0);
+				strum.x = pos.x;
+				strum.y = pos.y;
+				strum.z = pos.z;
+			});
+
+	}
+	}
+}
+	strumLineNotes.sort(CoolUtil.byZIndex, FlxSort.DESCENDING);
+
 		if (SONG.notes[curSection] != null)
 			{
 		if (!stopAutoMoving &&!inCutscene && generatedMusic && !endingSong && !isCameraOnForcedPos)
@@ -5321,6 +5411,7 @@ if (opponentPlayer){
 			}
 
 			var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
+			notes.sort(CoolUtil.byZIndex, FlxSort.ASCENDING);
 			notes.forEachAlive(function(daNote:Note)
 			{
 				var strumGroup:FlxTypedGroup<StrumNote> = currentStrums[daNote.currentStrum];
@@ -5333,8 +5424,38 @@ if (opponentPlayer){
 				}
 
 				var strum:StrumNote = strumGroup.members[daNote.noteData];
+                if (modchartMode){
+				var pN:Int = daNote.currentStrum;
+				var pos = modManager.getPos(daNote.strumTime, modManager.getVisPos(Conductor.songPosition, daNote.strumTime, songSpeed),
+					daNote.strumTime - Conductor.songPosition, curDecBeat, daNote.noteData, pN, daNote, [], daNote.vec3Cache);
+				modManager.updateObject(curDecBeat, daNote, pos, pN);
+				pos.x += daNote.offsetX;
+				pos.y += daNote.offsetY;
+				daNote.x = pos.x;
+				daNote.y = pos.y;
+				daNote.z = pos.z;
 
-				daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate,SONG.bpm);
+				if (daNote.isSustainNote)
+				{
+					var futureSongPos = Conductor.songPosition + 75;
+					var diff = daNote.strumTime - futureSongPos;
+					var vDiff = modManager.getVisPos(futureSongPos, daNote.strumTime, songSpeed);
+
+					var nextPos = modManager.getPos(daNote.strumTime, vDiff, diff, Conductor.getStep(futureSongPos) / 4, daNote.noteData, pN, daNote, [],
+						daNote.vec3Cache);
+					nextPos.x += daNote.offsetX;
+					nextPos.y += daNote.offsetY;
+					var diffX = (nextPos.x - pos.x);
+					var diffY = (nextPos.y - pos.y);
+					var rad = Math.atan2(diffY, diffX);
+					var deg = rad * (180 / Math.PI);
+					if (deg != 0)
+						daNote.mAngle = (deg + 90);
+					else
+						daNote.mAngle = 0;
+				}
+			}else
+				daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate);
 
 				var coolMustPress = daNote.mustPress;
 				//if (opponentPlayer)
@@ -5368,11 +5489,20 @@ if (opponentPlayer){
 				if (!checkIsPlayerOrOpponentStrum && daNote.wasGoodHit && !daNote.ignoreNote){
 					defaultNoteHit(daNote,daNote.currentStrum);
 					}
+					if (!modchartMode)
 				if(daNote.isSustainNote && strum.sustainReduce) daNote.clipToStrumNote(strum);
 
 			
 
 				// Kill extremely late notes and cause misses
+				if(daNote.garbage){
+					daNote.active = false;
+					daNote.visible = false;
+
+					daNote.kill();
+					notes.remove(daNote, true);
+					daNote.destroy();
+				}else{
 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
 				{
 					if (coolMustPress && !botplay &&!daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit)) {
@@ -5387,6 +5517,7 @@ if (opponentPlayer){
 					notes.remove(daNote, true);
 					daNote.destroy();
 				}
+			}
 			});
 		}
 		checkEventNote();
@@ -5869,6 +6000,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 			case 'Change Character':
 				var oldChar:Character;
 				var charType:Int = 0;
+				var char:Character = null;
 				switch(value1) {
 					case 'gf' | 'girlfriend':
 						charType = 2;
@@ -5892,7 +6024,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 							var lastAlpha:Float = boyfriend.alpha;
 							boyfriend.alpha = 0.00001;
 							boyfriend = boyfriendMap.get(value2);
-
+							char = boyfriend;
 							if(!boyfriend.likeGf) {
 								if(wasGf && gf != null) {
 									gf.visible = true;
@@ -5900,6 +6032,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 							} else if(gf != null) {
 								gf.visible = false;
 							}
+
 							boyfriend.alpha = lastAlpha;
 							iconP1.changeIcon(boyfriend.healthIcon);
 
@@ -5960,7 +6093,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 								gf = gfMap.get(value2);
 								gf.alpha = lastAlpha;
 							}
-
+							char = gf;
 							if ((value3 == 'true' || value3 == '1') && oldChar != gf)
 								{
 									if (gfMap.exists(oldChar.curCharacter))
@@ -5972,6 +6105,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {ease: FlxEase.cubeInOut, onCom
 							setAllHaxeVar('gfName', gf.curCharacter);
 						}
 				}
+				
 				if (!ClientPrefs.classicStyle)
 				reloadHealthBarColors();
 
@@ -6930,9 +7064,30 @@ currentTimingShown.cameras = [camHUD];
 	function noteMiss(daNote:Note,playerOne:Bool):Void { //You didn't hit the key and let it go offscreen, also used by Hurt Notes
 		//Dupe note remove
 
-		var actingOn =  daNote.whoShouldSing;
-			var onActing =  daNote.whoIsOpponent;
-			
+		var actingOn =  boyfriend;
+			var onActing =  dad;
+			switch (daNote.whoShouldSing){
+				case 'boyfriend' | 'bf':
+					actingOn = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+						actingOn = gf;
+						case 'dad'|'dearest':
+								actingOn = dad;
+				default:
+					actingOn = boyfriend;
+			}
+			switch (daNote.whoIsOpponent){
+				case 'boyfriend' | 'bf':
+					onActing = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+							onActing = gf;
+						case 'dad'|'dearest':
+							onActing = dad;
+				default:
+					onActing = dad;
+			}
 		//var coolMustPress = playerOne ? daNote.mustPress : !daNote.mustPress;
 		var coolMustPress = daNote.mustPress;
 		notes.forEachAlive(function(note:Note) {
@@ -7061,8 +7216,30 @@ currentTimingShown.cameras = [camHUD];
 	var altNum:Int = 0;
 	function opponentNoteHit(note:Note,playerTwo:Bool):Void
 	{
-		var actingOn = note.whoShouldSing;
-		var onActing = note.whoIsOpponent;
+		var actingOn =  dad;
+		var onActing =  boyfriend;
+			switch (note.whoShouldSing){
+				case 'boyfriend' | 'bf':
+					actingOn = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+						actingOn = gf;
+						case 'dad'|'dearest':
+								actingOn = dad;
+				default:
+					actingOn = dad;
+			}
+			switch (note.whoIsOpponent){
+				case 'boyfriend' | 'bf':
+					onActing = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+							onActing = gf;
+						case 'dad'|'dearest':
+							onActing = dad;
+				default:
+					onActing = boyfriend;
+			}
 		
 		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
 			camZooming = true;
@@ -7177,9 +7354,31 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 	}
 	function goodNoteHit(note:Note, playerOne:Bool):Void
 		{
-			var actingOn =  note.whoShouldSing;
-			var onActing =  note.whoIsOpponent;
-		
+			var actingOn =  boyfriend;
+			var onActing =  dad;
+			switch (note.whoShouldSing){
+				case 'boyfriend' | 'bf':
+					actingOn = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+						actingOn = gf;
+						case 'dad'|'dearest':
+								actingOn = dad;
+				default:
+					actingOn = boyfriend;
+			}
+			switch (note.whoIsOpponent){
+				case 'boyfriend' | 'bf':
+					onActing = boyfriend;
+					case 'girlfriend' | 'gf':
+						if (gf!=null)
+							onActing = gf;
+						case 'dad'|'dearest':
+							onActing = dad;
+				default:
+					onActing = dad;
+			}
+
 			var altAnim:String = note.animSuffix;
 			altNum = note.altNum;
 			if (altNum == 1) {
