@@ -261,6 +261,28 @@ class Paths
 			var voices = returnSound('songs', songKey);
 			return voices;
 		}
+		inline static public function songStufferPath(song:String,fileName:String = 'Inst'):String
+			{
+				var songKey:String = '${formatToSongPath(song)}/$fileName';
+				var path:String ='songs';
+				#if MODS_ALLOWED
+				var file:String = modsSounds(path, songKey);
+				if(FileSystem.exists(file)) {
+					return file;
+				}
+				#end
+		
+				var gottenPath:String =  SUtil.getPath() + getPath('$path/$songKey.$SOUND_EXT', SOUND, 'songs');
+				gottenPath = gottenPath.substring(gottenPath.indexOf(':') + 1, gottenPath.length);
+		
+					#if !mobile
+					var folder:String = '';
+					if(path == 'songs') folder = 'songs:';
+					#end
+					gottenPath = #if !mobile folder + #end getPath('$path/$songKey.$SOUND_EXT', SOUND, 'songs');
+			
+				return gottenPath;
+			}
 	inline static public function inst(song:String):Any
 	{
 		var songKey:String = '${formatToSongPath(song)}/Inst';

@@ -361,6 +361,7 @@ class PlayState extends MusicBeatState
 	private var singAnimations:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 
 	public var inCutscene:Bool = false;
+	public var stopAutoMoving:Bool = false;
 	public var skipCountdown:Bool = false;
 	var songLength:Float = 0;
 
@@ -3027,7 +3028,7 @@ if (!dadChar.beingControlled)
 		dadGroup.alpha = 0.00001;
 		camHUD.visible = false;
 		//inCutscene = true; //this would stop the camera movement, oops
-
+		stopAutoMoving = true;
 		var tankman:FlxSprite = new FlxSprite(-20, 320);
 		tankman.frames = Paths.getSparrowAtlas('cutscenes/' + songName);
 		tankman.antialiasing = ClientPrefs.globalAntialiasing;
@@ -3064,6 +3065,7 @@ if (!dadChar.beingControlled)
 			boyfriend.animation.finishCallback = null;
 			gf.animation.finishCallback = null;
 			gf.dance();
+			stopAutoMoving = false;
 		};
 
 		camFollow.set(dad.x + 280, dad.y + 170);
@@ -3851,21 +3853,24 @@ var precacheNotes = [];
 				for (preSongNotes in sec.sectionNotes)
 				{
 					var daStrumTime:Float = preSongNotes[0];
+					var fuckYOU = preSongNotes[1];
+					if (!songData.igorAutoFix){
 					if (!sec.mustHitSection){
-						if (preSongNotes[1] < Note.NOTE_AMOUNT*2){
-						if (preSongNotes[1] >= Note.NOTE_AMOUNT)
+						if (fuckYOU < Note.NOTE_AMOUNT*2){
+						if (fuckYOU >= Note.NOTE_AMOUNT)
 							{
-								preSongNotes[1] -= Note.NOTE_AMOUNT;
+								fuckYOU -= Note.NOTE_AMOUNT;
 							}
 							else
 							{
-								preSongNotes[1] += Note.NOTE_AMOUNT;
+								fuckYOU += Note.NOTE_AMOUNT;
 							}
 						}
 					}
-					var daNoteData:Int = Std.int(preSongNotes[1] % Note.NOTE_AMOUNT);
+					}
+					var daNoteData:Int = Std.int(fuckYOU % Note.NOTE_AMOUNT);
 				
-					var daNoteStrum:Int = Math.floor(preSongNotes[1] / Note.NOTE_AMOUNT);
+					var daNoteStrum:Int = Math.floor(fuckYOU / Note.NOTE_AMOUNT);
 					
 					var altNote:Bool = false;
 					var crossFade:Bool = false;
@@ -3993,24 +3998,14 @@ var precacheNotes = [];
 							swagNote.tail.push(sustainNote);
 							sustainNote.parent = swagNote;
 							precacheNotes.push(sustainNote);
-							sustainNote.correctionOffset = swagNote.height / 2;
+							//sustainNote.correctionOffset = swagNote.height / 2;
 							if(!PlayState.isPixelStage)
 								{
-									if(oldNote.isSustainNote)
-									{
-										oldNote.scale.y *= Note.SUSTAIN_SIZE / oldNote.frameHeight;
-										oldNote.scale.y /= playbackRate;
-										oldNote.updateHitbox();
-									}
-		
-									if(ClientPrefs.downScroll)
-										sustainNote.correctionOffset = 0;
+	
+									//if(ClientPrefs.downScroll)
+									//	sustainNote.correctionOffset = 0;
 								}
-								else if(oldNote.isSustainNote)
-								{
-									oldNote.scale.y /= playbackRate;
-									oldNote.updateHitbox();
-								}
+								
 					
 							if (sustainNote.currentStrum == currentPlayerStrum)
 							{
@@ -4282,21 +4277,25 @@ var precacheNotes = [];
 			for (songNotes in section.sectionNotes)
 			{
 				var daStrumTime:Float = songNotes[0];
-				if (!section.mustHitSection){
-					if (songNotes[1] < Note.NOTE_AMOUNT*2){
-					if (songNotes[1] >= Note.NOTE_AMOUNT)
-						{
-							songNotes[1] -= Note.NOTE_AMOUNT;
-						}
-						else
-						{
-							songNotes[1] += Note.NOTE_AMOUNT;
+				var fuckYOU = songNotes[1];
+					if (!songData.igorAutoFix){
+					if (!section.mustHitSection){
+						if (fuckYOU < Note.NOTE_AMOUNT*2){
+						if (fuckYOU >= Note.NOTE_AMOUNT)
+							{
+								fuckYOU -= Note.NOTE_AMOUNT;
+							}
+							else
+							{
+								fuckYOU += Note.NOTE_AMOUNT;
+							}
 						}
 					}
-				}
-				var daNoteData:Int = Std.int(songNotes[1] % Note.NOTE_AMOUNT);
+					}
+					var daNoteData:Int = Std.int(fuckYOU % Note.NOTE_AMOUNT);
+				
+					var daNoteStrum:Int = Math.floor(fuckYOU / Note.NOTE_AMOUNT);
 
-				var daNoteStrum:Int = Math.floor(songNotes[1] / Note.NOTE_AMOUNT);
 
 				var altNote:Bool = false;
 				var crossFade:Bool = false;
@@ -4426,24 +4425,14 @@ var precacheNotes = [];
 						swagNote.tail.push(sustainNote);
 						sustainNote.parent = swagNote;
 						unspawnNotes.push(sustainNote);
-						sustainNote.correctionOffset = swagNote.height / 2;
+						//sustainNote.correctionOffset = swagNote.height / 2;
 							if(!PlayState.isPixelStage)
 								{
-									if(oldNote.isSustainNote)
-									{
-										oldNote.scale.y *= Note.SUSTAIN_SIZE / oldNote.frameHeight;
-										oldNote.scale.y /= playbackRate;
-										oldNote.updateHitbox();
-									}
-		
-									if(ClientPrefs.downScroll)
-										sustainNote.correctionOffset = 0;
+								
+								//	if(ClientPrefs.downScroll)
+									//	sustainNote.correctionOffset = 0;
 								}
-								else if(oldNote.isSustainNote)
-								{
-									oldNote.scale.y /= playbackRate;
-									oldNote.updateHitbox();
-								}
+								
 								if (sustainNote.currentStrum == currentPlayerStrum)
 									{
 										sustainNote.x += FlxG.width / 2; // general offset
@@ -5300,7 +5289,7 @@ if (opponentPlayer){
 		}
 		if (SONG.notes[curSection] != null)
 			{
-		if (!inCutscene && generatedMusic && !endingSong && !isCameraOnForcedPos)
+		if (!stopAutoMoving &&!inCutscene && generatedMusic && !endingSong && !isCameraOnForcedPos)
 			{
 				movingCameraSection();
 			}
@@ -5345,7 +5334,7 @@ if (opponentPlayer){
 
 				var strum:StrumNote = strumGroup.members[daNote.noteData];
 
-				daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate);
+				daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate,SONG.bpm);
 
 				var coolMustPress = daNote.mustPress;
 				//if (opponentPlayer)
@@ -7840,6 +7829,7 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 
 	public var ratingName:String = '?';
 	public var ratingPercent:Float;
+	public var accuracy:Float = 0.0;
 	public var ratingFC:String;
 	public function RecalculateRating(badHit:Bool = false) {
 
@@ -7890,6 +7880,7 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 						}
 					}
 				}
+				accuracy = Highscore.floorDecimal(ratingPercent * 100, 2);
 			}
 
 			// Rating FC

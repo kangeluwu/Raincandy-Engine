@@ -156,13 +156,19 @@ class PluginManager {
         interp.variables.set("FlxWaveDirection", FlxWaveDirection);
         interp.variables.set("FlxGlitchEffect", FlxGlitchEffect);
         interp.variables.set("StickerSubState", StickerSubState);
+        interp.variables.set("ColorSwap", ColorSwap);
         #if flxanimate
         interp.variables.set("FlxAnimate", flxanimate.FlxAnimate);
+        interp.variables.set("FlxAnim", flxanimate.animate.FlxAnim);
+        interp.variables.set("FlxAtlasSprite", flxanimate.FlxAtlasSprite);
+        interp.variables.set("CustomAtlasSprite", customlize.CustomAtlasSprite);
         #end
         interp.variables.set("MathUtil", MathUtil);
         interp.variables.set("RuntimePostEffectShader", RuntimePostEffectShader);
         interp.variables.set("RuntimeRainShader", RuntimeRainShader);
         interp.variables.set("CustomSprite", customlize.CustomSprite);
+        interp.variables.set("FlxStarField3D", flixel.addons.display.FlxStarField.FlxStarField3D);
+        interp.variables.set("FlxStarField2D", flixel.addons.display.FlxStarField.FlxStarField2D);
         interp.variables.set("Map", haxe.ds.StringMap);
         return interp;
         

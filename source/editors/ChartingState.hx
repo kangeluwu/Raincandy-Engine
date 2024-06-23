@@ -136,7 +136,7 @@ class ChartingState extends MusicBeatState
 
 	var camPos:FlxObject;
 	var strumLine:FlxSprite = null;
-	var quant:AttachedSprite;
+	var quant:AttachedSprite = null;
 	var strumLineNotes:FlxTypedGroup<StrumNote> = null;
 	var curSong:String = 'Test';
 	var amountSteps:Int = 0;
@@ -292,6 +292,7 @@ var voicesStuff:String = '';
 				songFileNames: ['Inst','Voices'],
 				bpm: 150.0,
 				needsVoices: true,
+				igorAutoFix: true,
 				arrowSkin: '',
 				splashSkin: 'noteSplashes',//idk it would crash if i didn't
 				player1: 'bf',
@@ -409,13 +410,7 @@ var voicesStuff:String = '';
 		add(bpmTxt);
 
 	
-		quant = new AttachedSprite('chart_quant','chart_quant');
-		quant.animation.addByPrefix('q','chart_quant',0,false);
-		quant.animation.play('q', true, false, 0);
-
-		quant.xAdd = -32;
-		quant.yAdd = 8;
-		add(quant);
+	
 
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		for (i in 0...curStrums){
@@ -613,6 +608,14 @@ Left/Right - Go to the previous/next section
 		{
 			saveEvents();
 		});
+		var check_autoFix = new FlxUICheckBox(110, saveEvents.y + 30, null, null, "Ignore Autofix Charting(DO NOT PRESS THIS IF YOU DON'T WHAT IT IS)", 80);
+		check_autoFix.checked = _song.igorAutoFix;
+		// _song.needsVoices = check_voices.checked;
+		check_autoFix.callback = function()
+		{
+			_song.igorAutoFix = check_autoFix.checked;
+			//trace('CHECKED!');
+		};
 
 		var clear_events:FlxButton = new FlxButton(320, 310, 'Clear events', function()
 			{
@@ -733,7 +736,8 @@ Left/Right - Go to the previous/next section
 			}, null,ignoreWarnings));
 
 			});
-
+			changeNoteTypeButton.setGraphicSize(80, 30);
+			changeNoteTypeButton.updateHitbox();
 
 		var skin = PlayState.SONG.arrowSkin;
 		if(skin == null) skin = '';
@@ -768,6 +772,7 @@ Left/Right - Go to the previous/next section
 		tab_group_song.add(noteSplashesInputText);
 		tab_group_song.add(changeNoteTypeButton);
 		tab_group_song.add(noteTypeInput);
+		tab_group_song.add(check_autoFix);
 		tab_group_song.add(noteTypeChangeput);
 		tab_group_song.add(new FlxText(stepperBPM.x, stepperBPM.y - 15, 0, 'Song BPM:'));
 		tab_group_song.add(new FlxText(stepperSpeed.x, stepperSpeed.y - 15, 0, 'Song Speed:'));
@@ -1093,13 +1098,15 @@ Left/Right - Go to the previous/next section
 			var duetNotes:Array<Array<Dynamic>> = [];
 			for (note in _song.notes[curSec].sectionNotes)
 			{
+				
 				var boob = note[1];
+				if (Math.floor(note[1] / 4) < 2){
 				if (boob>3){
 					boob -= 4;
 				}else{
 					boob += 4;
 				}
-
+			}
 				var copiedNote:Array<Dynamic> = [note[0], boob, note[2], note[3]];
 				duetNotes.push(copiedNote);
 			}
@@ -1118,8 +1125,14 @@ Left/Right - Go to the previous/next section
 			{
 				var boob = note[1]%4;
 				boob = 3 - boob;
-				if (note[1] > 3) boob += 4;
-
+				var strum = Math.floor(note[1] / 4);
+				switch (strum){
+					case 0:
+						strum =1;
+						case 1:
+							strum =0;
+				}
+				boob += 4*strum;
 				note[1] = boob;
 				var copiedNote:Array<Dynamic> = [note[0], boob, note[2], note[3]];
 				//duetNotes.push(copiedNote);
@@ -1574,7 +1587,7 @@ Left/Right - Go to the previous/next section
 		if (FlxG.save.data.chart_playSoundDad == null) FlxG.save.data.chart_playSoundDad = false;
 		playSoundDad.checked = FlxG.save.data.chart_playSoundDad;
 
-		playSoundExtra = new FlxUICheckBox(check_mute_inst.x + 120, check_mute_vocals.y - 30, null, null, 'Play Sound (Extra STRUM NOTES)', 100,
+		playSoundExtra = new FlxUICheckBox(check_mute_inst.x + 120, 270 - 30, null, null, 'Play Sound (Extra STRUM NOTES)', 100,
 		function() {
 			FlxG.save.data.chart_playSoundExtra = playSoundExtra.checked;
 		}
@@ -1699,6 +1712,7 @@ Left/Right - Go to the previous/next section
 	var oldstrum = 2;
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)
 	{
+		try{
 		if (id == FlxUICheckBox.CLICK_EVENT)
 		{
 			var check:FlxUICheckBox = cast sender;
@@ -1833,7 +1847,7 @@ case 'Alt Anim Note':
 				}
 			}
 		}
-
+	}
 		// FlxG.log.add(id + " WEED " + sender + " WEED " + data + " WEED " + params);
 	}
 
@@ -2406,7 +2420,12 @@ case 'Alt Anim Note':
 				note.alpha = 0.4;
 				if(note.strumTime > lastConductorPos && FlxG.sound.music.playing && note.noteData > -1) {
 					var data:Int = note.noteData % 4;
-					var noteDataToCheck:Int = note.noteData + (4*note.currentStrum);
+					var what = note.currentStrum;
+					if (note.currentStrum == 1)
+						what = 0;
+					if (note.currentStrum == 0)
+						what = 1;
+					var noteDataToCheck:Int = note.noteData + (4*what);
 						strumLineNotes.members[noteDataToCheck].playAnim('confirm', true);
 						strumLineNotes.members[noteDataToCheck].resetAnim = (note.sustainLength / 1000) + 0.15;
 					if(!playedSound[data]) {
@@ -2443,16 +2462,16 @@ case 'Alt Anim Note':
 
 							sound.play();
 							lilOpp.animation.play("" + (data), true);
-							playedSound[data] = true;
+						//	playedSound[data] = true;
 						   }
 						   if (playSoundBf.checked && note.currentStrum == 0){
 
 							FlxG.sound.play(Paths.sound(soundToPlay)).pan = note.noteData < 4? -0.3 : 0.3; //would be coolio
 							lilBf.animation.play("" + (data), true);
-							playedSound[data] = true;
+						//	playedSound[data] = true;
 						   }
 						 if (playSoundExtra.checked && note.currentStrum>1){
-							switch (note.currentStrum % 1){
+							switch (note.currentStrum % 2){
 								case 0:
 							FlxG.sound.play(Paths.sound('hitNoteOpponent'));
 							case 1:
@@ -2576,8 +2595,16 @@ case 'Alt Anim Note':
 		gridLayer.add(gridBlackLine);
 
 		if (strumLine != null) remove(strumLine);
+		if (quant != null) remove(quant);
 		strumLine = new FlxSprite(0, 50).makeGraphic(Std.int(GRID_SIZE * ((curStrums) *4 + 1)), 4);
 		add(strumLine);
+		quant = new AttachedSprite('chart_quant','chart_quant');
+		quant.animation.addByPrefix('q','chart_quant',0,false);
+		quant.animation.play('q', true, false, 0);
+
+		quant.xAdd = -32;
+		quant.yAdd = 8;
+		add(quant);
 		quant.sprTracker = strumLine;
 		if (strumLineNotes != null)
 			{
@@ -3062,6 +3089,10 @@ case 'Alt Anim Note':
 		}
 
 		// CURRENT SECTION
+		
+		var startThing:Float = sectionStartTime();
+		var endThing:Float = sectionStartTime(1);
+
 		var beats:Float = getSectionBeats();
 		for (i in _song.notes[curSec].sectionNotes)
 		{
@@ -3090,8 +3121,6 @@ case 'Alt Anim Note':
 		}
 
 		// CURRENT EVENTS
-		var startThing:Float = sectionStartTime();
-		var endThing:Float = sectionStartTime(1);
 		for (i in _song.events)
 		{
 			if(endThing > i[0] && i[0] >= startThing)
@@ -3116,6 +3145,9 @@ case 'Alt Anim Note':
 			}
 		}
 
+		var startThing:Float = sectionStartTime(1);
+		var endThing:Float = sectionStartTime(2);
+
 		// NEXT SECTION
 		var beats:Float = getSectionBeats(1);
 		if(curSec < _song.notes.length-1) {
@@ -3132,8 +3164,6 @@ case 'Alt Anim Note':
 		}
 
 		// NEXT EVENTS
-		var startThing:Float = sectionStartTime(1);
-		var endThing:Float = sectionStartTime(2);
 		for (i in _song.events)
 		{
 			if(endThing > i[0] && i[0] >= startThing)

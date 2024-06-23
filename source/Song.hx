@@ -63,6 +63,7 @@ typedef SwagSong =
 	var splashSkin:String;
 	var validScore:Bool;
 	var composer:String;
+	var igorAutoFix:Bool;
 	var strums:Null<Int>;
 	//var mania:Null<Int>;
 }
@@ -88,6 +89,7 @@ class Song
 	 */
 	public var songFileNames:Array<String> = ['Inst','Voices'];
 	public var basedOldMode:Bool = false;
+	public var igorAutoFix:Bool = false;
 	public var songNameChinese:String = '';
 	public var composer:String = null;
 	public var notes:Array<SwagSection>;
@@ -191,7 +193,22 @@ class Song
 		onLoadJson(songJson);
 		if (songJson.song != null){
 			if (songJson.strums == null) songJson.strums = 2;
+			if (songJson.igorAutoFix == null) 
+				switch (songJson.song.toLowerCase()) {
+					case 'monster' | 'winter horrorland' | 'winter-horrorland' | 'Tutorial' | 'bopeebo' | 'fresh' | 'dad battle' | 'dadbattle' | 'dad-battle' |
+					'spookeez' | 'south' | 
+					'philly-nice' | 'philly nice' | 'pico' | 'blammed' |
+					'milf' | 'high' | 'satin panties'| 'satin-panties' |
+					'cocoa' | 'eggnog' |
+					'senpai' | 'roses' | 'thorns' | 
+					'ugh' | 'stress' | 'guns' |
+					'darnell' | 'lit-up' | 'litup' | 'lits up' | 'lit up' | 'lits-up' | '2hot' | 'blazin':
+					songJson.igorAutoFix = false;
+						default:
+							songJson.igorAutoFix = false;
+				}
 
+			
 			if (songJson.songFileNames == null) songJson.songFileNames = ['Inst','Voices'];
 		if (songJson.uiType == null) {
 

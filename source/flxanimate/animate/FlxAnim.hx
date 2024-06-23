@@ -1,6 +1,7 @@
 package flxanimate.animate;
 #if flxanimate
 import flxanimate.geom.FlxMatrix3D;
+import flixel.util.FlxDestroyUtil;
 import flixel.math.FlxMath;
 import haxe.extern.EitherType;
 import flxanimate.animate.SymbolParameters;
@@ -11,7 +12,11 @@ import flixel.FlxG;
 import flixel.math.FlxMatrix;
 import flxanimate.data.AnimationData;
 #if FLX_SOUND_SYSTEM
+#if (flixel >= "5.3.0")
+import flixel.sound.FlxSound;
+#else
 import flixel.system.FlxSound;
+#end
 #end
 
 typedef SymbolStuff = {var instance:FlxElement; var frameRate:Float;};
@@ -76,6 +81,8 @@ class FlxAnim implements IFlxDestroyable
 	 * When ever the animation is playing.
 	 */
 	public var isPlaying(default, null):Bool;
+	public var callback:(name:String, frameNumber:Int) -> Void;
+	
 	/**
 	 * The callback when the animation's over.
 	 */
@@ -251,6 +258,7 @@ class FlxAnim implements IFlxDestroyable
             (reversed) ? curFrame-- : curFrame++;
 			curSymbol.fireCallbacks(curFrame);
             _tick -= frameDelay;
+			fireCallback();
         }
 
 		
@@ -443,7 +451,11 @@ class FlxAnim implements IFlxDestroyable
 	{
 		return curSymbol.getFrameLabels(layer);
 	}
-
+	public function getFrameLabelNames(?layer:EitherType<Int, String>)
+		{
+			return curSymbol.getFrameLabelNames(layer);
+		}
+	
 	function get_loopType()
 	{
 		return curInstance.symbol.loop;
@@ -502,6 +514,15 @@ class FlxAnim implements IFlxDestroyable
 		return symbolDictionary.get(curInstance.symbol.name);
 	}
 
+	inline function fireCallback():Void
+		{
+			if (callback != null)
+			{
+				var name:String = (curSymbol != null) ? curSymbol.name : null;
+				callback(name, curFrame);
+			}
+				
+		}
 	public function destroy()
 	{
 		isPlaying = false;
@@ -510,6 +531,7 @@ class FlxAnim implements IFlxDestroyable
 		_tick = 0;
 		buttonMap = null;
 		animsMap = null;
+		callback = null;
 		curInstance.destroy();
 		curInstance = null;
 		stageInstance.destroy();

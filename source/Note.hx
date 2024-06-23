@@ -254,6 +254,7 @@ class Note extends FlxSprite
 	public var lowPriority:Bool = false;
 
 	public static var swagWidth:Float = 160 * 0.7;
+	public static var swagHeight:Float = 156 * 0.7;
 	public static var PURP_NOTE:Int = 0;
 	public static var GREEN_NOTE:Int = 2;
 	public static var BLUE_NOTE:Int = 1;
@@ -273,6 +274,8 @@ class Note extends FlxSprite
 	public var offsetAngle:Float = 0;
 	public var multScale:Float = 1;
 	public var multAlpha:Float = 1;
+	public var clipX:Int = 0;
+	public var clipY:Int = 0;
 	public var multSpeed(default, set):Float = 1;
 	public var ratingDamageAmount:Null<Float> = null;
 	public var ratingHealAmount:Null<Float> = null;
@@ -695,7 +698,7 @@ else{
 		callAllHScript('updatePost', [elapsed,this]);
 	}
 	public var correctionOffset:Float = 0; //dont mess with this
-	public function followStrumNote(myStrum:StrumNote, fakeCrochet:Float, songSpeed:Float = 1)
+	public function followStrumNote(myStrum:StrumNote, fakeCrochet:Float, songSpeed:Float = 1,bpm:Float)
 		{
 			var strumX:Float = myStrum.x;
 			var strumY:Float = myStrum.y;
@@ -720,37 +723,43 @@ else{
 			{
 				y = strumY + offsetY + correctionOffset + Math.sin(angleDir) * distance;
 				if(myStrum.downScroll && isSustainNote)
-				{
-					if(PlayState.isPixelStage)
 					{
-						y -= PlayState.daPixelZoom * 9.5;
+						if (animation.curAnim.name.endsWith('end')) {
+							y += 10.5 * (fakeCrochet / 400) * 1.5 * songSpeed + (46 * (songSpeed - 1));
+							y -= 46 * (1 - (fakeCrochet / 600)) * songSpeed;
+							if(isPixelNote) {
+								y += 8 + (6 - originalHeightForCalcs) * PlayState.daPixelZoom;
+							} else {
+								y -= 19;
+							}
+						}
+						y += (swagWidth / 2) - (60.5 * (songSpeed - 1));
+						y += 27.5 * ((bpm / 100) - 1) * (songSpeed - 1);
 					}
-					y -= (frameHeight * scale.y) - (Note.swagWidth / 2);
-				}
 			}
 		}
 	
 		public function clipToStrumNote(myStrum:StrumNote)
 		{
-			var center:Float = myStrum.y + offsetY + Note.swagWidth / 2;
+			var centerY:Float = myStrum.y + offsetY + Note.swagWidth / 2;
 			if(isSustainNote && (mustPress || !ignoreNote) &&
 				(!mustPress || (wasGoodHit || (prevNote.wasGoodHit && !canBeHit))))
 			{
 				var swagRect:FlxRect = clipRect;
-				if(swagRect == null) swagRect = new FlxRect(0, 0, frameWidth, frameHeight);
+				if(swagRect == null) swagRect = new FlxRect(clipX, clipY, frameWidth, frameHeight);
 	
 				if (myStrum.downScroll)
 				{
-					if(y - offset.y * scale.y + height >= center)
+					if(y - offset.y * scale.y + height >= centerY)
 					{
 						swagRect.width = frameWidth;
-						swagRect.height = (center - y) / scale.y;
+						swagRect.height = (centerY - y) / scale.y;
 						swagRect.y = frameHeight - swagRect.height;
 					}
 				}
-				else if (y + offset.y * scale.y <= center)
+				else if (y + offset.y * scale.y <= centerY)
 				{
-					swagRect.y = (center - y) / scale.y;
+					swagRect.y = (centerY - y) / scale.y;
 					swagRect.width = width / scale.x;
 					swagRect.height = (height / scale.y) - swagRect.y;
 				}
