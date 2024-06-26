@@ -5312,8 +5312,8 @@ if (opponentPlayer){
 		}*/
 		for(column in notesToSpawn){
 			if(column[0]!=null){
-				var time:Float = (modManager.getValue("noteSpawnTime", 0) + modManager.getValue("noteSpawnTime", 1)) / 2;
-				if (!modchartMode)time = spawnTime;
+				var time:Float =spawnTime;
+				if (modchartMode&&modManager.register != [])time =  (modManager.getValue("noteSpawnTime", 0) + modManager.getValue("noteSpawnTime", 1)) / 2;
 				if (songSpeed < 1)
 					time /= songSpeed;
 				while (column.length > 0 && column[0].strumTime - Conductor.songPosition < time / ((column[0].multSpeed<1) ? column[0].multSpeed : 1))
@@ -5455,7 +5455,7 @@ if (opponentPlayer){
 						daNote.mAngle = 0;
 				}
 			}else
-				daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate);
+				daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate,SONG.bpm);
 
 				var coolMustPress = daNote.mustPress;
 				//if (opponentPlayer)
@@ -7245,9 +7245,11 @@ currentTimingShown.cameras = [camHUD];
 			camZooming = true;
 
 		if(note.noteType == 'Hey!' && actingOn.animOffsets.exists('hey')) {
+			if (actingOn.canSing){
 			actingOn.playAnim('hey', true);
 			actingOn.specialAnim = true;
 			actingOn.heyTimer = 0.6;
+			}
 		} else if(!note.noAnimation) {
 			var altAnim:String = note.animSuffix;
 			altNum = note.altNum;
@@ -7273,32 +7275,44 @@ currentTimingShown.cameras = [camHUD];
 			{
 				if(note.bothNote) {
 				if (gf != null){
+					if (char.canSing){
 				char.playAnim(animToPlay, true);
 				char.holdTimer = 0;
+					}
+				if (gf.canSing){
 				gf.playAnim(animToPlay, true);
 				gf.holdTimer = 0;
 				}
 				}
+				}
 				else 
 						{
+							if (char.canSing){
 							char.playAnim(animToPlay, true);
 							char.holdTimer = 0;
+							}
 						}
 				if(note.noteType == 'Warning Note') {
 					if (!playerTwo)
 					{
+						if (actingOn.canSing){
 						if(actingOn.animOffsets.exists('dodge') && !actingOn.likeGf) {
 							actingOn.playAnim('dodge', true);
 							actingOn.specialAnim = true;
 						}
+					}
+					if (gf.canSing){
 						if(gf.animOffsets.exists('dodge') && actingOn.likeGf) {
 							gf.playAnim('dodge', true);
 							gf.specialAnim = true;
 						}
+					}
+						if (onActing.canSing){
 						if(onActing.animOffsets.exists('shoot')) {
 							onActing.playAnim('shoot', true);
 							onActing.specialAnim = true;
 						}
+					}
 					}
 					FlxG.sound.play(Paths.sound("shoot"));
 				}
@@ -7455,71 +7469,93 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 	
 					if(note.gfNote)
 					{
+						if (gf.canSing){
 						if(gf != null)
 						{
 							gf.playAnim(animToPlay, true);
 							gf.holdTimer = 0;
 						}
 					}
+					}
 					else if (note.bothNote)
 					{
-	
+	                  if (actingOn.canSing){
 						actingOn.playAnim(animToPlay, true);
 						actingOn.holdTimer = 0;
+					  }
+					  if (gf.canSing){
 									gf.playAnim(animToPlay, true);
 									gf.holdTimer = 0;
+					  }
 						}
 					else {
+						if (actingOn.canSing){
 								actingOn.playAnim(animToPlay, true);
 								actingOn.holdTimer = 0;
+						}
 							}
 	
 	
 					if(note.noteType == 'Hey!') {
+						if (actingOn.canSing){
 						if(actingOn.animOffsets.exists('hey') && !actingOn.likeGf) {
 							actingOn.playAnim('hey', true);
 							actingOn.specialAnim = true;
 							actingOn.heyTimer = 0.6;
 						}
-	
+					}
 	
 						if(gf != null && gf.animOffsets.exists('cheer') ||actingOn.likeGf && gf.animOffsets.exists('cheer')) {
+							if (gf.canSing){
 							gf.playAnim('cheer', true);
 							gf.specialAnim = true;
 							gf.heyTimer = 0.6;
+							}
 						}
 					}
 	
 					if(note.noteType == 'Warning Note') {
 						if (playerOne){
+							if (actingOn.canSing){
 						if(actingOn.animOffsets.exists('dodge') && !actingOn.likeGf) {
 							actingOn.playAnim('dodge', true);
 							actingOn.specialAnim = true;
 						}
+					}
+					if (gf.canSing){
 						if(gf.animOffsets.exists('dodge') && actingOn.likeGf) {
 							gf.playAnim('dodge', true);
 							gf.specialAnim = true;
 						}
+					}
+						if (onActing.canSing){
 						if(onActing.animOffsets.exists('shoot')) {
 							onActing.playAnim('shoot', true);
 							onActing.specialAnim = true;
 						}
 					}
+					}
 					else
 						{
+							if (onActing.canSing){
 							if(onActing.animOffsets.exists('dodge') && !onActing.likeGf) {
 								onActing.playAnim('dodge', true);
 								onActing.specialAnim = true;
 							}
+						}
+						if (gf.canSing){
 							if(gf.animOffsets.exists('dodge') && onActing.likeGf) {
 								gf.playAnim('dodge', true);
 								gf.specialAnim = true;
 							}
+						}
+						if (actingOn.canSing){
 							if(actingOn.animOffsets.exists('shoot')) {
 								actingOn.playAnim('shoot', true);
 								actingOn.specialAnim = true;
 							}
 						}
+					}
 						FlxG.sound.play(Paths.sound("shoot"));
 					}
 				}

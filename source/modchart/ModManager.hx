@@ -63,7 +63,7 @@ class ModManager {
 
     public var modArray:Array<Modifier> = [];
 
-    public var activeMods:Array<Array<String>> = [[], [],[],[],[],[], [],[],[],[]]; // by player
+    public var activeMods:Array<Array<String>> = []; // by player
     
     inline public function quickRegister(mod:Modifier)
         registerMod(mod.getName(), mod);
@@ -178,6 +178,8 @@ class ModManager {
 
     public function new(state:PlayState) {
         this.state=state;
+		for (i in 0...state.SONG.strums)
+			activeMods.push([]);
     }
 
 	public function update(elapsed:Float)

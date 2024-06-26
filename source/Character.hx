@@ -103,7 +103,7 @@ class Character extends FlxSprite
 	public var followCamY:Float = 0;
 	public var positionArray:Array<Float> = [0, 0];
 	public var cameraPosition:Array<Float> = [0, 0];
-
+	public var canSing:Bool = true;
 	public var hasMissAnimations:Bool = false;
 	public var wasSing:Bool = false;
 	//Used on Character Editor
