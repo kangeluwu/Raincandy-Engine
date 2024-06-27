@@ -57,12 +57,6 @@ class DefaultSettingsSubState extends BaseOptionsMenu
 false); 
 addOption(option);
 
-var option:Option = new Option('Skip Haxe Intro Splashes',
-'If checked, Skip Haxe Intro Splashes Anim.', 
-'skipSplash', 
-'bool', 
-false); 
-addOption(option);
 		super();
 	}
 

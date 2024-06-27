@@ -35,7 +35,7 @@ class FPS extends TextField
 	@:noCompletion private var cacheCount:Int;
 	@:noCompletion private var currentTime:Float;
 	@:noCompletion private var times:Array<Float>;
-
+	var memPeak:Float = 0;
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
 		super();
@@ -83,7 +83,7 @@ class FPS extends TextField
 		if (currentCount != cacheCount /*&& visible*/)
 		{
 			text = "FPS: " + currentFPS;
-			var memPeak:Float = 0;
+
 			
 			var memoryMegas:Float = Math.round(System.totalMemory / 1024 / 1024 * 100) / 100;
 			#if openfl

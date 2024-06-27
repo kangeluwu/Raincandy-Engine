@@ -173,6 +173,7 @@ class PluginManager {
         interp.variables.set("FlxStarField2D", flixel.addons.display.FlxStarField.FlxStarField2D);
         interp.variables.set("Map", haxe.ds.StringMap);
         interp.variables.set("FlxColor", CustomFlxColor);
+        interp.variables.set("FlxSpriteGroup", flixel.group.FlxSpriteGroup);
         return interp;
         
     }

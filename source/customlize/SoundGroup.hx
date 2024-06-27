@@ -1,9 +1,9 @@
 package customlize;
 
 import flixel.group.FlxGroup.FlxTypedGroup;
-import funkin.audio.DynamicSound;
+import DynamicSound;
 import flixel.tweens.FlxTween;
-
+import flixel.FlxG;
 /**
  * A group of DynamicSounds that are all synced together.
  * Unlike FlxSoundGroup, you can also control their time and pitch.
@@ -39,8 +39,10 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
 
     for (sndFile in files)
     {
-      var snd:DynamicSound = DynamicSound.loadEmbedded(Paths.songStuffer(song, '$sndFile'));
+      var snd:DynamicSound = new DynamicSound();
+      snd.loadEmbedded(Paths.songStuffer(song, '$sndFile'));
       result.add(snd); // adds it to main group for other shit
+      FlxG.sound.list.add(snd);
     }
 
     return result;
@@ -91,7 +93,7 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
     // Apply parameters to the new sound.
     result.pitch = this.pitch;
     result.volume = this.volume;
-
+    FlxG.sound.list.add(result);
     return result;
   }
 

@@ -15,6 +15,7 @@ class ClientPrefs {
 	public static var opponentStrums:Bool = true;
 	public static var showFPS:Bool = true;
 	public static var showComboBreaks:Bool = true;
+	public static var creditMenuTheme:String = 'freeplayRandom';
 	public static var flashing:Bool = true;
 	public static var skipChartTypeMenu:Bool = true;
 	public static var globalAntialiasing:Bool = true;
@@ -125,6 +126,7 @@ class ClientPrefs {
 		FlxG.save.data.lowQuality = lowQuality;
 		FlxG.save.data.classicStyle = classicStyle;
 		FlxG.save.data.framerate = framerate;
+		FlxG.save.data.creditMenuTheme = creditMenuTheme;
 		//FlxG.save.data.cursing = cursing;
 		//FlxG.save.data.violence = violence;
 		FlxG.save.data.alwaysDoCutscenes = alwaysDoCutscenes;
@@ -177,6 +179,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.menuMusic != null) {
 			menuMusic = FlxG.save.data.menuMusic;
+		}
+		if(FlxG.save.data.creditMenuTheme != null) {
+			creditMenuTheme = FlxG.save.data.creditMenuTheme;
 		}
 		if(FlxG.save.data.skipChartTypeMenu != null) {
 			skipChartTypeMenu = FlxG.save.data.skipChartTypeMenu;

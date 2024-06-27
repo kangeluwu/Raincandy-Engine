@@ -145,7 +145,7 @@ class MusicBeatState extends FlxUIState
 
 		updateCurStep();
 		updateBeat();
-
+       
 		if (oldStep != curStep)
 		{
 			if(curStep > 0)
@@ -161,7 +161,10 @@ class MusicBeatState extends FlxUIState
 		}
 
 		if(FlxG.save.data != null) FlxG.save.data.fullscreen = FlxG.fullscreen;
-
+		if (FlxG.keys.justPressed.F5){
+			TitleState.initialized = false;
+			FlxG.resetGame();
+		}
 		super.update(elapsed);
 	}
 

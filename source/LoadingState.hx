@@ -142,9 +142,59 @@ class LoadingState extends MusicBeatState
 	
 	static function getVocalPath()
 	{
+		
 		return Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]);
 	}
-	
+	static function cacheVocal():Bool
+		{
+			if (PlayState.SONG.playerVocalFiles.length > 0)
+				{
+					var XD = PlayState.SONG.playerVocalFiles.length-1;
+				var XD2 = PlayState.SONG.opponentVocalFiles.length-1;
+				var pass = false;
+				var pass2 = false;
+				while (XD>-1){
+					var file = Paths.songStuffer(PlayState.SONG.song,
+						PlayState.SONG.songFileNames[1] +'-'
+						+PlayState.SONG.playerVocalFiles[XD]);
+					if (isSoundLoaded(file)){
+					--XD;
+					trace(XD);
+					}
+				}
+				if (XD == -1)
+				pass = true;
+				while (XD2>-1){
+					var file = Paths.songStuffer(PlayState.SONG.song,
+						PlayState.SONG.songFileNames[1] +'-'
+						+PlayState.SONG.opponentVocalFiles[XD2]);
+					if (isSoundLoaded(file))
+					--XD2;
+					trace(XD);
+				}
+				if (XD2 == -1)
+				pass2 = true;
+				return (pass && pass2);
+			}
+			else
+				return isSoundLoaded(getVocalPath());
+		}
+		static function cacheSFX():Bool
+			{
+			
+					var XD = PlayState.SONG.sfxFiles.length-1;
+			
+				var pass = false;
+				while (XD>-1){
+					var file = Paths.songStuffer(PlayState.SONG.song,
+					PlayState.SONG.sfxFiles[XD]);
+					if (isSoundLoaded(file))
+					--XD;
+				}
+				pass = true;
+			
+				return pass;
+			}
 	inline static public function loadAndSwitchState(target:FlxState, stopMusic = false)
 	{
 		MusicBeatState.switchState(getNextState(target, stopMusic));
@@ -172,7 +222,7 @@ class LoadingState extends MusicBeatState
 		#if NO_PRELOAD_ALL
 		var loaded:Bool = false;
 		if (PlayState.SONG != null) {
-			loaded = isSoundLoaded(getSongPath()) && (!PlayState.SONG.needsVoices || isSoundLoaded(getVocalPath())) && isLibraryLoaded("shared") && isLibraryLoaded(directory);
+			loaded = isSoundLoaded(getSongPath()) && (!PlayState.SONG.needsVoices || cacheVocal()) && (!PlayState.SONG.needsSFX || cacheSFX()) && isLibraryLoaded("shared") && isLibraryLoaded(directory);
 		}
 		
 		if (!loaded)
@@ -184,7 +234,7 @@ class LoadingState extends MusicBeatState
 		return target;
 	}
 	
-	#if NO_PRELOAD_ALL
+
 	static function isSoundLoaded(path:String):Bool
 	{
 		return Assets.cache.hasSound(path);
@@ -194,7 +244,7 @@ class LoadingState extends MusicBeatState
 	{
 		return Assets.getLibrary(library) != null;
 	}
-	#end
+
 	
 	override function destroy()
 	{

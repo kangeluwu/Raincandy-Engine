@@ -178,7 +178,7 @@ class ModManager {
 
     public function new(state:PlayState) {
         this.state=state;
-		for (i in 0...state.SONG.strums)
+		for (i in 0...PlayState.SONG.strums)
 			activeMods.push([]);
     }
 

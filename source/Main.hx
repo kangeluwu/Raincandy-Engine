@@ -95,7 +95,7 @@ class Main extends Sprite
 		#end
 
 		ClientPrefs.loadDefaultKeys();
-		skipSplash = !ClientPrefs.skipSplash;
+
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 
 
