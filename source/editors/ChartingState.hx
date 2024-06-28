@@ -659,9 +659,11 @@ Left/Right - Go to the previous/next section
 		var clear_notes:FlxButton = new FlxButton(320, clear_events.y + 30, 'Clear notes', function()
 			{
 				FlxG.sound.play(Paths.sound('confirmPoko'));
-				openSubState(new Prompt('This action will clear current progress.\n\nProceed?', 0, function(){for (sec in 0..._song.notes.length) {
+				openSubState(new Prompt('This action will clear current progress.\n\nProceed?', 0, function(){
+					for (sec in 0..._song.notes.length) {
 					_song.notes[sec].sectionNotes = [];
 				}
+				notes = [];
 				updateGrid();
 			}, null,ignoreWarnings));
 
@@ -873,8 +875,10 @@ Left/Right - Go to the previous/next section
 				loadSong();
 			}
 
-	
-		playerInputText = new FlxUIInputText(10, vocalFileName.y +20, 100, "");
+	var t = "";
+	if (playerVocalFiles.length > 0)
+		t = playerVocalFiles[0];
+		playerInputText = new FlxUIInputText(10, vocalFileName.y +20, 100, t);
 		blockPressWhileTypingOn.push(playerInputText);
 
 	    createButtons(tab_group_char,playerInputText
@@ -909,8 +913,10 @@ Left/Right - Go to the previous/next section
 				playerInputText.text = playerVocalFiles[curPVSelected];
 				}
 		});
-
-		oppoInputText = new FlxUIInputText(10, playerInputText.y +20, 100, "");
+		var t = "";
+		if (opponentVocalFiles.length > 0)
+			t = opponentVocalFiles[0];
+		oppoInputText = new FlxUIInputText(10, playerInputText.y +20, 100, t);
 		blockPressWhileTypingOn.push(oppoInputText);
 
 	    createButtons(tab_group_char,oppoInputText
@@ -945,8 +951,10 @@ Left/Right - Go to the previous/next section
 				oppoInputText.text = opponentVocalFiles[curOVSelected];
 				}
 		});
-
-		sfxInputText = new FlxUIInputText(10, oppoInputText.y +20, 100, "");
+		var t = "";
+		if (sfxFiles.length > 0)
+			t = sfxFiles[0];
+		sfxInputText = new FlxUIInputText(10, oppoInputText.y +20, 100, t);
 		blockPressWhileTypingOn.push(sfxInputText);
 
 	    createButtons(tab_group_char,sfxInputText
@@ -1212,6 +1220,7 @@ Left/Right - Go to the previous/next section
 							copiedNote = [newStrumTime, note[1], note[2], note[3]];
 						}
 						_song.notes[curSec].sectionNotes.push(copiedNote);
+						notes.push(copiedNote);
 					}
 				}
 			}
@@ -1220,6 +1229,8 @@ Left/Right - Go to the previous/next section
 
 		var clearSectionButton:FlxButton = new FlxButton(pasteButton.x + 100, pasteButton.y, "Clear", function()
 		{
+			for (note in _song.notes[curSec].sectionNotes)
+			notes.remove(note);
 			if(check_notesSec.checked)
 			{
 				_song.notes[curSec].sectionNotes = [];
@@ -1254,10 +1265,15 @@ Left/Right - Go to the previous/next section
 		{
 			for (i in 0..._song.notes[curSec].sectionNotes.length)
 			{
+				for (note in _song.notes[curSec].sectionNotes)
+					notes.remove(note);
+
 				var note:Array<Dynamic> = _song.notes[curSec].sectionNotes[i];
 				if (Math.floor(note[1] / 4) < 2)
 				note[1] = (note[1] + 4) % 8;
 				_song.notes[curSec].sectionNotes[i] = note;
+				for (note in _song.notes[curSec].sectionNotes)
+				notes.push(note);
 			}
 			updateGrid();
 		});
@@ -1277,6 +1293,7 @@ Left/Right - Go to the previous/next section
 
 				var copiedNote:Array<Dynamic> = [strum, note[1], note[2], note[3]];
 				_song.notes[daSec].sectionNotes.push(copiedNote);
+				notes.push(copiedNote);
 			}
 
 			var startThing:Float = sectionStartTime(-value);
@@ -1324,7 +1341,7 @@ Left/Right - Go to the previous/next section
 
 			for (i in duetNotes){
 			_song.notes[curSec].sectionNotes.push(i);
-
+			notes.push(i);
 			}
 
 			updateGrid();
@@ -1911,40 +1928,43 @@ Left/Right - Go to the previous/next section
 		var file:Dynamic = Paths.songStuffer(currentSongName,songFileNames[1]);
 	      if (vocals == null)
 			vocals = new VoicesGroup();
+		  add(vocals);
 		  if (sfx == null)
 			sfx = new VoicesGroup();
-		  if (playerVocalFiles.length > 0){
+		  add(sfx);
+	
 			for (i in playerVocalFiles){
 			var fileP:Dynamic = Paths.songStuffer(currentSongName,songFileNames[1] + '-' + i);
 			if (Std.isOfType(fileP, Sound) || OpenFlAssets.exists(fileP)) {
-				   var snd:DynamicSound = new DynamicSound();
+				   var snd:FlxSound = new FlxSound();
 				   snd.loadEmbedded(fileP);
 				   vocals.addPlayerVoice(snd);
 			}
 		}
-		if (opponentVocalFiles.length > 0){
+
 		for (i in opponentVocalFiles){
 			var fileO:Dynamic = Paths.songStuffer(currentSongName,songFileNames[1] + '-' + i);
 			if (Std.isOfType(fileO, Sound) || OpenFlAssets.exists(fileO)) {
-				   var snd:DynamicSound = new DynamicSound();
+				   var snd:FlxSound = new FlxSound();
 				   snd.loadEmbedded(fileO);
 				   vocals.addOpponentVoice(snd);
 			}
 		}
-	}
-		  }else{
+	
+		if (vocals.playerVoices.members.length<=0|| vocals.opponentVoices.members.length<=0){
 		if (Std.isOfType(file, Sound) || OpenFlAssets.exists(file)) {
-			var snd:DynamicSound = new DynamicSound();
+			var snd:FlxSound = new FlxSound();
 			snd.loadEmbedded(file);
 			vocals.add(snd);
 		}
 	}
+	
 
 	if (sfxFiles.length > 0){
 		for (i in sfxFiles){
 			var fileSFX:Dynamic = Paths.songStuffer(currentSongName,i);
 			if (Std.isOfType(fileSFX, Sound) || OpenFlAssets.exists(fileSFX)) {
-				   var snd:DynamicSound = new DynamicSound();
+				   var snd:FlxSound = new FlxSound();
 				   snd.loadEmbedded(fileSFX);
 				   sfx.add(snd);
 			}
@@ -1969,11 +1989,16 @@ Left/Right - Go to the previous/next section
 				vocals.pause();
 				vocals.time = 0;
 			}
+			if(sfx != null) {
+				sfx.pause();
+				sfx.time = 0;
+			}
 			changeSection();
 			curSec = 0;
 			updateGrid();
 			updateSectionUI();
 			vocals.play();
+			sfx.play();
 		};
 	}
 
@@ -2364,6 +2389,7 @@ case 'Alt Anim Note':
 				autosaveSong();
 				FlxG.mouse.visible = false;
 				PlayState.SONG = _song;
+			
 				FlxG.sound.music.stop();
 				if(vocals != null) vocals.stop();
 				if(sfx != null) sfx.stop();
@@ -2670,11 +2696,22 @@ case 'Alt Anim Note':
 			if (FlxG.keys.pressed.SHIFT #if mobile   || _virtualpad.buttonY.pressed #end)
 				shiftThing = 4;
 
-			/*if (FlxG.keys.justPressed.I) {
-				changeKeyType(-1);
+			if (FlxG.keys.justPressed.I) {
+				--curSel;
+				if (curSel < 0)
+					curSel = vocals.members.length-1;
+				if(FlxG.save.data.chart_waveformInst || FlxG.save.data.chart_waveformVoices) {
+					updateWaveform();
+				}
 			} else if (FlxG.keys.justPressed.O) {
-				changeKeyType(1);
-			}*/
+				
+				curSel++;
+				if (curSel >= vocals.members.length)
+					curSel = 0;
+				if(FlxG.save.data.chart_waveformInst || FlxG.save.data.chart_waveformVoices) {
+					updateWaveform();
+				}
+			}
 			
 			if (FlxG.keys.justPressed.D #if mobile   || _virtualpad.buttonRight.justPressed #end && !vortex|| FlxG.keys.justPressed.D #if mobile   || _virtualpad.buttonRight.justPressed #end)
 				changeSection(curSec + shiftThing);
@@ -2991,8 +3028,8 @@ case 'Alt Anim Note':
 			}
 		}
 
-		/*if (FlxG.save.data.chart_waveformVoices) {
-			var sound:FlxSound = vocals;
+		if (FlxG.save.data.chart_waveformVoices) {
+			var sound:FlxSound = vocals.members[curSel];
 			if (sound._sound != null && sound._sound.__buffer != null) {
 				var bytes:Bytes = sound._sound.__buffer.data.toBytes();
 
@@ -3007,7 +3044,7 @@ case 'Alt Anim Note':
 				);
 			}
 		}
-*/
+
 		// Draws
 		var gSize:Int = Std.int(GRID_SIZE * 8);
 		var hSize:Int = Std.int(gSize / 2);
@@ -3159,7 +3196,7 @@ case 'Alt Anim Note':
 		return [[[0], [0]], [[0], [0]]];
 		#end
 	}
-
+    var curSel = 0;
 	function changeNoteSustain(value:Float):Void
 	{
 		if (curSelectedNote != null)
@@ -3658,6 +3695,10 @@ case 'Alt Anim Note':
 					if(i == curSelectedNote) curSelectedNote = null;
 					//FlxG.log.add('FOUND EVIL NOTE');
 					notes.remove(i);
+					for (sec in _song.notes){
+						if(sec.sectionNotes.contains(i))
+						sec.sectionNotes.remove(i);
+					}
 					break;
 				}
 			}
@@ -3762,9 +3803,10 @@ case 'Alt Anim Note':
 		if(noteData > -1)
 		{
 			var note:Array<Dynamic> = [noteStrum, noteData, noteSus, noteTypeIntMap.get(daType)];
-			_song.notes[curSec].sectionNotes.push(note);
 			notes.push(note);
+			_song.notes[curSec].sectionNotes.push(note);
 			curSelectedNote = note;
+			trace(note);
 		}
 		else
 		{
@@ -3780,7 +3822,10 @@ case 'Alt Anim Note':
 
 		if (FlxG.keys.pressed.CONTROL && noteData > -1)
 		{
-			_song.notes[curSec].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus, noteTypeIntMap.get(daType)]);
+			var note:Array<Dynamic>  =[noteStrum, (noteData + 4) % 8, noteSus, noteTypeIntMap.get(daType)];
+			notes.push(note);
+			_song.notes[curSec].sectionNotes.push(note);
+
 		}
 
 		//trace(noteData + ', ' + noteStrum + ', ' + curSec);

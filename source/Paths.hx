@@ -271,6 +271,7 @@ class Paths
 		var voices = returnSound('songs', songKey);
 		return voices;
 	}
+	
 	inline static public function songStuffer(song:String,fileName:String = 'Inst'):Any
 		{
 			var songKey:String = '${formatToSongPath(song)}/$fileName';
@@ -630,14 +631,16 @@ class Paths
 	}
 
 	public static var currentTrackedSounds:Map<String, Sound> = [];
-	public static function returnSound(path:String, key:String, ?library:String) {
+	public static function returnSound(path:String, key:String, ?library:String,exclude:Bool = false) {
 		#if MODS_ALLOWED
 		var file:String = modsSounds(path, key);
 		if(FileSystem.exists(file)) {
 			if(!currentTrackedSounds.exists(file)) {
-				currentTrackedSounds.set(file, Sound.fromFile(file));
+				currentTrackedSounds.set(file, FNFAssets.getSound(file));
 			}
 			localTrackedAssets.push(key);
+			if (exclude)
+				excludeAsset(key);
 			return currentTrackedSounds.get(file);
 		}
 		#end
@@ -647,7 +650,7 @@ class Paths
 		// trace(gottenPath);
 		if(!currentTrackedSounds.exists(gottenPath))
 		#if MODS_ALLOWED
-			currentTrackedSounds.set(gottenPath, Sound.fromFile(#if !mobile './' + #end gottenPath));
+			currentTrackedSounds.set(gottenPath, FNFAssets.getSound(#if !mobile './' + #end gottenPath));
 		#else
 		{
 			#if !mobile
@@ -657,6 +660,8 @@ class Paths
 			currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(#if !mobile folder + #end getPath('$path/$key.$SOUND_EXT', SOUND, library)));
 		}
 		#end
+		if (exclude)
+			excludeAsset(gottenPath);
 		localTrackedAssets.push(gottenPath);
 		return currentTrackedSounds.get(gottenPath);
 	}

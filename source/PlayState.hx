@@ -6,7 +6,6 @@ import Discord.DiscordClient;
 #end
 import customlize.VoicesGroup;
 import customlize.SoundGroup;
-import DynamicSound;
 import flixel.ui.FlxButton;
 import flixel.graphics.frames.FlxFrame;
 import flixel.system.scaleModes.RatioScaleMode;
@@ -1077,29 +1076,32 @@ function camerabgAlphaShits(cam:FlxCamera)
 			SONG = Song.loadFromNewJson('tutorial');
 
 		if (SONG.needsVoices){
-			if (SONG.playerVocalFiles.length > 0){
+			
 				for (i in SONG.playerVocalFiles){
 		
 Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1] + '-'+ i);
 
 				}
-				if (SONG.opponentVocalFiles.length > 0){
+				
 					for (i in SONG.opponentVocalFiles){
 Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1] + '-'+ i);
 					}
-				}
-			}else{
-
+				
+			
+			
 Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]);
-			}
+			
 			
 		}
 
 		if (SONG.needsSFX){
 			for (i in SONG.sfxFiles){
 Paths.songStuffer(PlayState.SONG.song,i);
+
 			}
 		}
+		Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[0]);
+		trace(Paths.currentTrackedSounds);
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 
@@ -3716,7 +3718,7 @@ if (!dadChar.beingControlled)
 		}
 	}
 
-	public function setSongTime(time:Float)
+	public function setSongTime(time:Float = 0)
 	{
 		if(time < 0) time = 0;
 
@@ -3725,22 +3727,25 @@ if (!dadChar.beingControlled)
 		sfx.pause();
 		FlxG.sound.music.time = time;
 		FlxG.sound.music.play();
-		vocals.forEachAlive(function(sound:DynamicSound) {
+		
+		vocals.forEachAlive(function(sound:FlxSound) {
 			if (Conductor.songPosition <= sound.length)
 				{
 					sound.time = time;
 				}
 		  });
-		  sfx.forEachAlive(function(sound:DynamicSound) {
+		  vocals.play();
+		
+		  sfx.forEachAlive(function(sound:FlxSound) {
 			if (Conductor.songPosition <= sfx.length)
 				{
 					sfx.time = time;
 				}
 		  });
+		  sfx.play();
 		
 	
-		vocals.play();
-		sfx.play();
+	
 		Conductor.songPosition = time;
 		songTime = time;
 	}
@@ -3760,7 +3765,58 @@ if (!dadChar.beingControlled)
 	var previousFrameTime:Int = 0;
 	var lastReportedPlayheadPosition:Int = 0;
 	var songTime:Float = 0;
+	var songGenerated:Bool = false;
+    function generateSongF(){
+		
+		vocals = new VoicesGroup();
+var igroneSpilt:Bool = true;
+		if (SONG.needsVoices){
+        if (SONG.playerVocalFiles.length>0){
+				for (i in SONG.playerVocalFiles){
+					var fileP:Dynamic = Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1] + '-'+ i);
+					if (Std.isOfType(fileP, Sound) || OpenFlAssets.exists(fileP)) {
+						   var snd:FlxSound = new FlxSound();
+						   snd.loadEmbedded(fileP);
+						   vocals.addPlayerVoice(snd);
+					}
+				}
+				igroneSpilt = false;
+			}        
+			if (SONG.opponentVocalFiles.length>0){
+					for (i in SONG.opponentVocalFiles){
+						var fileP:Dynamic = Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1] + '-'+ i);
+						if (Std.isOfType(fileP, Sound) || OpenFlAssets.exists(fileP)) {
+							   var snd:FlxSound = new FlxSound();
+							   snd.loadEmbedded(fileP);
+							   vocals.addOpponentVoice(snd);
+						}
+			
+					}
+					igroneSpilt = false;
+			}
+			
+			if (igroneSpilt || (vocals.playerVoices.members.length<=0|| vocals.opponentVoices.members.length<=0)){
+				if (!igroneSpilt)
+				vocals.clear();
+				var snd:FlxSound = new FlxSound();
+				snd.loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
+		vocals.add(snd);
+		trace(snd);
+			}
+			
+		}
+		add(vocals);
 
+
+
+		sfx = new SoundGroup();
+		if (SONG.needsSFX)
+			SoundGroup.build(SONG.song,SONG.sfxFiles);
+
+			add(sfx);
+			
+	
+	}
 	function startSong():Void
 	{
 		startingSong = false;
@@ -3769,15 +3825,18 @@ if (!dadChar.beingControlled)
 		lastReportedPlayheadPosition = 0;
 
 		FlxG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[0]), 1, false);
-
 		FlxG.sound.music.onComplete = onSongComplete;
-		vocals.play();
-		sfx.play();
+        vocals.play();
+        sfx.play();
+		
 		if(startOnTime > 0)
 		{
 			setSongTime(startOnTime - 500);
 		}
+		
+
 		startOnTime = 0;
+		songGenerated = true;
 
 		if(paused) {
 			//trace('Oopsie doopsie! Paused sound');
@@ -3831,35 +3890,47 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 			var songData = Song.loadFromNewJson(dataPath.toLowerCase() + difficulty, dataPath.toLowerCase());
            data.set("song",songData);
 		   var preVocal = new VoicesGroup();
-		   var preInst = new FlxSound().loadEmbedded(Paths.songStuffer(songData.song,PlayState.SONG.songFileNames[0]));
+		   var preInst = new FlxSound().loadEmbedded(Paths.songStuffer(songData.song,songData.songFileNames[0]));
+		   var igroneSpilt = true;
 		   if (songData.needsVoices){
-			   if (songData.playerVocalFiles.length > 0){
+			if (songData.playerVocalFiles.length>0){
 				   for (i in songData.playerVocalFiles){
-			   var snd:DynamicSound = new DynamicSound();
-			   snd.loadEmbedded(Paths.songStuffer(songData.song,songData.songFileNames[1] + '-'+ i));
-			   preVocal.addPlayerVoice(snd);
+					var fileP:Dynamic = Paths.songStuffer(songData.song,songData.songFileNames[1] + '-'+ i);
+						if (Std.isOfType(fileP, Sound) || OpenFlAssets.exists(fileP)) {
+							   var snd:FlxSound = new FlxSound();
+							   snd.loadEmbedded(fileP);
+							   preVocal.addPlayerVoice(snd);
+						}
+
+					}
+					igroneSpilt = false;
 				   }
-				   if (songData.opponentVocalFiles.length > 0){
+				   if (songData.opponentVocalFiles.length>0){
 					   for (i in songData.opponentVocalFiles){
-				   var snd:DynamicSound = new DynamicSound();
-				   snd.loadEmbedded(Paths.songStuffer(songData.song,songData.songFileNames[1] + '-'+ i));
-				   preVocal.addOpponentVoice(snd);
+						var fileP:Dynamic = Paths.songStuffer(songData.song,songData.songFileNames[1] + '-'+ i);
+						if (Std.isOfType(fileP, Sound) || OpenFlAssets.exists(fileP)) {
+							   var snd:FlxSound = new FlxSound();
+							   snd.loadEmbedded(fileP);
+							   preVocal.addOpponentVoice(snd);
+						}
+
 					   }
+					   igroneSpilt = false;
 				   }
-			   }else{
-				   var snd:DynamicSound = new DynamicSound();
+				}
+			   if (igroneSpilt ||(preVocal.playerVoices.members.length<=0|| preVocal.opponentVoices.members.length<=0)){
+				if (!igroneSpilt)
+				    preVocal.clear();
+				   var snd:FlxSound = new FlxSound();
 				   snd.loadEmbedded(Paths.songStuffer(songData.song,songData.songFileNames[1]));
 				   preVocal.add(snd);
 			   }
 			   
-		   }
+		   
 		   var presfx = new SoundGroup();
 		   if (songData.needsSFX){
-			   for (i in songData.sfxFiles){
-				   var snd:DynamicSound = new DynamicSound();
-				   snd.loadEmbedded(Paths.songStuffer(songData.song,i));
-				   presfx.add(snd);
-					   }
+			SoundGroup.build(songData.song,songData.sfxFiles);
+			   
 			   }
 
 			FlxG.sound.list.add(preInst);
@@ -3966,8 +4037,7 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 					var altNote:Bool = false;
 					var crossFade:Bool = false;
 					var gottaHitNote:Bool = if (daNoteStrum == currentPlayerStrum) true else false;
-	                if (preSongNotes[1] != -1){
-					
+	             
 					if (preSongNotes[4] || sec.altAnim)
 					{
 						altNote = true;
@@ -4145,19 +4215,7 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 					if(!noteTypeMap.exists(swagNote.noteType)) {
 						noteTypeMap.set(swagNote.noteType, true);
 					}
-				}else{
-					var newEventNote:Array<Dynamic> = [preSongNotes[0], preSongNotes[2], preSongNotes[3], preSongNotes[4], preSongNotes[5]];
-					var subEvent:EventNote = {
-						strumTime: newEventNote[0] + ClientPrefs.noteOffset,
-						event: newEventNote[1],
-						value1: newEventNote[2],
-						value2: newEventNote[3],
-						value3: newEventNote[4]
-					};
-					subEvent.strumTime -= eventNoteEarlyTrigger(subEvent);
-					preEvents.push(subEvent);
-					eventPushed(subEvent);
-				}
+				
 			}
 				daBeats += 1;
 				
@@ -4283,46 +4341,15 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 				songSpeed = ClientPrefs.getGameplaySetting('scrollspeed', 1);
 		}
 
-		var songData = SONG;
+		var songData = PlayState.SONG;
 		Conductor.changeBPM(songData.bpm);
 
 		curSong = songData.song;
 
 			
-			vocals = new VoicesGroup();
-			if (SONG.needsVoices){
-				if (SONG.playerVocalFiles.length > 0){
-					for (i in SONG.playerVocalFiles){
-				var snd:DynamicSound = new DynamicSound();
-				snd.loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1] + '-'+ i));
-			vocals.addPlayerVoice(snd);
-					}
-					if (SONG.opponentVocalFiles.length > 0){
-						for (i in SONG.opponentVocalFiles){
-					var snd:DynamicSound = new DynamicSound();
-					snd.loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1] + '-'+ i));
-				vocals.addOpponentVoice(snd);
-						}
-					}
-				}else{
-					var snd:DynamicSound = new DynamicSound();
-					snd.loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
-			vocals.add(snd);
-				}
-				
-			}
-			sfx = new SoundGroup();
-			if (SONG.needsSFX){
-				for (i in SONG.sfxFiles){
-					var snd:DynamicSound = new DynamicSound();
-					snd.loadEmbedded(Paths.songStuffer(PlayState.SONG.song,i));
-					sfx.add(snd);
-						}
-				}
-
 		notes = new FlxTypedGroup<Note>();
 		add(notes);
-
+			generateSongF();
 		var noteData:Array<SwagSection>;
 
 		// NEW SHIT
@@ -4418,7 +4445,7 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 				var altNote:Bool = false;
 				var crossFade:Bool = false;
 				var gottaHitNote:Bool = if (daNoteStrum == currentPlayerStrum) true else false;
-              if (songNotes[1] != -1){
+
 	
 				
 				if (songNotes[4] || section.altAnim)
@@ -4606,19 +4633,7 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 				if(!noteTypeMap.exists(swagNote.noteType)) {
 					noteTypeMap.set(swagNote.noteType, true);
 				}
-			}else{
-				var newEventNote:Array<Dynamic> = [songNotes[0], songNotes[2], songNotes[3], songNotes[4], songNotes[5]];
-				var subEvent:EventNote = {
-					strumTime: newEventNote[0] + ClientPrefs.noteOffset,
-					event: newEventNote[1],
-					value1: newEventNote[2],
-					value2: newEventNote[3],
-					value3: newEventNote[4]
-				};
-				subEvent.strumTime -= eventNoteEarlyTrigger(subEvent);
-				eventNotes.push(subEvent);
-				eventPushed(subEvent);
-			}
+		
 		}
 			daBeats += 1;
 		}
@@ -4968,7 +4983,8 @@ function eventPushed(event:EventNote) {
 
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
-		vocals.forEachAlive(function(sound:DynamicSound) {
+
+		vocals.forEachAlive(function(sound:FlxSound) {
 			if (Conductor.songPosition <= sound.length)
 				{
 					sound.time = Conductor.songPosition;
@@ -4977,9 +4993,8 @@ function eventPushed(event:EventNote) {
 		
 		vocals.play();
 
-		sfx.pause();
 
-		sfx.forEachAlive(function(sound:DynamicSound) {
+		sfx.forEachAlive(function(sound:FlxSound) {
 			if (Conductor.songPosition <= sfx.length)
 				{
 					sfx.time = Conductor.songPosition;
@@ -6757,8 +6772,12 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 		//trace(noteDiff, ' ' + Math.abs(note.strumTime - Conductor.songPosition));
 		var noteDiffSigned:Float = note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset;
 		// boyfriend.playAnim('hey');
-		if (SONG.playerVocalFiles.length > 0)
-			vocals.playerVolume = 1;
+		if (vocals.playerVoices.members.length>0 && vocals.opponentVoices.members.length>0){
+			if (!opponentPlayer)vocals.playerVolume = 1;
+			else{
+				vocals.opponentVolume = 1;
+			}
+		}
 			else
 				vocals.volume = 1;
 		
@@ -7274,8 +7293,12 @@ currentTimingShown.cameras = [camHUD];
 
 		if(instakillOnMiss)
 		{
-			if (SONG.playerVocalFiles.length > 0)
-				vocals.playerVolume = 0;
+			if (vocals.playerVoices.members.length>0 && vocals.opponentVoices.members.length>0){
+				if (!opponentPlayer)vocals.playerVolume = 0;
+				else{
+					vocals.opponentVolume = 0;
+				}
+			}
 				else
 					vocals.volume = 0;
 			
@@ -7308,8 +7331,12 @@ currentTimingShown.cameras = [camHUD];
 		//For testing purposes
 		//trace(daNote.missHealth);
 		songMisses++;
-		if (SONG.playerVocalFiles.length > 0)
-			vocals.playerVolume = 0;
+		if (vocals.playerVoices.members.length>0 && vocals.opponentVoices.members.length>0){
+			if (!opponentPlayer)vocals.playerVolume = 0;
+			else{
+				vocals.opponentVolume = 0;
+			}
+		}
 			else
 				vocals.volume = 0;
 		
@@ -7348,8 +7375,12 @@ currentTimingShown.cameras = [camHUD];
 				health -= 0.05 * healthLoss;
 			if(instakillOnMiss)
 			{
-				if (SONG.playerVocalFiles.length > 0)
-					vocals.playerVolume = 0;
+				if (vocals.playerVoices.members.length>0 && vocals.opponentVoices.members.length>0){
+					if (!opponentPlayer)vocals.playerVolume = 0;
+					else{
+						vocals.opponentVolume = 0;
+					}
+				}
 					else
 						vocals.volume = 0;
 				
@@ -7384,8 +7415,12 @@ currentTimingShown.cameras = [camHUD];
 			if(actingOn.hasMissAnimations) {
 				actingOn.playAnim(singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
 			}
-			if (SONG.playerVocalFiles.length > 0)
-				vocals.playerVolume = 0;
+			if (vocals.playerVoices.members.length>0 && vocals.opponentVoices.members.length>0){
+				if (!opponentPlayer)vocals.playerVolume = 0;
+				else{
+					vocals.opponentVolume = 0;
+				}
+			}
 				else
 					vocals.volume = 0;
 			
@@ -7508,8 +7543,12 @@ currentTimingShown.cameras = [camHUD];
 		}
 
 		if (SONG.needsVoices)
-			{	if (SONG.playerVocalFiles.length > 0)
-				vocals.playerVolume = 1;
+			{	if (vocals.playerVoices.members.length>0 && vocals.opponentVoices.members.length>0){
+				if (opponentPlayer)vocals.playerVolume = 1;
+				else{
+					vocals.opponentVolume = 1;
+				}
+			}
 				else
 					vocals.volume = 1;
 			}
@@ -7769,8 +7808,12 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 				}
 
 				note.wasGoodHit = true;
-				if (SONG.playerVocalFiles.length > 0)
-					vocals.playerVolume = 1;
+				if (vocals.playerVoices.members.length>0 && vocals.opponentVoices.members.length>0){
+					if (opponentPlayer)vocals.playerVolume = 1;
+					else{
+						vocals.opponentVolume = 1;
+					}
+				}
 					else
 						vocals.volume = 1;
 				

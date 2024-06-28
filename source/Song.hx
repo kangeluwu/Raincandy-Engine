@@ -193,15 +193,22 @@ class Song
 			var fuck  = metaData;
 			var playData = fuck.playData;
 			trace(playData);
+			var phantomFear = fuck.playerVocalFiles;
+
 			var charData = playData.characters;
+			var oF = fuck.opponentVocalFiles;
+			if (phantomFear == null) {
+				phantomFear = [charData.player];
+			}
+			if (oF == null) oF = [charData.opponent];
 			var data:SwagSong = {
 				song: fuck.songName,
 				notes: [],
 				events: [],
 				songFileNames: ['Inst','Voices'],
-				playerVocalFiles: [],
+				playerVocalFiles:phantomFear,
 				sfxFiles: [],
-				opponentVocalFiles: [],
+				opponentVocalFiles: oF,
 				bpm: fuck.timeChanges[0].bpm,
 				needsVoices: true,
 				disPlayAutoMovingCam: true,

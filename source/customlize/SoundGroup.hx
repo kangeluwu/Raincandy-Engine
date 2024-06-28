@@ -1,20 +1,19 @@
 package customlize;
 
 import flixel.group.FlxGroup.FlxTypedGroup;
-import DynamicSound;
+import flixel.system.FlxSound;
 import flixel.tweens.FlxTween;
 import flixel.FlxG;
 /**
- * A group of DynamicSounds that are all synced together.
+ * A group of FlxSounds that are all synced together.
  * Unlike FlxSoundGroup, you can also control their time and pitch.
  */
-class SoundGroup extends FlxTypedGroup<DynamicSound>
+class SoundGroup extends FlxTypedGroup<FlxSound>
 {
   public var time(get, set):Float;
 
   public var volume(get, set):Float;
 
-  public var muted(get, set):Bool;
 
   public var pitch(get, set):Float;
 
@@ -33,13 +32,13 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
     if (files == null)
     {
       // Add an empty voice.
-      result.add(new DynamicSound());
+      result.add(new FlxSound());
       return result;
     }
 
     for (sndFile in files)
     {
-      var snd:DynamicSound = new DynamicSound();
+      var snd:FlxSound = new FlxSound();
       snd.loadEmbedded(Paths.songStuffer(song, '$sndFile'));
       result.add(snd); // adds it to main group for other shit
       FlxG.sound.list.add(snd);
@@ -73,9 +72,9 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
   /**
    * Add a sound to the group.
    */
-  public override function add(sound:DynamicSound):DynamicSound
+  public override function add(sound:FlxSound):FlxSound
   {
-    var result:DynamicSound = super.add(sound);
+    var result:FlxSound = super.add(sound);
 
     if (result == null) return null;
 
@@ -104,7 +103,7 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
    */
   public function pause()
   {
-    forEachAlive(function(sound:DynamicSound) {
+    forEachAlive(function(sound:FlxSound) {
       sound.pause();
     });
   }
@@ -114,7 +113,7 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
    */
   public function play(forceRestart:Bool = false, startTime:Float = 0.0, ?endTime:Float)
   {
-    forEachAlive(function(sound:DynamicSound) {
+    forEachAlive(function(sound:FlxSound) {
       sound.play(forceRestart, startTime, endTime);
     });
   }
@@ -124,7 +123,7 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
    */
   public function resume()
   {
-    forEachAlive(function(sound:DynamicSound) {
+    forEachAlive(function(sound:FlxSound) {
       sound.resume();
     });
   }
@@ -134,7 +133,7 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
    */
   public function fadeIn(duration:Float, ?from:Float = 0.0, ?to:Float = 1.0, ?onComplete:FlxTween->Void):Void
   {
-    forEachAlive(function(sound:DynamicSound) {
+    forEachAlive(function(sound:FlxSound) {
       sound.fadeIn(duration, from, to, onComplete);
     });
   }
@@ -144,7 +143,7 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
    */
   public function fadeOut(duration:Float, ?to:Float = 0.0, ?onComplete:FlxTween->Void):Void
   {
-    forEachAlive(function(sound:DynamicSound) {
+    forEachAlive(function(sound:FlxSound) {
       sound.fadeOut(duration, to, onComplete);
     });
   }
@@ -156,7 +155,7 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
   {
     if (members != null)
     {
-      forEachAlive(function(sound:DynamicSound) {
+      forEachAlive(function(sound:FlxSound) {
         sound.stop();
       });
     }
@@ -192,7 +191,7 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
 
   function set_time(time:Float):Float
   {
-    forEachAlive(function(snd:DynamicSound) {
+    forEachAlive(function(snd:FlxSound) {
       // account for different offsets per sound?
       snd.time = time;
     });
@@ -227,28 +226,13 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
   // in PlayState, adjust the code so that it only mutes the player1 vocal tracks?
   function set_volume(volume:Float):Float
   {
-    forEachAlive(function(snd:DynamicSound) {
+    forEachAlive(function(snd:FlxSound) {
       snd.volume = volume;
     });
 
     return volume;
   }
 
-  function get_muted():Bool
-  {
-    if (getFirstAlive() != null) return getFirstAlive().muted;
-    else
-      return false;
-  }
-
-  function set_muted(muted:Bool):Bool
-  {
-    forEachAlive(function(snd:DynamicSound) {
-      snd.muted = muted;
-    });
-
-    return muted;
-  }
 
   function get_pitch():Float
   {
@@ -263,7 +247,7 @@ class SoundGroup extends FlxTypedGroup<DynamicSound>
   {
     #if FLX_PITCH
     trace('Setting audio pitch to ' + val);
-    forEachAlive(function(snd:DynamicSound) {
+    forEachAlive(function(snd:FlxSound) {
       snd.pitch = val;
     });
     #end

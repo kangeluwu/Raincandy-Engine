@@ -480,8 +480,10 @@ function coolURL(url:String):String
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
 		#end
-		//Paths.clearStoredMemory();
-		//Paths.clearUnusedMemory();
+		if (stickerSubState == null){
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+		}
 		makeHaxeState("freeplay", "windose_data/scripts/custom_menus/", "FreeplayState");		
 		super.create();
 	}

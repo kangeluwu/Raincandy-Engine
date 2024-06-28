@@ -5,6 +5,7 @@ import Song.SwagSong;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.util.FlxColor;
+import openfl.utils.Assets as OpenFlAssets;
 import flixel.FlxSprite;
 import flixel.FlxG;
 import flixel.text.FlxText;
@@ -19,9 +20,9 @@ import flixel.util.FlxTimer;
 import flixel.input.keyboard.FlxKey;
 import openfl.events.KeyboardEvent;
 import FunkinLua;
-
+import customlize.*;
 using StringTools;
-
+import openfl.media.Sound;
 class EditorPlayState extends MusicBeatState
 {
 	// Yes, this is mostly a copy of PlayState, it's kinda dumb to make a direct copy of it but... ehhh
@@ -36,8 +37,8 @@ class EditorPlayState extends MusicBeatState
 	public var unspawnNotes:Array<Note> = [];
 
 	var generatedMusic:Bool = false;
-	var vocals:FlxSound;
-
+	var vocals:VoicesGroup;
+	var sfx:SoundGroup;
 	var startOffset:Float = 0;
 	var startPos:Float = 0;
 
@@ -106,11 +107,47 @@ class EditorPlayState extends MusicBeatState
 		grpNoteSplashes.add(splash);
 		splash.alpha = 0.0;
 		
-		if (PlayState.SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.songStuffer( PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
-		else
-			vocals = new FlxSound();
+		vocals = new VoicesGroup();
 
+		if (PlayState.SONG.needsVoices){
+
+				for (i in PlayState.SONG.playerVocalFiles){
+					var fileP:Dynamic = Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1] + '-'+ i);
+					if (Std.isOfType(fileP, Sound) || OpenFlAssets.exists(fileP)) {
+						   var snd:FlxSound = new FlxSound();
+						   snd.loadEmbedded(fileP);
+						   vocals.addPlayerVoice(snd);
+					}
+				}
+				
+					for (i in PlayState.SONG.opponentVocalFiles){
+						var fileP:Dynamic = Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1] + '-'+ i);
+						if (Std.isOfType(fileP, Sound) || OpenFlAssets.exists(fileP)) {
+							   var snd:FlxSound = new FlxSound();
+							   snd.loadEmbedded(fileP);
+							   vocals.addOpponentVoice(snd);
+						}
+			
+					}
+				
+			
+			if (vocals.playerVoices.members.length<=0|| vocals.opponentVoices.members.length<=0){
+				vocals.clear();
+				var snd:FlxSound = new FlxSound();
+				snd.loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
+		vocals.add(snd);
+			}
+			
+		}
+		add(vocals);
+
+
+
+		sfx = new SoundGroup();
+		if (PlayState.SONG.needsSFX)
+			SoundGroup.build(PlayState.SONG.song,PlayState.SONG.sfxFiles);
+
+			add(sfx);
 		generateSong(PlayState.SONG.song);
 		#if (LUA_ALLOWED && MODS_ALLOWED)
 		for (notetype in noteTypeMap.keys()) {
@@ -206,7 +243,8 @@ class EditorPlayState extends MusicBeatState
 		FlxG.sound.music.onComplete = endSong;
 		vocals.pause();
 		vocals.volume = 0;
-
+		sfx.pause();
+		sfx.volume = 0;
 		var songData = PlayState.SONG;
 		Conductor.changeBPM(songData.bpm);
 		
@@ -228,15 +266,25 @@ class EditorPlayState extends MusicBeatState
 			{
 				if(songNotes[1] > -1) { //Real notes
 					var daStrumTime:Float = songNotes[0];
-					if(daStrumTime >= startPos) {
-						var daNoteData:Int = Std.int(songNotes[1] % 4);
-
-						var gottaHitNote:Bool = section.mustHitSection;
-
-						if (songNotes[1] > 3)
-						{
-							gottaHitNote = !section.mustHitSection;
+				var fuckYOU = songNotes[1];
+					if (!songData.igorAutoFix){
+					if (!section.mustHitSection){
+						if (fuckYOU < Note.NOTE_AMOUNT*2){
+						if (fuckYOU >= Note.NOTE_AMOUNT)
+							{
+								fuckYOU -= Note.NOTE_AMOUNT;
+							}
+							else
+							{
+								fuckYOU += Note.NOTE_AMOUNT;
+							}
 						}
+					}
+					}
+					if(daStrumTime >= startPos) {
+						var daNoteData:Int = Std.int(fuckYOU % Note.NOTE_AMOUNT);
+						var daNoteStrum:Int = Math.floor(fuckYOU / Note.NOTE_AMOUNT);
+						var gottaHitNote:Bool = if (daNoteStrum == 0) true else false;
 
 						var oldNote:Note;
 						if (unspawnNotes.length > 0)
@@ -245,6 +293,7 @@ class EditorPlayState extends MusicBeatState
 							oldNote = null;
 
 						var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
+						swagNote.currentStrum = daNoteStrum;
 						swagNote.mustPress = gottaHitNote;
 						swagNote.sustainLength = songNotes[2];
 						swagNote.noteType = songNotes[3];
@@ -264,6 +313,7 @@ class EditorPlayState extends MusicBeatState
 
 								var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(PlayState.SONG.speed, 2)), daNoteData, oldNote, true);
 								sustainNote.mustPress = gottaHitNote;
+								swagNote.currentStrum = daNoteStrum;
 								sustainNote.noteType = swagNote.noteType;
 								sustainNote.scrollFactor.set();
 								unspawnNotes.push(sustainNote);
@@ -318,6 +368,9 @@ class EditorPlayState extends MusicBeatState
 		vocals.volume = 1;
 		vocals.time = startPos;
 		vocals.play();
+		sfx.volume = 1;
+		sfx.time = startPos;
+		sfx.play();
 	}
 
 	function sortByShit(Obj1:Note, Obj2:Note):Int
@@ -336,6 +389,7 @@ class EditorPlayState extends MusicBeatState
 		{
 			FlxG.sound.music.pause();
 			vocals.pause();
+			sfx.pause();
 			#if mobile
 			androidc.visible = false;
 			#end
@@ -521,14 +575,14 @@ class EditorPlayState extends MusicBeatState
 	override public function onFocus():Void
 	{
 		vocals.play();
-
+		sfx.play();
 		super.onFocus();
 	}
 	
 	override public function onFocusLost():Void
 	{
 		vocals.pause();
-
+		sfx.pause();
 		super.onFocusLost();
 	}
 
@@ -554,11 +608,13 @@ class EditorPlayState extends MusicBeatState
 	function resyncVocals():Void
 	{
 		vocals.pause();
-
+		sfx.pause();
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
 		vocals.time = Conductor.songPosition;
 		vocals.play();
+		sfx.time = Conductor.songPosition;
+		sfx.play();
 	}
 	private function onKeyPress(event:KeyboardEvent):Void
 	{
