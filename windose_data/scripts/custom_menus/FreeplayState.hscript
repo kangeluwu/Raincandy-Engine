@@ -299,15 +299,7 @@ function update(elapsed)
 						destroyFreeplayVocals();
 						Paths.currentModDirectory = songs[curSelected].folder;
 						var poop = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
-
-						curSong = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-		if (!FNFAssets.exists(Paths.json(Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase())))
-			{
-				// assume we pecked up the difficulty, return to default difficulty
-				trace("UH OH SONG IN SPECIFIED DIFFICULTY DOESN'T EXIST\nUSING DEFAULT DIFFICULTY");
-				curSong = Song.loadFromJson(songs[curSelected].songName.toLowerCase(), songs[curSelected].songName.toLowerCase());
-				poop =  Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
-			}
+					findSongFiles(songs[curSelected].songName.toLowerCase(),poop,0);
 						songFileNames = curSong.songFileNames;
 					FlixG.sound.music.volume = 0;
 					PlayState.SONG = curSong;
@@ -337,6 +329,72 @@ function update(elapsed)
 				enter();
 			}
 }
+var turns = 0;
+	function findSongFiles(songLowercase,poop,change){
+		if (!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase() + '.json')) &&!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase() + '-chart.json')))
+			{
+				// assume we pecked up the difficulty, return to default difficulty
+			
+				if (turns < 4){
+					trace("UH OH SONG IN SPECIFIED DIFFICULTY DOESN'T EXIST LOL");
+					turns += 1;
+				if (change < 0)
+				changeDiff(curDifficulty-1);
+				else
+				changeDiff(curDifficulty+1);
+				
+				trace(turns);
+				return;
+				}
+				
+			}
+			trace(Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()));
+			if (turns >= 4 && !FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '.json')) &&!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase() + '-chart.json'))){
+				curSong = {
+					song: songs[curSelected].songName,
+					notes: [{
+						sectionBeats: 4,
+						bpm: 150,
+						changeBPM: false,
+						mustHitSection: true,
+						gfSection: false,
+						sectionNotes: [],
+						typeOfSection: 0,
+						altAnim: false,
+						altAnimNum: 0,
+					crossfadeBf: false,
+					crossfadeDad: false
+				}],
+					events: [],
+					songFileNames: ['Inst','Voices'],
+					playerVocalFiles: [],
+					sfxFiles: [],
+					opponentVocalFiles: [],
+					bpm: 150.0,
+					strums:2,
+					needsVoices: true,
+					igorAutoFix: true,
+					arrowSkin: '',
+					splashSkin: 'noteSplashes',//idk it would crash if i didn't
+					player1: 'bf',
+					player2: 'dad',
+					gfVersion: 'gf',
+					cutsceneType: "none",
+					uiType: 'normal',
+					speed: 1,
+					composer: '',
+					songNameChinese: songs[curSelected].songName,
+					stage: 'stage',
+					validScore: false
+				};
+				turns = 0;
+				return curSong;
+			}else{
+					curSong = Song.loadFromNewJson(poop, songLowercase);
+					turns = 0;
+					return curSong;
+				}
+	}
 function enter()
 	{
 		FlixG.mouse.visible = false;
@@ -354,7 +412,7 @@ function enter()
 			}*/
 			trace(poop);
 
-			PlayState.SONG = Song.loadFromJson(poop, songLowercase);
+			PlayState.SONG = findSongFiles(songLowercase,poop,0);
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 
@@ -391,14 +449,7 @@ function changeDiff(change)
 		var songLowercase = Paths.formatToSongPath(songs[curSelected].songName);
 		var poop = Highscore.formatSong(songLowercase, curDifficulty);
 
-		if (!FNFAssets.exists(Paths.json(Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase())))
-			{
-				// assume we pecked up the difficulty, return to default difficulty
-				trace("UH OH SONG IN SPECIFIED DIFFICULTY DOESN'T EXIST\nUSING DEFAULT DIFFICULTY");
-				curDifficulty = 0;
-				poop =  Highscore.formatSong(songLowercase, curDifficulty);
-			}
-			curSong = Song.loadFromJson(poop, songLowercase);
+		findSongFiles(songLowercase,poop,change);
 
 			
 		lastDifficultyName = CoolUtil.difficulties[curDifficulty];

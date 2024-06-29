@@ -247,7 +247,12 @@ class Song
 					for (fuckyou in lmfao){
 						if (fuckyou.l == null)fuckyou.l = 0;
 						if (fuckyou.k == null)fuckyou.k = '';
-						sec.sectionNotes.push([fuckyou.t,fuckyou.d,fuckyou.l,fuckyou.k]);
+						var kind = fuckyou.k;
+						switch (kind.toLowerCase()){
+							case 'normal':
+								kind = '';
+						}
+						sec.sectionNotes.push([fuckyou.t,fuckyou.d,fuckyou.l,kind]);
 					}
 				}
 				var ev:Array<Dynamic> = songJson.events;
@@ -259,7 +264,7 @@ class Song
 							var value3 = '';
 
 						    var values:Array<String> = Reflect.fields(fuckyou.v);
-
+						
 							switch (fuckyou.e){
 								case 'FocusCamera':
 									value1 = Std.string(Reflect.field(fuckyou.v,'char'));
