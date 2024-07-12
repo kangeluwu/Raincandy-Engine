@@ -1,12 +1,13 @@
 ## [Plans]
 ### todo
 - Extra keys????
-- Stupid Ios & android port.
-- Vertical Slice Chart support.
 - Custom Hscript Charting Editor(would kill me)
+- Vertical Slice Charting BUG FIXING
 
-## [0.2.0] - 2024-6-6
+## [0.2.0] - 2024-6-29
 ### Added
+- Vertical Slice Chart support.
+- Stupid Ios & android port.
 - Customlized strums numbers
 - Custom Sprites Script.
 - STICKER TRANS WHAT

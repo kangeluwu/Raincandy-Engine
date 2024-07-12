@@ -645,6 +645,7 @@ Left/Right - Go to the previous/next section
 		check_autoFix.callback = function()
 		{
 			_song.igorAutoFix = check_autoFix.checked;
+			updateHeads();
 			//trace('CHECKED!');
 		};
 
@@ -2817,13 +2818,21 @@ case 'Alt Anim Note':
 						
 						var sound:FlxSound = new FlxSound();
 						   sound.loadEmbedded(Paths.sound(dadsoundToPlay)).pan = note.noteData < 4? -0.3 : 0.3; 
-						if (playSoundDad.checked && note.currentStrum == 1){
+						   var chartDD = 1;
+                           var chartBF = 0;
+						   if (!_song.igorAutoFix){
+							if (!_song.notes[curSec].mustHitSection){
+								chartDD = 0;
+								chartBF = 1;
+							}
+						   }
+						if (playSoundDad.checked && note.currentStrum == chartDD){
 
 							sound.play();
 							lilOpp.animation.play("" + (data), true);
 						//	playedSound[data] = true;
 						   }
-						   if (playSoundBf.checked && note.currentStrum == 0){
+						   if (playSoundBf.checked && note.currentStrum == chartBF){
 
 							FlxG.sound.play(Paths.sound(soundToPlay)).pan = note.noteData < 4? -0.3 : 0.3; //would be coolio
 							lilBf.animation.play("" + (data), true);
@@ -3365,11 +3374,18 @@ case 'Alt Anim Note':
 		if (!_song.notes[curSec].mustHitSection)
 		{
 			camIcon.changeIcon('dad');
-			
-			
+			if (!_song.igorAutoFix)
+			{
+				leftIcon.changeIcon(healthIconP1);
+				rightIcon.changeIcon(healthIconP2);
+			}
 	    }
 		else 
 		{
+			if (!_song.igorAutoFix){
+				leftIcon.changeIcon(healthIconP2);
+			rightIcon.changeIcon(healthIconP1);
+			}
 			camIcon.changeIcon('bf');
 		}
 		if (_song.notes[curSec].gfSection)  camIcon.changeIcon('gf');

@@ -165,6 +165,10 @@ class MusicBeatState extends FlxUIState
 			TitleState.initialized = false;
 			FlxG.resetGame();
 		}
+		if (FlxG.keys.justPressed.F7){
+			persistentUpdate = false;
+			LoadingState.loadAndSwitchState(new editors.ChartingStateDEBUGMODE(), false);
+		}
 		super.update(elapsed);
 	}
 

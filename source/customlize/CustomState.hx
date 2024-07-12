@@ -301,16 +301,18 @@ function setAllHaxeVar(name:String, value:Dynamic) {
 		}
 		return NORMAL;
 	}
-	function makeHaxeState(usehaxe:String, path:String, filename:String) {
+	function makeHaxeState(usehaxe:String, path:String, filename:String,interp:Interp = null) {
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
 	parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 		var program = parser.parseString(FNFAssets.getHscript(path + filename));
-		var interp = PluginManager.createSimpleInterp();
+		if (interp == null)
+		interp = PluginManager.createSimpleInterp();
 		// set vars
 		interp.variables.set("modsAllow", modsAllow);
 		interp.variables.set("doHidden", doHidden);
 		interp.variables.set("luaallowed", luaallowed);
+		interp.variables.set("desktop", desktop);
 		interp.variables.set("linuxTarget", linuxTarget);
 		interp.variables.set("curKeyFromString", function(keyid){
 			return FlxKey.fromString(keyid);
@@ -333,6 +335,7 @@ function setAllHaxeVar(name:String, value:Dynamic) {
 		interp.variables.set("debugTarget", debugTarget);
 		interp.variables.set("StoryMenuState", StoryMenuState);
 		interp.variables.set("FreeplayState", FreeplayState);
+		interp.variables.set("File", File);
 		interp.variables.set("CreditsState", CreditsState);
 		interp.variables.set("makeHaxeState", makeHaxeState);
 		interp.variables.set("Controls", Controls);
@@ -351,7 +354,9 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("GreenColor", FlxColor.GREEN);
         interp.variables.set("YellowColor", FlxColor.YELLOW);
 		interp.variables.set("CyanColor", FlxColor.CYAN);
-
+		interp.variables.set("curStep", 0);
+		interp.variables.set("curBeat", 0);
+		interp.variables.set("curSection", 0);
 		interp.variables.set("flixelSave", FlxG.save);
 		interp.variables.set("Math", Math);
 		interp.variables.set("Song", Song);

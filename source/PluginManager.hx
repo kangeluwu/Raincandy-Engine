@@ -146,8 +146,10 @@ class PluginManager {
     static function addingBasicStuffsIthink<T:Interp>(interp:T):T{
         interp.variables.set("FlxPoint", FlxPoint);
         interp.variables.set("FlxEffectSprite", FlxEffectSprite);
+        interp.variables.set("AttachedFlxText", editors.ChartingState.AttachedFlxText);
 		interp.variables.set("FlxOutlineEffect", FlxOutlineEffect);
         interp.variables.set("FlxRainbowEffect", FlxRainbowEffect);
+        interp.variables.set("WindowUtil", util.WindowUtil);
         interp.variables.set("FlxShakeEffect", FlxShakeEffect);
         interp.variables.set("FlxTrailEffect", FlxTrailEffect);
 		interp.variables.set("FlxWaveEffect", FlxWaveEffect);
@@ -172,6 +174,7 @@ class PluginManager {
         interp.variables.set("FlxStarField3D", flixel.addons.display.FlxStarField.FlxStarField3D);
         interp.variables.set("FlxStarField2D", flixel.addons.display.FlxStarField.FlxStarField2D);
         interp.variables.set("Map", haxe.ds.StringMap);
+        interp.variables.set("String", String);
         interp.variables.set("FlxColor", CustomFlxColor);
         interp.variables.set("FlxSpriteGroup", flixel.group.FlxSpriteGroup);
         return interp;
@@ -242,6 +245,11 @@ class PluginManager {
         interp.variables.set("mobile", true);
 #else
 interp.variables.set("mobile", false);
+#end
+#if android
+interp.variables.set("android", true);
+#else
+interp.variables.set("android", false);
 #end
         interp.variables.set("FlxBackdrop", FlxBackdrop);
         interp.variables.set("privateAccess", privateAccess);

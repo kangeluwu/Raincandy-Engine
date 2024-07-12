@@ -40,7 +40,8 @@
 	
 	<classpath name="source" />
 	
-	<!-- PSYCH ENGINE CUSTOMIZATION -->
+
+
 	<define name="MODS_ALLOWED"/>
 	<define name="LUA_ALLOWED" />
 	<define name="HAD_DIFFERNET_LANGS"/>
@@ -56,7 +57,8 @@
 		<assets path="windose_data/secrets" rename="windose_data" exclude="*.ogg" if="web"/>
 		<assets path="windose_data/secrets" rename="windose_data" exclude="*.mp3"  unless="web"/>
 	</section>
-
+	<haxelib name="funkin.vis"/>
+	<haxelib name="grig.audio" />
 	<!-- DONT ENABLE THIS -->
 	<define name="CHECK_FOR_UPDATES" if="desktop officialBuild"/>
 
@@ -133,13 +135,14 @@
 	<haxelib name="flixel" />
 	<haxedev set='webgl' />
 
+	<haxelib name="FlxPartialSound" /> <!-- Loading partial sound data -->
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
-	<!--From CodeNameEngine!Go to check their engine XD github.com/FNF-CNE-Devs/CodenameEngine-->
 	<haxelib name="hscript" />
 	<define name="hscriptPos" />
 	<haxelib name="json2object"/>
 	<haxelib name="uniontypes"/>
+	<haxedef name="CAN_OPEN_LINKS" unless="switch" />
 	<haxelib name="haxeui-core"/>
 	<haxelib name="tjson"/>
 	<!--In case you want to use the ui package-->

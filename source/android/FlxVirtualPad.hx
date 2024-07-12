@@ -159,17 +159,20 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		}
 	}
 public function returnPressed(buttonName:String):Bool{
-switch (buttonName){
-	case 'A':return buttonA.justPressed;
-	case 'B':return buttonB.justPressed;
-	case 'C':return buttonC.justPressed;
-	case 'D':return buttonD.justPressed;
-	case 'V':return buttonV.justPressed;
-	case 'X':return buttonX.justPressed;
-	case 'Y':return buttonY.justPressed;
-	case 'Z':return buttonZ.justPressed;
+switch (buttonName.toLowerCase()){
+	case 'a':return buttonA.justPressed;
+	case 'b':return buttonB.justPressed;
+	case 'c':return buttonC.justPressed;
+	case 'd':return buttonD.justPressed;
+	case 'v':return buttonV.justPressed;
+	case 'x':return buttonX.justPressed;
+	case 'y':return buttonY.justPressed;
+	case 'z':return buttonZ.justPressed;
 	case '7':return button7.justPressed;
-
+	case 'up':return buttonUp.justPressed;
+	case 'down':return buttonDown.justPressed;
+	case 'left':return buttonLeft.justPressed;
+	case 'right':return buttonRight.justPressed;
 }
 return false;
 }

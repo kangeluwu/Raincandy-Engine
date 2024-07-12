@@ -331,7 +331,11 @@ function update(elapsed)
 }
 var turns = 0;
 	function findSongFiles(songLowercase,poop,change){
-		if (!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase() + '.json')) &&!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase() + '-chart.json')))
+		var diff = CoolUtil.getDifficultyFilePath(curDifficulty);
+		diff = diff.substr(1, diff.length);
+		if (diff == 'null' || diff == '')
+			diff = 'normal';
+		if (!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songLowercase) + '/' +  poop.toLowerCase() + '.json')))
 			{
 				// assume we pecked up the difficulty, return to default difficulty
 			
@@ -349,7 +353,7 @@ var turns = 0;
 				
 			}
 			trace(Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()));
-			if (turns >= 4 && !FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '.json')) &&!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songs[curSelected].songName.toLowerCase()) + '/' +  poop.toLowerCase() + '-chart.json'))){
+			if (turns >= 4 && !FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songLowercase) +'/' + songLowercase+ '.json')) &&!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songLowercase) + '/' +  songLowercase + '-chart.json'))){
 				curSong = {
 					song: songs[curSelected].songName,
 					notes: [{
@@ -390,7 +394,8 @@ var turns = 0;
 				turns = 0;
 				return curSong;
 			}else{
-					curSong = Song.loadFromNewJson(poop, songLowercase);
+					curSong = Song.loadFromNewJson(songLowercase, songLowercase,diff);
+					trace(diff);
 					turns = 0;
 					return curSong;
 				}
@@ -450,6 +455,24 @@ function changeDiff(change)
 		var poop = Highscore.formatSong(songLowercase, curDifficulty);
 
 		findSongFiles(songLowercase,poop,change);
+		trace(songFileNames);
+		if (curSong != null){
+		if (songFileNames[0] != curSong.songFileNames[0] || songFileNames[1] != curSong.songFileNames[1]){
+		songFileNames = curSong.songFileNames;
+		FlixG.sound.music.volume = 0;
+		PlayState.SONG = curSong;
+		if (PlayState.SONG.needsVoices && !ClientPrefs.classicStyle)
+			FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
+		else
+			FreeplayState.vocals = new FlxSound();
+
+		FlixG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[0]), 0.7);
+		FreeplayState.vocals.play();
+		FreeplayState.vocals.persist = true;
+		FreeplayState.vocals.looped = true;
+		FreeplayState.vocals.volume = 0.7;
+}
+		}
 
 			
 		lastDifficultyName = CoolUtil.difficulties[curDifficulty];

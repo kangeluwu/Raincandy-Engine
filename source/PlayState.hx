@@ -4825,7 +4825,7 @@ function eventPushed(event:EventNote) {
 					}
 				}
 
-					playerStrums.add(babyArrow);
+				playerStrums.add(babyArrow);
 				}
 				else if (player == 0)
 				{
@@ -5507,7 +5507,7 @@ if (opponentPlayer){
 	}
 	}
 }
-	strumLineNotes.sort(CoolUtil.byZIndex, FlxSort.DESCENDING);
+
 
 		if (SONG.notes[curSection] != null)
 			{
@@ -5543,7 +5543,7 @@ if (opponentPlayer){
 			}
 
 			var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
-			notes.sort(CoolUtil.byZIndex, FlxSort.ASCENDING);
+		
 			notes.forEachAlive(function(daNote:Note)
 			{
 				var strumGroup:FlxTypedGroup<StrumNote> = currentStrums[daNote.currentStrum];
@@ -5556,6 +5556,7 @@ if (opponentPlayer){
 				}
 
 				var strum:StrumNote = strumGroup.members[daNote.noteData];
+				breakGroup.members[daNote.noteData].x = strum.x;
                 if (modchartMode){
 				var pN:Int = daNote.currentStrum;
 				var pos = modManager.getPos(daNote.strumTime, modManager.getVisPos(Conductor.songPosition, daNote.strumTime, songSpeed),
@@ -6495,8 +6496,8 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 		if (!ClientPrefs.showComboBreaks)
 			return;
 		var coolor = switch (rating) {
-			//case 'miss':
-			//	missBreakColor;
+			case 'miss':
+				0xFFDD0A93;
 			//case 'wayoff':
 			//	wayoffBreakColor;
 			case 'shit':
@@ -6509,8 +6510,8 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 		dir = dir % 4;
 		var thingToDisplay = breakGroup.members[dir];
 		thingToDisplay.color = coolor;
-		thingToDisplay.alpha = 0;
-		thingToDisplay.visible = false;
+		thingToDisplay.alpha = 1;
+		thingToDisplay.visible = true;
 		FlxTween.tween(thingToDisplay, {alpha: 0}, 1, {onComplete: function(_) {thingToDisplay.visible = false;}});
 	}
 	function tweenCamIn() {
@@ -7349,7 +7350,7 @@ currentTimingShown.cameras = [camHUD];
 		if(daNote.gfNote) {
 			char = gf;
 		}
-
+		comboBreak(daNote.noteData,playerOne,'miss');
 		if(char != null && !daNote.noMissAnimation && char.hasMissAnimations)
 		{
 			var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + 'miss' + daNote.animSuffix;

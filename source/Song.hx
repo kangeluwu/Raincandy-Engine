@@ -183,7 +183,7 @@ class Song
 			}
 			catch(e){
 				trace('NEW CHARTING FILE NOT EXISTS! USING OLD ONE...');
-				if (difficu.toLowerCase() == 'normal')
+				if (difficu.toLowerCase() == 'normal' || difficu == '')
 					difficu = '';
 				else
 					difficu = '-'+difficu;

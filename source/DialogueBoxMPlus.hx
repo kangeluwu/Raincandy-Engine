@@ -24,7 +24,10 @@ using CoolUtil.FlxTools;
 
 typedef Dialogue =
 {
+	var addX:Null<Int>;
 	var addY:Int;
+	var scaleX:Null<Float>;
+	var scaleY:Null<Float>;
 	var canFlip:Bool;
 	var isPixel:Bool;
 }
@@ -95,7 +98,10 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 		_dialogue = {
 			addY: 0,
 			canFlip: true,
-			isPixel : false
+			isPixel : false,
+			scaleY:1,
+			scaleX:1,
+			addX:0
 		};
 		var fileContent = "";
 		fileContent = dialogueInput.trim();
@@ -123,7 +129,8 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 			if (bgFade.alpha > 1)
 				bgFade.alpha = 1;
 		}, bgFIL);
-
+		if (Paths.fileExists(Paths.font(curFont)))
+			curFont = Paths.font(curFont);
 		switch (PlayState.SONG.song.toLowerCase())
 		{
 			case 'thorns':
@@ -156,7 +163,12 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 		box.animation.addByPrefix('open', 'open', 24, false);
 		box.animation.addByPrefix('normal', 'normal', 24, true);
 		box.animation.play('open');
-		box.setGraphicSize(Std.int(FlxG.width * 0.9));
+		box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
+		if (_dialogue.scaleX!=null)
+			box.scale.x *= _dialogue.scaleX;
+
+		if (_dialogue.scaleY!=null)
+			box.scale.y *= _dialogue.scaleY;
 		box.updateHitbox();
 		add(box);
 
@@ -175,7 +187,8 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 			#end
 			_dialogue = CoolUtil.parseJson(data);
 		}
-
+		if (_dialogue.addX!=null)
+		box.x += _dialogue.addX;
 		box.y += _dialogue.addY;
 
 		portrait.screenCenter(Y);
@@ -441,11 +454,18 @@ for (touch in FlxG.touches.list)
 
 			dialogueOpened = false;
 			box.animation.play('open');
-			box.setGraphicSize(Std.int(FlxG.width * 0.9));
+			box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
+			if (_dialogue.scaleX!=null)
+				box.scale.x *= _dialogue.scaleX;
+	
+			if (_dialogue.scaleY!=null)
+				box.scale.y *= _dialogue.scaleY;
 			box.updateHitbox();
 			add(box);
 
 			box.screenCenter(X);
+			if (_dialogue.addX!=null)
+				box.x += _dialogue.addX;
 			box.y = 710 - box.height;
 
 			#if MODS_ALLOWED

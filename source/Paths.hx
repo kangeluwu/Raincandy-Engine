@@ -29,6 +29,15 @@ import flash.media.Sound;
 
 using StringTools;
 import openfl.display3D.textures.RectangleTexture;
+
+enum abstract PathsFunction(String)
+{
+  var MUSIC;
+  var INST;
+  var VOICES;
+  var SOUND;
+}
+
 class Paths
 {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
@@ -53,6 +62,19 @@ class Paths
 		'achievements'
 	];
 	#end
+	public static function stripLibrary(path:String):String
+		{
+		  var parts:Array<String> = path.split(':');
+		  if (parts.length < 2) return path;
+		  return parts[1];
+		}
+	  
+		public static function getLibrary(path:String):String
+		{
+		  var parts:Array<String> = path.split(':');
+		  if (parts.length < 2) return 'preload';
+		  return parts[0];
+		}
 
 	public static function excludeAsset(key:String) {
 		if (!dumpExclusions.contains(key))
@@ -367,7 +389,7 @@ class Paths
 		return SUtil.getPath() + 'windose_data/fonts/$key';
 	}
 
-	inline static public function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String)
+	inline static public function fileExists(key:String, type:AssetType = null, ?ignoreMods:Bool = false)
 	{
 		#if MODS_ALLOWED
 		if(FileSystem.exists(mods(currentModDirectory + '/' + key)) || FileSystem.exists(mods(key))) {
