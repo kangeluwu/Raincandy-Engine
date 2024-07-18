@@ -154,6 +154,8 @@ class PluginManager {
         interp.variables.set("FlxTrailEffect", FlxTrailEffect);
 		interp.variables.set("FlxWaveEffect", FlxWaveEffect);
         interp.variables.set("IFlxEffect", IFlxEffect);
+        interp.variables.set("SpectralAnalyzer", funkin.vis.dsp.SpectralAnalyzer);
+        interp.variables.set("LimeAudioClip", funkin.vis.audioclip.frontends.LimeAudioClip);
         interp.variables.set("FlxGlitchDirection", FlxGlitchDirection);
         interp.variables.set("FlxOutlineMode", FlxOutlineMode);
         interp.variables.set("FlxWaveMode", FlxWaveMode);
@@ -161,6 +163,11 @@ class PluginManager {
         interp.variables.set("FlxGlitchEffect", FlxGlitchEffect);
         interp.variables.set("StickerSubState", StickerSubState);
         interp.variables.set("ColorSwap", ColorSwap);
+        interp.variables.set("Lambda", Lambda);
+        interp.variables.set("getSoundChannel", function(soundchannel){
+            @:privateAccess
+            return soundchannel._channel.__source;
+        });
         #if flxanimate
         interp.variables.set("FlxAnimate", flxanimate.FlxAnimate);
         interp.variables.set("FlxAnim", flxanimate.animate.FlxAnim);
@@ -231,6 +238,7 @@ class PluginManager {
 		interp.variables.set("FlxTween", flixel.tweens.FlxTween);
 		interp.variables.set("Std", Std);
 		interp.variables.set("StringTools", StringTools);
+
 		interp.variables.set("FlxTrail", FlxTrail);
 		interp.variables.set("FlxEase", FlxEase);
 		interp.variables.set("Character", Character);

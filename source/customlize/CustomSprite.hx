@@ -169,6 +169,17 @@ class CustomSprite extends DynamicSprite{
         interp.variables.set("getFrames", getFrames);
         interp.variables.set("initHScript", initHScript);
         interp.variables.set("mixtex", mixtex);
+        interp.variables.set('addHaxeLibrary', function (libName:String, ?libFolder:String = '') {
+			try {
+				var str:String = '';
+				if(libFolder.length > 0)
+					str = libFolder + '.';
+                interp.variables.set(libName, Type.resolveClass(str + libName));
+			}
+			catch (e) {
+				Lib.application.window.alert(e.message, "ADD LIBRARY FAILED BRUH");
+			}
+		});
 		interp.execute(program);
 		trace(interp);
 		return interp;

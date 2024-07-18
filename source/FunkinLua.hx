@@ -75,7 +75,8 @@ class FunkinLua {
 
 	
 	public static var hscript:HScript = null;
-
+	public var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
+	//public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
 	
 	public function new(script:String) {
 		#if LUA_ALLOWED
@@ -228,7 +229,13 @@ class FunkinLua {
 		set('buildTarget', 'unknown');
 		#end
 
-		
+		for (name => func in PlayState.instance.customFunctions)
+			{
+				if(func != null)
+					Lua_helper.add_callback(lua, name, func);
+			}
+
+			
 		// mod manager
 		Lua_helper.add_callback(lua, "setPercent", function(modName:String, val:Float, player:Int=-1)
 			{
@@ -2905,7 +2912,7 @@ class FunkinLua {
 		if(hscript == null)
 		{
 			trace('initializing haxe interp for: $scriptName');
-			hscript = new HScript(); //TO DO: Fix issue with 2 scripts not being able to use the same variable names
+			hscript = new HScript(this); //TO DO: Fix issue with 2 scripts not being able to use the same variable names
 		}
 	}
 	
@@ -3398,7 +3405,13 @@ class FunkinLua {
 		Lua.setglobal(lua, variable);
 		#end
 	}
-
+	public function addLocalCallback(name:String, myFunction:Dynamic)
+		{
+			#if LUA_ALLOWED
+			callbacks.set(name, myFunction);
+			Lua_helper.add_callback(lua, name, null); //just so that it gets called
+			#end
+		}
 	#if LUA_ALLOWED
 	public function getBool(variable:String) {
 		var result:String = null;
@@ -3526,7 +3539,7 @@ class HScript
 {
 	public static var parser:Parser = new Parser();
 	public var interp:Interp;
-
+    public static var parentLua:FunkinLua = null;
 	public var variables(get, never):Map<String, Dynamic>;
 
 	public function get_variables()
@@ -3534,9 +3547,11 @@ class HScript
 		return interp.variables;
 	}
 
-	public function new()
+	public function new(?parent:FunkinLua = null)
 	{
+		parentLua = parent;
 		interp = new Interp();
+		interp.variables.set('parentLua', parentLua);
 		interp.variables.set('FlxG', FlxG);
 		interp.variables.set('FlxSprite', FlxSprite);
 		interp.variables.set('FlxCamera', FlxCamera);
@@ -3560,7 +3575,21 @@ class HScript
 		#end
 		interp.variables.set('ShaderFilter', openfl.filters.ShaderFilter);
 		interp.variables.set('StringTools', StringTools);
-
+        interp.variables.set('createGlobalCallback', function(name:String, func:Dynamic)
+            {
+                #if LUA_ALLOWED
+                for (script in PlayState.instance.luaArray)
+                    if(script != null && script.lua != null && !script.closed)
+                        Lua_helper.add_callback(script.lua, name, func);
+                #end
+                PlayState.instance.customFunctions.set(name, func);
+            });
+    
+            // this one was tested
+        interp.variables.set('createCallback', function(name:String, func:Dynamic, ?funk:FunkinLua = null)
+            {                
+                if(funk != null) funk.addLocalCallback(name, func);
+            });
 		interp.variables.set('setVar', function(name:String, value:Dynamic)
 		{
 			PlayState.instance.variables.set(name, value);
@@ -3580,6 +3609,11 @@ class HScript
 			}
 			return false;
 		});
+		for (name => func in PlayState.instance.customFunctions)
+			{
+				if(func != null)
+					interp.variables.set(name, func);
+			}
 	}
 
 	public function execute(codeToRun:String):Dynamic

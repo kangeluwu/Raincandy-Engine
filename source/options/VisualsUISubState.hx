@@ -73,6 +73,12 @@ var option:Option = new Option('Show Combo Ratings',
 'bool', 
 false); 
 addOption(option);
+var option:Option = new Option('Show Combo Counter',
+'If checked, show combo counter.', 
+'showComboCounter', 
+'bool', 
+false); 
+addOption(option);
 		var option:Option = new Option('Time Bar:',
 			"What should the Time Bar display?",
 			'timeBarType',

@@ -14,6 +14,7 @@ class ClientPrefs {
 	public static var skipSplash:Bool = true;
 	public static var opponentStrums:Bool = true;
 	public static var showFPS:Bool = true;
+	public static var showComboCounter:Bool = true;
 	public static var showComboBreaks:Bool = true;
 	public static var creditMenuTheme:String = 'freeplayRandom';
 	public static var flashing:Bool = true;
@@ -110,6 +111,7 @@ class ClientPrefs {
 	}
 
 	public static function saveSettings() {
+		FlxG.save.data.showComboCounter = showComboCounter;
 		FlxG.save.data.vibration = vibration;
 		FlxG.save.data.cacheOnGPU = cacheOnGPU;
 		FlxG.save.data.showComboBreaks = showComboBreaks;
@@ -173,6 +175,9 @@ class ClientPrefs {
 	public static function loadPrefs() {
 		if(FlxG.save.data.downScroll != null) {
 			downScroll = FlxG.save.data.downScroll;
+		}
+		if(FlxG.save.data.showComboCounter != null) {
+			showComboCounter = FlxG.save.data.showComboCounter;
 		}
 		if(FlxG.save.data.langType != null) {
 			langType = FlxG.save.data.langType;
