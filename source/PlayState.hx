@@ -3395,6 +3395,18 @@ if (!dadChar.beingControlled)
 		if(startedCountdown) {
 			callOnLuas('onStartCountdown', []);
 			callAllHScript('onStartCountdown', []);
+			for (char in boyfriendMap.iterator()){
+				char.onCountdownStart();
+				char.onCountdownEnd();
+			}
+			for (char in dadMap.iterator()){
+				char.onCountdownStart();
+				char.onCountdownEnd();
+			}
+			for (char in gfMap.iterator()){
+				char.onCountdownStart();
+				char.onCountdownEnd();
+			}
 			return;
 		}
 
@@ -3458,6 +3470,7 @@ if (!dadChar.beingControlled)
 				recotors.push(strum.members);
 			}
 			modManager.receptors = recotors;
+
 		}
 
 	
@@ -3473,7 +3486,15 @@ if (!dadChar.beingControlled)
 			callAllHScript('onCountdownStarted', []);
 			var swagCounter:Int = 0;
 
-
+			for (char in boyfriendMap.iterator()){
+				char.onCountdownStart();
+			}
+			for (char in dadMap.iterator()){
+				char.onCountdownStart();
+			}
+			for (char in gfMap.iterator()){
+				char.onCountdownStart();
+			}
 			if(startOnTime < 0) startOnTime = 0;
 
 			if (startOnTime > 0) {
@@ -3590,6 +3611,15 @@ if (!dadChar.beingControlled)
 						countdownGo = createCountdownSprite(introAlts[2],antialias);
 						FlxG.sound.play(introGoSound, 0.6);
 					case 4:
+						for (char in boyfriendMap.iterator()){
+							char.onCountdownEnd();
+						}
+						for (char in dadMap.iterator()){
+							char.onCountdownEnd();
+						}
+						for (char in gfMap.iterator()){
+							char.onCountdownEnd();
+						}
 				}
 
 				notes.forEachAlive(function(note:Note) {
@@ -3613,6 +3643,15 @@ if (!dadChar.beingControlled)
 							note.alpha *= 0.35;
 						}
 					}
+				}
+				for (char in boyfriendMap.iterator()){
+					char.onCountdownStep(swagCounter);
+				}
+				for (char in dadMap.iterator()){
+					char.onCountdownStep(swagCounter);
+				}
+				for (char in gfMap.iterator()){
+					char.onCountdownStep(swagCounter);
 				}
 				callOnLuas('onCountdownTick', [swagCounter]);
 				callAllHScript('onCountdownTick', [swagCounter]);
@@ -3858,7 +3897,15 @@ var igroneSpilt:Bool = true;
 		FlxG.sound.music.onComplete = onSongComplete;
         vocals.play();
         sfx.play();
-		
+		for (char in boyfriendMap.iterator()){
+			char.onSongLoaded();
+		}
+		for (char in dadMap.iterator()){
+			char.onSongLoaded();
+		}
+		for (char in gfMap.iterator()){
+			char.onSongLoaded();
+		}
 		if(startOnTime > 0)
 		{
 			setSongTime(startOnTime - 500);
@@ -3896,7 +3943,15 @@ var igroneSpilt:Bool = true;
 		#end
 		setOnLuas('songLength', songLength);
 		setAllHaxeVar('songLength', songLength);
-
+		for (char in boyfriendMap.iterator()){
+			char.onSongStart();
+		}
+		for (char in dadMap.iterator()){
+			char.onSongStart();
+		}
+		for (char in gfMap.iterator()){
+			char.onSongStart();
+		}
 		callAllHScript('onSongStart', []);
 
 		callOnLuas('onSongStart', []);
@@ -4986,6 +5041,15 @@ function eventPushed(event:EventNote) {
 				timer.active = true;
 			}
 			paused = false;
+			for (char in boyfriendMap.iterator()){
+				char.onResume();
+			}
+			for (char in dadMap.iterator()){
+				char.onResume();
+			}
+			for (char in gfMap.iterator()){
+				char.onResume();
+			}
 			callOnLuas('onResume', []);
 
 			setAllHaxeVar('onResume', []);
@@ -5316,8 +5380,18 @@ function eventPushed(event:EventNote) {
 		{
 			var ret:Dynamic = callOnLuas('onPause', [], false);
 			var ret2:Dynamic = callAllHScript('onPause', [],false);
+			
 			if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) {
 				openPauseMenu();
+				for (char in boyfriendMap.iterator()){
+					char.onPause();
+				}
+				for (char in dadMap.iterator()){
+					char.onPause();
+				}
+				for (char in gfMap.iterator()){
+					char.onPause();
+				}
 			}
 		}
 		#if (sys)
@@ -5514,6 +5588,15 @@ if (opponentPlayer){
 					var dunceNote:Note = column[0];
 					notes.insert(0, dunceNote);
 					dunceNote.spawned = true;
+					for (char in boyfriendMap.iterator()){
+						char.onNoteIncoming(dunceNote);
+					}
+					for (char in dadMap.iterator()){
+						char.onNoteIncoming(dunceNote);
+					}
+					for (char in gfMap.iterator()){
+						char.onNoteIncoming(dunceNote);
+					}
 					callOnLuas('onSpawnNote', [
 						notes.members.indexOf(dunceNote),
 						dunceNote.noteData,
@@ -5795,7 +5878,15 @@ if (opponentPlayer){
 			var ret:Dynamic = callOnLuas('onGameOver', [], false);
 			var ret2:Dynamic = callAllHScript('onGameOver', [],false);
 			if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) {
-				
+				for (char in boyfriendMap.iterator()){
+					char.onGameOver();
+				}
+				for (char in dadMap.iterator()){
+					char.onGameOver();
+				}
+				for (char in gfMap.iterator()){
+					char.onGameOver();
+				}
 
 				if (opponentPlayer)
 					dad.stunned = true;
@@ -6405,6 +6496,15 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 	
 				FlxG.camera.flash(colorSelected, time, null, forced);
 		}
+		for (char in boyfriendMap.iterator()){
+			char.onSongEvent([eventName, value1, value2, value3]);
+		}
+		for (char in dadMap.iterator()){
+			char.onSongEvent([eventName, value1, value2, value3]);
+		}
+		for (char in gfMap.iterator()){
+			char.onSongEvent([eventName, value1, value2, value3]);
+		}
 		callOnLuas('onEvent', [eventName, value1, value2, value3]);
 		callAllHScript("onEvent", [eventName, value1, value2, value3]);
 	}
@@ -6456,6 +6556,23 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callOnLuas('onMovingCamera', ['gf']);
 				callAllHScript('onMovingCamera', ['gf']);
 				camTarget = 'gf';
+				var KYS = 'fuck';
+				if (!SONG.disPlayAutoMovingCam){
+				if (SONG.notes[curSection].mustHitSection)
+					KYS = 'true';
+
+				if (!SONG.notes[curSection].mustHitSection)
+					KYS = 'false';
+			}
+				for (char in boyfriendMap.iterator()){
+					char.onSongEvent(['onMovingCamera',camTarget,KYS,'']);
+				}
+				for (char in dadMap.iterator()){
+					char.onSongEvent(['onMovingCamera',camTarget,KYS,'']);
+				}
+				for (char in gfMap.iterator()){
+					char.onSongEvent(['onMovingCamera',camTarget,KYS,'']);
+				}
 				return;
 			}
 	
@@ -6465,6 +6582,15 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callOnLuas('onMovingCamera', ['dad']);
 				callAllHScript('onMovingCamera', ['dad']);
 				camTarget = 'dad';
+				for (char in boyfriendMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+				}
+				for (char in dadMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+				}
+				for (char in gfMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+				}
 			}
 			else
 			{
@@ -6472,6 +6598,15 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callOnLuas('onMovingCamera', ['boyfriend']);
 				callAllHScript('onMovingCamera', ['boyfriend']);
 				camTarget = 'bf';
+				for (char in boyfriendMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+				}
+				for (char in dadMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+				}
+				for (char in gfMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+				}
 			}
 		}
 		function moveCamByHand(char:String ='bf'):Void {
@@ -6487,6 +6622,15 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callOnLuas('onMovingCamera', ['gf']);
 				callAllHScript('onMovingCamera', ['gf']);
 				camTarget = 'gf';
+				for (char in boyfriendMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'fuck','']);
+				}
+				for (char in dadMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'fuck','']);
+				}
+				for (char in gfMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'fuck','']);
+				}
 			}
 			case 'dad':
 	
@@ -6494,12 +6638,29 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callOnLuas('onMovingCamera', ['dad']);
 				callAllHScript('onMovingCamera', ['dad']);
 				camTarget = 'dad';
+				for (char in boyfriendMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+				}
+				for (char in dadMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+				}
+				for (char in gfMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+				}
 			case 'bf':
 				moveCamera(false);
 				callOnLuas('onMovingCamera', ['boyfriend']);
 				callAllHScript('onMovingCamera', ['boyfriend']);
 				camTarget = 'bf';
-			
+				for (char in boyfriendMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+				}
+				for (char in dadMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+				}
+				for (char in gfMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+				}
 			}
 		}
 		var camTarget:String = 'none';
@@ -6512,6 +6673,23 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callOnLuas('onMoveCamera', ['gf']);
 				callAllHScript('onMoveCamera', ['gf']);
 				camTarget = 'gf';
+				var nuhuhMustHitmoment = 'fuck';
+				if (!SONG.disPlayAutoMovingCam){
+				if (SONG.notes[curSection].mustHitSection)
+					nuhuhMustHitmoment = 'true';
+
+				if (!SONG.notes[curSection].mustHitSection)
+					nuhuhMustHitmoment = 'false';
+			}
+				for (char in boyfriendMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,nuhuhMustHitmoment,'']);
+				}
+				for (char in dadMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,nuhuhMustHitmoment,'']);
+				}
+				for (char in gfMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,nuhuhMustHitmoment,'']);
+				}
 				return;
 			}
 	
@@ -6522,6 +6700,15 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callAllHScript("opponentTurn", []);
 				callAllHScript("playerTwoTurn", []);
 				camTarget = 'dad';
+				for (char in boyfriendMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+				}
+				for (char in dadMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+				}
+				for (char in gfMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+				}
 			}
 			else
 			{
@@ -6530,6 +6717,15 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callAllHScript("playerTurn", []);
 				callAllHScript("playerOneTurn", []);
 				camTarget = 'bf';
+				for (char in boyfriendMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+				}
+				for (char in dadMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+				}
+				for (char in gfMap.iterator()){
+					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+				}
 			}
 		}
 	
@@ -6691,7 +6887,15 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 	
 		var ret:Dynamic = callOnLuas('onEndSong', [], false);
 		var ret2:Dynamic = callAllHScript('onEndSong', [SONG.song],false);
-		
+		for (char in boyfriendMap.iterator()){
+			char.onSongEnd();
+		}
+		for (char in dadMap.iterator()){
+			char.onSongEnd();
+		}
+		for (char in gfMap.iterator()){
+			char.onSongEnd();
+		}
 		if((ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) && !transitioning) {
 			if (SONG.validScore && !botplay)
 			{
@@ -7409,7 +7613,7 @@ currentTimingShown.cameras = [camHUD];
 			}
 			FlxG.sound.play(Paths.sound("shoot"));
 		}
-
+		
 		//For testing purposes
 		//trace(daNote.missHealth);
 		songMisses++;
@@ -7436,6 +7640,15 @@ currentTimingShown.cameras = [camHUD];
 		{
 			var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + 'miss' + daNote.animSuffix;
 			char.playAnim(animToPlay, true);
+		}
+		for (char in boyfriendMap.iterator()){
+			char.onNoteMiss(daNote);
+		}
+		for (char in dadMap.iterator()){
+			char.onNoteMiss(daNote);
+		}
+		for (char in gfMap.iterator()){
+			char.onNoteMiss(daNote);
 		}
 		callAllHScript('noteMiss', [notes.members.indexOf(daNote), daNote.noteData, daNote.noteType, daNote.isSustainNote, daNote]);
 		callOnLuas('noteMiss', [notes.members.indexOf(daNote), daNote.noteData, daNote.noteType, daNote.isSustainNote]);
@@ -7506,6 +7719,15 @@ currentTimingShown.cameras = [camHUD];
 				else
 					vocals.volume = 0;
 			
+		}
+		for (char in boyfriendMap.iterator()){
+			char.onNoteGhostMiss(direction);
+		}
+		for (char in dadMap.iterator()){
+			char.onNoteGhostMiss(direction);
+		}
+		for (char in gfMap.iterator()){
+			char.onNoteGhostMiss(direction);
 		}
 		callAllHScript('noteMissPress', [direction]);
 		callOnLuas('noteMissPress', [direction]);
@@ -7648,6 +7870,15 @@ currentTimingShown.cameras = [camHUD];
 		if (note.drainNote && health >= 0.05)
 			{
             health -=  1 *0.05;
+			}
+			for (char in boyfriendMap.iterator()){
+				char.onNoteIncoming(note);
+			}
+			for (char in dadMap.iterator()){
+				char.onNoteIncoming(note);
+			}
+			for (char in gfMap.iterator()){
+				char.onNoteIncoming(note);
 			}
 		callOnLuas('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
 		callAllHScript('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote, note]);
@@ -7904,6 +8135,15 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 				//OMG SAYORI
 				var leData:Int = Math.round(Math.abs(note.noteData));
 				var leType:String = note.noteType;
+				for (char in boyfriendMap.iterator()){
+					char.onNoteHit(note);
+				}
+				for (char in dadMap.iterator()){
+					char.onNoteHit(note);
+				}
+				for (char in gfMap.iterator()){
+					char.onNoteHit(note);
+				}
 				callOnLuas('goodNoteHit', [notes.members.indexOf(note), leData, leType, isSus]);
 				callAllHScript('goodNoteHit', [notes.members.indexOf(note), leData, leType, isSus, note]);
 				if (!note.isSustainNote)
@@ -8165,6 +8405,15 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 		}
 
 		lastStepHit = curStep;
+		for (char in boyfriendMap.iterator()){
+			char.onStepHit(curStep);
+		}
+		for (char in dadMap.iterator()){
+			char.onStepHit(curStep);
+		}
+		for (char in gfMap.iterator()){
+			char.onStepHit(curStep);
+		}
 		setOnLuas('curStep', curStep);
 		callOnLuas('onStepHit', []);
 
@@ -8306,7 +8555,15 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 			lightningStrikeShit();
 		}
 		lastBeatHit = curBeat;
-
+		for (char in boyfriendMap.iterator()){
+			char.onBeatHit(curBeat);
+		}
+		for (char in dadMap.iterator()){
+			char.onBeatHit(curBeat);
+		}
+		for (char in gfMap.iterator()){
+			char.onBeatHit(curBeat);
+		}
 		setOnLuas('curBeat', curBeat); //DAWGG?????
 		callOnLuas('onBeatHit', []);
 
@@ -8351,11 +8608,20 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 			setAllHaxeVar('altAnim', SONG.notes[curSection].altAnim);
 			setAllHaxeVar('gfSection', SONG.notes[curSection].gfSection);
 		}
-		
+		for (char in boyfriendMap.iterator()){
+			char.onSectionHit(curSection);
+		}
+		for (char in dadMap.iterator()){
+			char.onSectionHit(curSection);
+		}
+		for (char in gfMap.iterator()){
+			char.onSectionHit(curSection);
+		}
 		setOnLuas('curSection', curSection);
 		callOnLuas('onSectionHit', []);
 		setAllHaxeVar('curSection', curSection);
 		callAllHScript('sectionHit', [curSection]);
+
 	}
 
 	public function callOnLuas(event:String, args:Array<Dynamic>, ignoreStops = true, exclusions:Array<String> = null):Dynamic {

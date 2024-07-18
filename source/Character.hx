@@ -683,6 +683,96 @@ callInterp("init", [this]);
 	}
 	return interp;
 	}
+	
+	public function onPause() {
+		if (interp != null)
+		callInterp("onPause", [this]);
+	}
+
+	public function onResume() {
+		if (interp != null)
+		callInterp("onResume", [this]);
+	}
+  
+	public function onSongStart() {
+		if (interp != null)
+		callInterp("onSongStart", [this]);
+	}
+  
+	public function onSongEnd() {
+		if (interp != null)
+		callInterp("onSongEnd", [this]);
+	}
+  
+	public function onGameOver() {
+		if (interp != null)
+		callInterp("onGameOver", [this]);
+	}
+  
+	public function onNoteIncoming(note:Note=null) {
+		if (interp != null)
+		callInterp("onNoteIncoming", [this,note]);
+	}
+  
+	public function onNoteHit(note:Note=null) {
+		if (interp != null)
+		callInterp("onNoteHit", [this,note]);
+	}
+  
+	public function onNoteGhostMiss(direction:Int=0) {
+		if (interp != null)
+		callInterp("onNoteGhostMiss", [this,direction]);
+	}
+
+	public function onNoteMiss(note:Note=null) {
+		if (interp != null)
+		callInterp("onNoteMiss", [this,note]);
+	}
+
+	public function onSongEvent(event:Array<String> = null) {
+		if (interp != null)
+		callInterp("onSongEvent", [this,event]);
+	}
+  
+	public function onStepHit(step:Int =0) {
+		if (interp != null){
+		callInterp("onStepHit", [this,step]);
+		callInterp("stepHit", [step]);
+		}
+	}
+	public function onBeatHit(beat:Int =0) {
+		if (interp != null){
+		callInterp("onBeatHit", [this,beat]);
+		callInterp("beatHit", [beat]);
+		}
+	}
+
+	public function onSectionHit(section:Int =0) {
+		if (interp != null){
+		callInterp("onSectionHit", [this,section]);
+		callInterp("sectionHit", [section]);
+		}
+	}
+
+	public function onCountdownStart() {
+		if (interp != null)
+		callInterp("onCountdownStart", [this]);
+	}
+  
+	public function onCountdownStep(swagCounter:Int = 0)  {
+		if (interp != null)
+		callInterp("onCountdownStep", [this,swagCounter]);
+	}
+  
+	public function onCountdownEnd() {
+		if (interp != null)
+		callInterp("onCountdownEnd", [this]);
+	}
+  
+	public function onSongLoaded() {
+		if (interp != null)
+		callInterp("onSongLoaded", [this]);
+	}
 	#if flxanimate
 	public var atlas:FlxAnimate;
 	public override function draw()
@@ -718,13 +808,17 @@ callInterp("init", [this]);
 			atlas.color = color;
 		}
 	}
-
+	#end
 	public override function destroy()
 	{
+		if (interp != null)
+			callInterp("destroy", [this]);
 		super.destroy();
+		#if flxanimate
 		destroyAtlas();
+		#end
 	}
-
+	#if flxanimate
 	public function destroyAtlas()
 	{
 		if (atlas != null)
