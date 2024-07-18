@@ -75,7 +75,7 @@ function startIntro()
         FlixG.sound.playMusic(Paths.music(ClientPrefs.menuMusic), 0);
     }
     FlixG.sound.music.fadeIn(4, 0, 0.7);
-    
+}
 
     Conductor.changeBPM(titleJSON.bpm);
     togglePersistUpdate(true);
@@ -228,7 +228,7 @@ var animFrames = [];
         skipIntro();
     else
         TitleState.initialized = true;
-}
+
 }
 
 function getIntroTextShit()

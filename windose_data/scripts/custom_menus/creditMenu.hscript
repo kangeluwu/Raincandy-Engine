@@ -1,0 +1,191 @@
+/**
+ * The state used to display the credits scroll.
+ */
+
+  /**
+   * The height the credits should start at.
+   * Make this an instanced variable so it gets set by the constructor.
+   */
+var STARTING_HEIGHT = FlxG.height;
+
+  /**
+   * The padding on each side of the screen.
+   */
+var SCREEN_PAD = 24;
+
+  /**
+   * The width of the screen the credits should maximally fill up.
+   * Make this an instanced variable so it gets set by the constructor.
+   */
+var FULL_WIDTH = FlxG.width - (SCREEN_PAD * 2);
+
+  /**
+   * The font to use to display the text.
+   * To use a font from the `assets` folder, use `Paths.font(...)`.
+   * Choose something that will render Unicode properly.
+   */
+var CREDITS_FONT = 'vcr.ttf';
+
+  /**
+   * The size of the font.
+   */
+var CREDITS_FONT_SIZE = 24;
+
+var CREDITS_HEADER_FONT_SIZE = 32;
+
+  /**
+   * The color of the text itself.
+   */
+var CREDITS_FONT_COLOR = FlxColor.WHITE;
+
+  /**
+   * The color of the text's outline.
+   */
+var CREDITS_FONT_STROKE_COLOR = FlxColor.BLACK;
+
+  /**
+   * The speed the credits scroll at, in pixels per second.
+   */
+var CREDITS_SCROLL_BASE_SPEED = 100.0;
+
+  /**
+   * The speed the credits scroll at while the button is held, in pixels per second.
+   */
+var CREDITS_SCROLL_FAST_SPEED = CREDITS_SCROLL_BASE_SPEED * 4.0;
+
+  /**
+   * The actual sprites and text used to display the credits.
+   */
+  var creditsGroup;
+
+  var scrollPaused = false;
+var stars;
+  var CREDITS_DATA = CoolUtil.parseJson(FNFAssets.getText(Paths.isModPath('data/credits.json')));
+function create()
+  {
+    ClientPrefs.creditMenuTheme = 'freakyMenuO';
+
+    stars = new FlxStarField2D(0,0,1280,720,600);
+    stars.alpha = 0.000001;
+add(stars);
+new FlxTimer().start(1,function(tmr){FlxTween.tween(stars,{alpha:1},1);});
+    // TODO: Once we need to display Kickstarter backers,
+    // make this use a recycled pool so we don't kill peformance.
+    creditsGroup = new FlxSpriteGroup();
+    creditsGroup.x = SCREEN_PAD;
+    creditsGroup.y = STARTING_HEIGHT;
+    buildCreditsGroup();
+    add(creditsGroup);
+
+    // Music
+    FlxG.sound.playMusic(Paths.music(ClientPrefs.creditMenuTheme),0,true);
+    FlxG.sound.music.fadeIn(6, 0, 0.8);
+  }
+
+  function buildCreditsGroup()
+  {
+    var y = 0;
+
+    for (entry in CREDITS_DATA.entries)
+    {
+      if (entry.header != null)
+      {
+        var header = buildCreditsLine(entry.header, y, true, 'Center');
+        header.bold = true;
+        creditsGroup.add(header);
+        y += CREDITS_HEADER_FONT_SIZE + (header.textField.numLines * CREDITS_HEADER_FONT_SIZE);
+      }
+
+      for (line in entry.body)
+      {
+        var entry = buildCreditsLine(line.line, y, false, 'Center');
+        creditsGroup.add(entry);
+        y += CREDITS_FONT_SIZE * entry.textField.numLines;
+      }
+
+      if (entry.appendBackers)
+      {
+        var backers = [];
+        for (backer in backers)
+        {
+          creditsGroup.add(buildCreditsLine(backer, y, false, 'Center'));
+          y += CREDITS_FONT_SIZE;
+        }
+      }
+
+      // Padding between each role.
+      y += CREDITS_FONT_SIZE * 2.5;
+    }
+  }
+
+  function buildCreditsLine(text, yPos, header, side)
+  {
+    // CreditsSide.Center: Full screen width
+    // CreditsSide.Left: Left half of screen
+    // CreditsSide.Right: Right half of screen
+    var xPos = 0;
+    if (side == 'Right')
+        xPos = FULL_WIDTH / 2;
+    var width = FULL_WIDTH / 2;
+    if (side == 'Center')
+        width = FULL_WIDTH;
+    var size = CREDITS_FONT_SIZE;
+    if (header)
+    size =CREDITS_HEADER_FONT_SIZE;
+
+    var creditsLine:FlxText = new FlxText(xPos, yPos, width, text);
+    creditsLine.setFormat(Paths.font(CREDITS_FONT), size, CREDITS_FONT_COLOR, side.toLowerCase(), FlxTextBorderStyle.OUTLINE, CREDITS_FONT_STROKE_COLOR, true);
+
+    return creditsLine;
+  }
+
+function update(elapsed)
+  {
+
+    if (!scrollPaused)
+    {
+      // TODO: Replace with whatever the special note button is.
+      if (controls.ACCEPT || FlxG.keys.pressed.SPACE)
+      {
+        // Move the whole group.
+        stars.setStarSpeed(400, 1600);
+        creditsGroup.y -= CREDITS_SCROLL_FAST_SPEED * elapsed;
+      }
+      else
+      {
+        // Move the whole group.
+        stars.setStarSpeed(100, 400);
+        creditsGroup.y -= CREDITS_SCROLL_BASE_SPEED * elapsed;
+      }
+    }
+
+    if (controls.BACK || hasEnded())
+    {
+        if (hasEnded()){
+      exit(false);
+        }
+        else{
+        exit(true);
+      }
+    }
+    else if (controls.PAUSE)
+    {
+      // scrollPaused = !scrollPaused;
+    }
+  }
+
+  function hasEnded()
+  {
+    return creditsGroup.y < -creditsGroup.height;
+  }
+
+  function exit(playSound)
+  {
+    if (playSound)
+    FlxG.sound.play(Paths.sound('cancelMenu'),FlxG.sound.music.volume);
+    FlxG.sound.music.stop();
+    MusicBeatState.switchState(new MainMenuState());
+  }
+
+
+

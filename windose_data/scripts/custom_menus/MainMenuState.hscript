@@ -268,7 +268,7 @@ function enter()
                             case 'awards':
                                 MusicBeatState.switchState(new AchievementsMenuState());
                             case 'credits':
-                                MusicBeatState.switchState(new CreditsState());
+                                LoadingState.loadAndSwitchCustomState('creditMenu');
                             case 'options':
                                 LoadingState.loadAndSwitchState(new OptionsState());
                     }
