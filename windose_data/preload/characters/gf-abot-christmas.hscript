@@ -1,0 +1,168 @@
+var danced = false;
+var pupilState = 0;
+
+var PUPIL_STATE_NORMAL = 0;
+var PUPIL_STATE_LEFT = 1;
+
+var abot;
+var abotViz;
+var stereoBG;
+var eyeWhites;
+var pupil;
+function init(char){
+  abot =  new FlxSprite(char.x+300,char.y+444);
+  abot.antialiasing=char.globalAntialiasing;
+  initAbotViz(abot);
+  var f = Paths.getSparrowAtlas('characters/abot/abotSystem');
+  abot.frames = f;
+  abot.animation.addByPrefix('idle', 'Abot System', 24,false);
+  stereoBG = new FlxSprite(abot.x + 150, abot.y +30, Paths.image('characters/abot/stereoBG'));
+  eyeWhites = new FlxSprite(abot.x + 40, abot.y +250).makeGraphic(160, 60,FlxColor.WHITE);
+  stereoBG.antialiasing=char.globalAntialiasing;
+  eyeWhites.antialiasing=char.globalAntialiasing;
+  pupil =  new FlxSprite(char.x,char.y);
+  pupil.antialiasing=char.globalAntialiasing;
+  var f = Paths.getSparrowAtlas('characters/abot/systemEyes');
+  pupil.frames = f;
+  pupil.animation.addByPrefix('left', 'Left', 24,false);
+  pupil.animation.addByPrefix('right', 'Right', 24,false);
+
+  pupil.animation.play('right');
+    if (!char.inEdtior){
+     
+      PlayState.instance.insert(PlayState.instance.members.indexOf(PlayState.instance.gfGroup),stereoBG);
+      PlayState.instance.insert(PlayState.instance.members.indexOf(PlayState.instance.gfGroup),eyeWhites);
+      PlayState.instance.insert(PlayState.instance.members.indexOf(PlayState.instance.gfGroup),pupil);
+      PlayState.instance.insert(PlayState.instance.members.indexOf(PlayState.instance.gfGroup),abotViz);
+
+     
+    }
+   
+}
+function dance(char){
+  abot.animation.play('idle');
+    danced = !danced;
+    if (danced)
+        char.playAnim('danceRight' + char.idleSuffix);
+    else
+        char.playAnim('danceLeft' + char.idleSuffix);
+}
+var analyzer;
+var snd;
+var volumes = [];
+var frame = 0;
+function update(elapsed,char){
+  frame += 1;
+ 
+  abot.x = char.x+25;
+  abot.y = char.y+306;
+  stereoBG.x = abot.x + 150;
+  stereoBG.y = abot.y + 30;
+  abotViz.x = abot.x + 200;
+  abotViz.y = abot.y + 84;
+  eyeWhites.x = abot.x + 40;
+  eyeWhites.y = abot.y + 250;
+	pupil.x = eyeWhites.x+5;
+	pupil.y = eyeWhites.y-11;
+}
+function initAbotViz(s){
+
+    abotViz = new FlxSpriteGroup(s.x+200,s.y+84);
+    abotViz.antialiasing=s.globalAntialiasing;
+    var visFrms = Paths.getSparrowAtlas('aBotViz');
+
+    // these are the differences in X position, from left to right
+    var positionX = [0, 59, 56, 66, 54, 52, 51];
+    var positionY = [0, -8, -3.5, -0.4, 0.5, 4.7, 7];
+
+    for (lol in 1...8)
+    {
+      // pushes initial value
+      volumes.push(0.0);
+      var sum = function(num, total) return total += num;
+     var posX = Lambda.fold(positionX.slice(0, lol),sum, 0);
+      var posY = Lambda.fold(positionY.slice(0, lol),sum, 0);
+    // var posX = positionX[lol -1];
+     //var posY = positionY[lol -1];
+      var viz = new FlxSprite(posX, posY);
+      viz.frames = visFrms;
+      abotViz.add(viz);
+
+      var visStr = 'viz';
+      viz.animation.addByPrefix('VIZ', visStr + lol, 0);
+      viz.animation.play('VIZ', false, false, 6);
+    }
+ 
+    FlixG.debugger.track(abotViz);
+}
+function onSongEvent(char,event)
+{
+  var name = event[0];
+  var value1 = event[1];
+  var value2 = event[2];
+  var value3 = event[3];
+  switch (name){
+    case 'onMoveCamera':
+      if (value1 == 'dad'){
+        
+        FlxTween.tween(pupil.offset,{x:0,y:0},0.1,{ease:FlxEase.cubeOut,
+          onComplete:
+          function (twn)
+          {
+            pupil.animation.play('left');
+          }});
+      }
+      if (value1 == 'bf'){
+       
+        FlxTween.tween(pupil.offset,{x:-20,y:3},0.1,{ease:FlxEase.cubeOut,onComplete:
+              function (twn)
+              {
+                pupil.animation.play('right');
+              }
+            });
+       }
+      
+
+  }
+}
+function initAnalyzer()
+    {
+
+      analyzer = new SpectralAnalyzer(getSoundChannel(snd), 8, 0.1, 30);
+      analyzer.fftN = 512;
+  
+      // analyzer.maxDb = -35;
+      // analyzer.fftN = 2048;
+    }
+    function onSongStart(char){
+       snd = FlxG.sound.music;
+       initAnalyzer();
+    }
+    var visTimer = -1;
+    var visTimeMax = 1 / 30;
+function draw(char)
+    {
+      if (frame % 12 ==0)
+      if (analyzer != null) drawFFT();
+    
+    }
+    function min(x, y)
+        {
+          return x > y ? y : x;
+        }
+    function drawFFT()
+        {
+          var levels = analyzer.getLevels();
+      
+          for (i in 0...min(abotViz.group.members.length, levels.length))
+          {
+            var animFrame = Math.round(levels[i].value * 5);
+      
+            animFrame = Math.floor(Math.min(5, animFrame));
+            animFrame = Math.floor(Math.max(0, animFrame));
+      
+            animFrame = Std.int(Math.abs(animFrame - 5)); // shitty dumbass flip, cuz dave got da shit backwards lol!
+      
+            abotViz.group.members[i].animation.curAnim.curFrame = animFrame;
+          }
+        }
