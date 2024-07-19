@@ -6583,13 +6583,13 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callAllHScript('onMovingCamera', ['dad']);
 				camTarget = 'dad';
 				for (char in boyfriendMap.iterator()){
-					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+					char.onSongEvent(['onMovingCamera',camTarget,'false','']);
 				}
 				for (char in dadMap.iterator()){
-					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+					char.onSongEvent(['onMovingCamera',camTarget,'false','']);
 				}
 				for (char in gfMap.iterator()){
-					char.onSongEvent(['onMoveCamera',camTarget,'false','']);
+					char.onSongEvent(['onMovingCamera',camTarget,'false','']);
 				}
 			}
 			else
@@ -6599,13 +6599,13 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				callAllHScript('onMovingCamera', ['boyfriend']);
 				camTarget = 'bf';
 				for (char in boyfriendMap.iterator()){
-					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+					char.onSongEvent(['onMovingCamera',camTarget,'true','']);
 				}
 				for (char in dadMap.iterator()){
-					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+					char.onSongEvent(['onMovingCamera',camTarget,'true','']);
 				}
 				for (char in gfMap.iterator()){
-					char.onSongEvent(['onMoveCamera',camTarget,'true','']);
+					char.onSongEvent(['onMovingCamera',camTarget,'true','']);
 				}
 			}
 		}
@@ -8435,11 +8435,11 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 			//trace('BEAT HIT: ' + curBeat + ', LAST HIT: ' + lastBeatHit);
 			return;
 		}
-		if (SONG.notes[curSection] != null){
+
 		if (curBeat % 8 == 7
 			
 			&& combo > 5
-			&& ((SONG.notes[curSection].mustHitSection && SONG.notes[curSection+1] != null &&!SONG.notes[curSection+1].mustHitSection)||(cameraFocusList.length > 1 && cameraFocusList[1] != 'bf' && cameraFocusList[0] == 'bf'))&& showComboCounter)
+			&& ((SONG.notes[curSection] != null && SONG.notes[curSection].mustHitSection && SONG.notes[curSection+1] != null &&!SONG.notes[curSection+1].mustHitSection)||(cameraFocusList.length > 1 && cameraFocusList[1] != 'bf' && cameraFocusList[0] == 'bf'))&& showComboCounter)
 		{
 			var animShit:ComboCounter = new ComboCounter(100, 200, combo);
 			animShit.scrollFactor.set(0.6, 0.6);
@@ -8454,7 +8454,7 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 				animShit.forceFinish();
 			});
 		}
-	}
+	
 		if (generatedMusic)
 		{
 			notes.sort(FlxSort.byY, ClientPrefs.downScroll ? FlxSort.ASCENDING : FlxSort.DESCENDING);
@@ -8589,7 +8589,7 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 		if (SONG.notes[curSection] != null)
 		{
 
-			if (generatedMusic && !endingSong && !isCameraOnForcedPos)
+			if (!stopAutoMoving && generatedMusic && !endingSong && !isCameraOnForcedPos)
 				{
 					moveCameraSection();
 				}
