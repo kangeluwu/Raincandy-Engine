@@ -46,7 +46,7 @@ class Note extends FlxSprite
 
 	public var mAngle:Float = 0;
 	public var bAngle:Float = 0;
-    public var cover:NoteHoldCover = null;
+
 	var hscriptStates:Map<String, Interp> = [];
 	var exInterp:InterpEx = new InterpEx();
 	var haxeSprites:Map<String, FlxSprite> = [];
@@ -282,7 +282,6 @@ class Note extends FlxSprite
 	public static var BLUE_NOTE:Int = 1;
 	public static var RED_NOTE:Int = 3;
 	public static var NOTE_AMOUNT:Int = 4;
-	public static var colors:Array<Strings> = ['purple','blue','green','red'];
 	// Lua shit
 	public var noteSplashDisabled:Bool = false;
 	public var noteSplashTexture:String = null;

@@ -1,0 +1,46 @@
+var lightCanSound;
+var loadedLightCanSound = false;
+var kickCanSound;
+var loadedKickCanSound = false;
+var kneeCanSound;
+var loadedKneeCanSound = false;
+function onPlayAnim(char){
+switch(char.getAnimationName()){
+    case 'lightCan':
+        if (loadedLightCanSound && lightCanSound != null)
+            lightCanSound.stop();
+        if (!loadedLightCanSound) {
+			lightCanSound = new FlxSound().loadEmbedded(Paths.sound('Darnell_Lighter'), 1.0);
+			loadedLightCanSound = true;
+            lightCanSound.looped = false;
+		}
+		lightCanSound.play();
+        case 'kickCan':
+            if (loadedKickCanSound && kickCanSound != null)
+                kickCanSound.stop();
+            if (!loadedKickCanSound) {
+                kickCanSound = new FlxSound().loadEmbedded(Paths.sound('Kick_Can_UP'), 1.0);
+                loadedKickCanSound = true;
+                kickCanSound.looped = false;
+            }
+
+            kickCanSound.play();
+            case 'kneeCan':
+                if (loadedKneeCanSound && kneeCanSound != null)
+                    kneeCanSound.stop();
+                if (!loadedKneeCanSound) {
+                    kneeCanSound = new FlxSound().loadEmbedded(Paths.sound('Kick_Can_FORWARD'), 1.0);
+                    loadedKneeCanSound = true;
+                    kneeCanSound.looped = false;
+                }
+
+                kneeCanSound.play();
+}
+}
+function dance(char){
+    char.playAnim('idle'+char.idleSuffix);
+}
+
+function update(e,chud){
+
+}

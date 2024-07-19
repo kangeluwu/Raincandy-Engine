@@ -7871,14 +7871,15 @@ currentTimingShown.cameras = [camHUD];
 			{
             health -=  1 *0.05;
 			}
+
 			for (char in boyfriendMap.iterator()){
-				char.onNoteIncoming(note);
+				char.onNoteHit(note);
 			}
 			for (char in dadMap.iterator()){
-				char.onNoteIncoming(note);
+				char.onNoteHit(note);
 			}
 			for (char in gfMap.iterator()){
-				char.onNoteIncoming(note);
+				char.onNoteHit(note);
 			}
 		callOnLuas('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
 		callAllHScript('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote, note]);
@@ -8434,6 +8435,7 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 			//trace('BEAT HIT: ' + curBeat + ', LAST HIT: ' + lastBeatHit);
 			return;
 		}
+		if (SONG.notes[curSection] != null){
 		if (curBeat % 8 == 7
 			
 			&& combo > 5
@@ -8452,6 +8454,7 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 				animShit.forceFinish();
 			});
 		}
+	}
 		if (generatedMusic)
 		{
 			notes.sort(FlxSort.byY, ClientPrefs.downScroll ? FlxSort.ASCENDING : FlxSort.DESCENDING);

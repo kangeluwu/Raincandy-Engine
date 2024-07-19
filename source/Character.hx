@@ -773,18 +773,23 @@ callInterp("init", [this]);
 		if (interp != null)
 		callInterp("onSongLoaded", [this]);
 	}
+	public override function draw()
+		{
+			#if flxanimate
+			if(isAnimateAtlas)
+			{
+				copyAtlasValues();
+				atlas.draw();
+				return;
+			}
+			#end
+			if (interp != null)
+				callInterp("draw", [this]);
+			super.draw();
+		}
 	#if flxanimate
 	public var atlas:FlxAnimate;
-	public override function draw()
-	{
-		if(isAnimateAtlas)
-		{
-			copyAtlasValues();
-			atlas.draw();
-			return;
-		}
-		super.draw();
-	}
+	
 
 	public function copyAtlasValues()
 	{
