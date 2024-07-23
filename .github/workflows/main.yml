@@ -59,6 +59,7 @@ jobs:
           haxelib install haxeui-flixel
           haxelib install polymod
           haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
+          haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
           haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
       - name: Create Version Tag
@@ -109,6 +110,7 @@ jobs:
           haxelib install random
           haxelib install haxeui-flixel
           haxelib install polymod
+          haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
           haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
         shell: cmd
@@ -145,6 +147,7 @@ jobs:
           haxelib install flixel-ui 2.4.0
           haxelib install flixel-addons 2.11.0
           haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
+          haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install hxCodec 3.0.2
@@ -221,6 +224,7 @@ jobs:
                   haxelib install flixel-tools
                   haxelib install flixel-ui 2.4.0
                   haxelib install flixel-addons 2.11.0
+                  haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
                   haxelib install tjson
                   haxelib install hxjsonast
                   haxelib install hxCodec 3.0.2
@@ -325,6 +329,7 @@ jobs:
           haxelib install hxjsonast
           haxelib install hxvlc
           haxelib install polymod
+          haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
           haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
           haxelib git linc_luajit https://github.com/superpowers04/linc_luajit
           haxelib install hscript 2.5.0
