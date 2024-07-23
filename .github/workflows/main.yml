@@ -58,6 +58,7 @@ jobs:
           haxelib install random
           haxelib install haxeui-flixel
           haxelib install polymod
+          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
           haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
       - name: Create Version Tag
@@ -100,6 +101,7 @@ jobs:
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
+          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
           haxelib install seedyrng
           haxelib install json2object
           haxelib install haxeui-core
@@ -142,6 +144,7 @@ jobs:
           haxelib install flixel-tools
           haxelib install flixel-ui 2.4.0
           haxelib install flixel-addons 2.11.0
+          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install hxCodec 3.0.2
@@ -228,6 +231,7 @@ jobs:
                   haxelib install hxcpp-debug-server
                   haxelib install seedyrng
                   haxelib install json2object
+                  haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
                   haxelib install haxeui-core
                   haxelib git extension-videoview https://github.com/kangeluwu/extension-videoview
                   haxelib git extension-androidtools https://github.com/MaysLastPlay77/extension-androidtools
@@ -321,6 +325,7 @@ jobs:
           haxelib install hxjsonast
           haxelib install hxvlc
           haxelib install polymod
+          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
           haxelib git linc_luajit https://github.com/superpowers04/linc_luajit
           haxelib install hscript 2.5.0
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
