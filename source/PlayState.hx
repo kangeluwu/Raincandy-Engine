@@ -427,7 +427,7 @@ class PlayState extends MusicBeatState
 	public var disabledchangecolor:Bool = false;
 	public var hideFUCKINGhealthBarBG:Bool = false;
 	
-	var hscriptStates:Map<String, InterpEx> = new Map<String, InterpEx>();
+	var hscriptStates:Map<String, Interp> = new Map<String, Interp>();
 	var exInterp:InterpEx = new InterpEx();
 	var haxeFunctions:Map<String, Void->Void> = [];
 	var haxeVars:Map<String, Dynamic> = [];
@@ -522,28 +522,8 @@ return returnVal;
 		}
 	}
 	public var funni:Bool = false;
-	public function setAllHaxeModule(paths:String,name:String) {
-		try
-			{
-				for (key in hscriptStates.keys())
-				hscriptStates.get(key).addModule(FNFAssets.getText(SUtil.getPath() + paths + name));
-	}
-	catch (e)
-	{
 
-	}
-}
-	public function setHaxeModule(paths:String,name:String, usehaxe:String) {
-		try
-			{
-				hscriptStates.get(usehaxe).addModule(FNFAssets.getText(SUtil.getPath() + paths + name));
-	}
-	catch (e)
-	{
 
-	}
-		
-}
 function camerabgAlphaShits(cam:FlxCamera)
 	{
 		cam.bgColor.alpha = 0;
@@ -616,7 +596,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		}	
 	
 
-		var interp = PluginManager.createSimpleInterpEx();
+		var interp = PluginManager.createSimpleInterp();
 		// set vars
 		interp.variables.set("variables", variables);
 		interp.variables.set("BEHIND_GF", BEHIND_GF);
@@ -624,8 +604,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("camerabgAlphaShits", camerabgAlphaShits);
 		interp.variables.set("FlxCamera", FlxCamera);
 		interp.variables.set("FlxObject", FlxObject);
-		interp.variables.set("setAllHaxeModule", setAllHaxeModule);
-		interp.variables.set("setHaxeModule", setHaxeModule);
+		
 		interp.variables.set("BEHIND_BF", BEHIND_BF);
 		interp.variables.set("BEHIND_DAD", BEHIND_DAD);
 		interp.variables.set("BEHIND_ALL", BEHIND_ALL);
@@ -3438,11 +3417,7 @@ if (!dadChar.beingControlled)
 						makeHaxeState(file.substr(0, file.length - 8), folder, file,true);
 						haxefilesPushed2.push(file);
 					}
-					if(file.endsWith('.hx') && !haxeModulePushed.contains(file))
-						{
-							setAllHaxeModule(folder, file);
-							haxeModulePushed.push(file);
-						}
+			
 				}
 			}
 		}
