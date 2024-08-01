@@ -58,15 +58,12 @@ jobs:
           haxelib install random
           haxelib install haxeui-flixel
           haxelib install polymod
-          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
-          haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
-          haxelib git grig.audio https://gitlab.com/haxe-grig/grig.audio.git
           haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
       - name: Compile
-        run: haxelib run lime build Project.xml linux
+        run: haxelib run lime build Project.xml linux --app-version="4.0.0-${{ github.run_id}}"
       - name: Publish Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
@@ -103,8 +100,6 @@ jobs:
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
-          haxelib git grig.audio https://gitlab.com/haxe-grig/grig.audio.git
-          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
           haxelib install seedyrng
           haxelib install json2object
           haxelib install haxeui-core
@@ -112,14 +107,13 @@ jobs:
           haxelib install random
           haxelib install haxeui-flixel
           haxelib install polymod
-          haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
           haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib list
         shell: cmd
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
       - name: Compile
-        run: haxelib run lime build windows
+        run: haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}"
       - name: Publish Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
@@ -148,9 +142,6 @@ jobs:
           haxelib install flixel-tools
           haxelib install flixel-ui 2.4.0
           haxelib install flixel-addons 2.11.0
-          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
-          haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
-          haxelib git grig.audio https://gitlab.com/haxe-grig/grig.audio.git
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install hxCodec 3.0.2
@@ -222,13 +213,11 @@ jobs:
                   haxelib install lime 8.0.0
                   haxelib install openfl 9.2.0
                   haxelib install flixel 4.11.0
-                
                   haxelib install devicelanguage 1.0.0 
                   haxelib run lime setup
                   haxelib install flixel-tools
                   haxelib install flixel-ui 2.4.0
                   haxelib install flixel-addons 2.11.0
-                  haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
                   haxelib install tjson
                   haxelib install hxjsonast
                   haxelib install hxCodec 3.0.2
@@ -239,8 +228,6 @@ jobs:
                   haxelib install hxcpp-debug-server
                   haxelib install seedyrng
                   haxelib install json2object
-                  haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
-                  haxelib git grig.audio https://gitlab.com/haxe-grig/grig.audio.git
                   haxelib install haxeui-core
                   haxelib git extension-videoview https://github.com/kangeluwu/extension-videoview
                   haxelib git extension-androidtools https://github.com/MaysLastPlay77/extension-androidtools
@@ -330,13 +317,10 @@ jobs:
           haxelib install flixel-tools 
           haxelib install flixel-ui 2.4.0
           haxelib install flixel-addons 2.11.0
-          haxelib git grig.audio https://gitlab.com/haxe-grig/grig.audio.git
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install hxvlc
           haxelib install polymod
-          haxelib git FlxPartialSound https://github.com/FunkinCrew/FlxPartialSound
-          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis
           haxelib git linc_luajit https://github.com/superpowers04/linc_luajit
           haxelib install hscript 2.5.0
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
