@@ -1,7 +1,5 @@
 package;
 
-import flixel.tweens.misc.BezierPathTween;
-import flixel.tweens.misc.BezierPathNumTween;
 import flixel.util.FlxTimer.FlxTimerManager;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxTween;
@@ -29,18 +27,11 @@ class StrumLine extends FlxSprite
 {
     public var strumGroup:FlxTypedGroup<StrumNote>;
     public var notes:FlxTypedGroup<Note>;
-    public var instance:MusicBeatState;
-    public var playStateInstance:PlayState;
-
     public function new(strumGroup:FlxTypedGroup<StrumNote>, notes:FlxTypedGroup<Note>) 
     {
         super(0,0);
         this.strumGroup = strumGroup;
         this.notes = notes;
-        this.instance = instance;
-        if (Std.isOfType(instance, PlayState))
-            playStateInstance = cast instance; //so it just casts once
-
         strumGroup.visible = false;
         notes.visible = false;
     }

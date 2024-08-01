@@ -649,7 +649,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("FlxPexParser", FlxPexParser);
 		interp.variables.set("FlxTrail", FlxTrail);
 		interp.variables.set("FlxTrailArea", FlxTrailArea);
-		interp.variables.set("StrumLine", StrumLine);
+
 		interp.variables.set("FlxEmitter", FlxEmitter);
 		interp.variables.set("FlxParticle", FlxParticle);
 		interp.variables.set("playerComboBreak", playerComboBreak);
@@ -909,6 +909,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		});
 		//Fow Ending Cutscenes lol
 		interp.variables.set("endSong", endSong);
+		interp.variables.set("StrumLine", StrumLine);
         for (name in variables.keys())
 			interp.variables.set(name, variables.get(name));
 
@@ -1943,6 +1944,7 @@ if (OpenFlAssets.exists(file)) {
 		add(strumLineNotes);
 		strumLines = new StrumLine(strumLineNotes,notes);
 		add(strumLines);
+		strumLines.cameras = [camHUD];
 		add(grpNoteSplashes);
 
 
