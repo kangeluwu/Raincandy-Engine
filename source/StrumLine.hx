@@ -27,13 +27,13 @@ class StrumLine extends FlxSprite
 {
     public var strumGroup:FlxTypedGroup<StrumNote>;
     public var notes:FlxTypedGroup<Note>;
-    public function new(strumGroup:FlxTypedGroup<StrumNote>, notes:FlxTypedGroup<Note>) 
+    public function new(daStrumGroup:FlxTypedGroup<StrumNote>, daNotes:FlxTypedGroup<Note>) 
     {
         super(0,0);
-        this.strumGroup = strumGroup;
-        this.notes = notes;
-        strumGroup.visible = false;
-        notes.visible = false;
+        strumGroup = daStrumGroup;
+        notes = daNotes;
+        daStrumGroup.visible = false;
+        daNotes.visible = false;
     }
 
     override function update(elapsed:Float) 
@@ -47,25 +47,36 @@ class StrumLine extends FlxSprite
         if (alpha == 0 || !visible)
             return;
 
-        
+        strumGroup.cameras = cameras;
+        notes.cameras = cameras;
         
         try {
-            for (strum in strumGroup.members){
-                strum.alpha *= alpha;
-                strum.draw();
-            }
-            for (note in notes.members){
-                if (note!=null && note.alive){
-                note.alpha *= alpha;
-                note.draw();
-                }
-            }
+            drawStrums();
+            drawNotes();
         } catch(e) {
             trace(e);
         }
         //draw notes to screen
     }
-
-   
-
+    function drawStrums(){
+        for (strum in strumGroup.members){
+            if (strum.alpha == 0)
+                return;
+            strum.cameras = strumGroup.cameras;
+  
+            strum.alpha *= alpha;
+            strum.draw();
+        }
+    }
+    function drawNotes(){
+        for (note in notes.members){
+            if (note!=null && note.alive){
+                if (note.alpha == 0)
+                   return;
+            note.cameras = notes.cameras;
+            note.alpha *= alpha;
+            note.draw();
+            }
+        }
+    }
 }
