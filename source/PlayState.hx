@@ -53,6 +53,9 @@ import flixel.util.FlxSort;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
 import haxe.Json;
+import modcharting.ModchartFuncs;
+import modcharting.NoteMovement;
+import modcharting.PlayfieldRenderer;
 import lime.utils.Assets;
 import openfl.Lib;
 import openfl.display.BlendMode;
@@ -143,7 +146,7 @@ enum abstract DisplayLayer(Int) from Int to Int {
 class PlayState extends MusicBeatState
 {
 	public var modManager:ModManager;
-
+	
 	public static var STRUM_X = 42;
 	public static var STRUM_X_MIDDLESCROLL = -278;
 
@@ -874,6 +877,25 @@ function camerabgAlphaShits(cam:FlxCamera)
             });
     
             // this one was tested
+			interp.variables.set('Math', Math);
+			interp.variables.set('ModchartEditorState', modcharting.ModchartEditorState);
+			interp.variables.set('ModchartEvent', modcharting.ModchartEvent);
+			interp.variables.set('ModchartEventManager', modcharting.ModchartEventManager);
+			interp.variables.set('ModchartFile', modcharting.ModchartFile);
+			interp.variables.set('ModchartFuncs', modcharting.ModchartFuncs);
+			interp.variables.set('ModchartMusicBeatState', modcharting.ModchartMusicBeatState);
+			interp.variables.set('ModchartUtil', modcharting.ModchartUtil);
+			for (i in ['mod', 'Modifier'])
+				interp.variables.set(i, modcharting.Modifier); //the game crashes without this???????? what??????????? -- fue glow
+			interp.variables.set('ModifierSubValue', modcharting.Modifier.ModifierSubValue);
+			interp.variables.set('ModTable', modcharting.ModTable);
+			interp.variables.set('NoteMovement', modcharting.NoteMovement);
+			interp.variables.set('NotePositionData', modcharting.NotePositionData);
+			interp.variables.set('Playfield', modcharting.Playfield);
+			interp.variables.set('PlayfieldRenderer', modcharting.PlayfieldRenderer);
+			interp.variables.set('SimpleQuaternion', modcharting.SimpleQuaternion);
+			interp.variables.set('SustainStrip', modcharting.SustainStrip);
+			
         interp.variables.set('createCallback', function(name:String, func:Dynamic, ?funk:FunkinLua = null)
             {                
                 if(funk != null) funk.addLocalCallback(name, func);
@@ -892,6 +914,8 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set('setAllHaxeVar', function (name:String, value:Dynamic) {
 			 setAllHaxeVar(name, value);
 		});
+		ModchartFuncs.loadHaxeFunctions(interp.variables);
+		ModchartFuncs.loadHScriptFunctions(interp.variables);
 		interp.variables.set('addHaxeLibrary', function (libName:String, ?libFolder:String = '',varName:String = '') {
 			try {
 				var str:String = '';
@@ -1940,6 +1964,10 @@ if (OpenFlAssets.exists(file)) {
 
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		add(strumLineNotes);
+		playfieldRenderer = new PlayfieldRenderer(strumLineNotes, notes, this);
+	playfieldRenderer.cameras = [camHUD];
+	add(playfieldRenderer);
+	add(grpNoteSplashes); 
 		add(grpNoteSplashes);
 
 
@@ -2383,7 +2411,7 @@ if (!opponentPlayer)
 
 				}
 			}
-
+			ModchartFuncs.loadLuaFunctions();
 		callOnLuas('onCreatePost', []);
 		callAllHScript('onCreatePost', [SONG.song]);
 		super.create();
@@ -3470,13 +3498,16 @@ if (!dadChar.beingControlled)
 				recotors.push(strum.members);
 			}
 			modManager.receptors = recotors;
-
+			callOnLuas('preModifierRegister', []);
+			callAllHScript('preModifierRegister', []);
+			modManager.registerDefaultModifiers();
+			callOnLuas('postModifierRegister', []);
+			callAllHScript('postModifierRegister', []);
+			NoteMovement.getDefaultStrumPos(this);
 		}
 
 	
-			callOnLuas('preModifierRegister', []);
-			modManager.registerDefaultModifiers();
-			callOnLuas('postModifierRegister', []);
+			
 			startedCountdown = true;
 			Conductor.songPosition = 0;
 			Conductor.songPosition -= Conductor.crochet * 5;
@@ -5707,7 +5738,7 @@ if (opponentPlayer){
 				pos.y += daNote.offsetY;
 				daNote.x = pos.x;
 				daNote.y = pos.y;
-				daNote.z = pos.z;
+				daNote.zhizhang = pos.z;
 
 				if (daNote.isSustainNote)
 				{

@@ -19,7 +19,7 @@ import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
 import android.FlxVirtualPad;
 #end
-class MusicBeatState extends FlxUIState
+class MusicBeatState extends modcharting.ModchartMusicBeatState
 {
 	public var curSection:Int = 0;
 	public var stepsToDo:Int = 0;

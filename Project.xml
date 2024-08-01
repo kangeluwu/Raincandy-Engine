@@ -58,6 +58,11 @@
 		<assets path="windose_data/secrets" rename="windose_data" exclude="*.mp3"  unless="web"/>
 	</section>
 	<haxelib name="funkin.vis"/>
+	    <define name="HSCRIPT_ALLOWED" />
+    <define name="PSYCH" />
+    <define name="PSYCHVERSION" value="0.6.3"/>
+	<define name="RCE" />
+    <haxelib name="fnf-modcharting-tools" />
 	<haxelib name="grig.audio" />
 	<!-- DONT ENABLE THIS -->
 	<define name="CHECK_FOR_UPDATES" if="desktop officialBuild"/>

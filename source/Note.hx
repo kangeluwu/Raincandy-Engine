@@ -19,6 +19,7 @@ import flixel.math.FlxRect;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import math.*;
+import flixel.addons.effects.FlxSkewedSprite;
 typedef EventNote = {
 	strumTime:Float,
 	event:String,
@@ -27,11 +28,12 @@ typedef EventNote = {
 	value3:String
 }
 
-class Note extends FlxSprite
+class Note extends FlxSkewedSprite
 {
 	public var vec3Cache:Vector3 = new Vector3(); // for vector3 operations in modchart code
 	public var defScale:FlxPoint = FlxPoint.get(); // for modcharts to keep the scaling
-
+	public var mesh:modcharting.SustainStrip = null;
+	public var z:Float = 0;
 	override function destroy()
 	{
 		defScale.put();
@@ -39,7 +41,7 @@ class Note extends FlxSprite
 	}	
 	public var zIndexFloat:Float = 0;
 	public var desiredZIndex:Float = 0;
-	public var z:Float = 0;
+	public var zhizhang:Float = 0;
 	public var garbage:Bool = false; // if this is true, the note will be removed in the next update cycle
 	public var alphaMod:Float = 1;
 	public var alphaMod2:Float = 1; // TODO: unhardcode this shit lmao
@@ -695,12 +697,12 @@ else{
 		if (isSustainNote)
 			{
 				if (prevNote != null && prevNote.isSustainNote)
-					zIndex = Math.floor(z + prevNote.zIndex);
+					zIndex = Math.floor(zhizhang + prevNote.zIndex);
 				else if (prevNote != null && !prevNote.isSustainNote)
-					zIndex = Math.floor(z + prevNote.zIndex - 1);
+					zIndex = Math.floor(zhizhang + prevNote.zIndex - 1);
 			}
 			else
-				zIndex = Math.floor(z);
+				zIndex = Math.floor(zhizhang);
 	
 			zIndex += Math.floor(desiredZIndex);
 			zIndex -= currentStrum;

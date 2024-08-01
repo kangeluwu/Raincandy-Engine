@@ -6,8 +6,8 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import math.*;
 import flixel.math.FlxPoint;
 using StringTools;
-
-class StrumNote extends FlxSprite
+import flixel.addons.effects.FlxSkewedSprite;
+class StrumNote extends FlxSkewedSprite
 {
 	public var vec3Cache:Vector3 = new Vector3(); // for vector3 operations in modchart code
 	public var defScale:FlxPoint = FlxPoint.get(); // for modcharts to keep the scaling
