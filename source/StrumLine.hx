@@ -47,8 +47,7 @@ class StrumLine extends FlxSprite
         if (alpha == 0 || !visible)
             return;
 
-        strumGroup.cameras = cameras;
-        notes.cameras = cameras;
+        
         
         try {
             for (strum in strumGroup.members){
