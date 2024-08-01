@@ -38,8 +38,6 @@ class StrumLine extends FlxSprite
 
     override function update(elapsed:Float) 
     {
-        strumGroup.cameras = this.cameras;
-        notes.cameras = this.cameras;
         super.update(elapsed);
     }
 
@@ -49,7 +47,8 @@ class StrumLine extends FlxSprite
         if (alpha == 0 || !visible)
             return;
 
-
+        strumGroup.cameras = cameras;
+        notes.cameras = cameras;
         
         try {
             for (strum in strumGroup.members){

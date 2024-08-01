@@ -607,7 +607,6 @@ function camerabgAlphaShits(cam:FlxCamera)
 	parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 
 		var program;
-		parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 		if (isArray){
 			program = parser.parseString(FNFAssets.getText(SUtil.getPath() + path + filename));
 			
