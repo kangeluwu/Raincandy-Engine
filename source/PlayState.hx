@@ -1922,7 +1922,7 @@ if (OpenFlAssets.exists(file)) {
 		add(strumLineNotes);
 		strumLines = new StrumLine(strumLineNotes,notes);
 		add(strumLines);
-		strumLines.cameras = [camHUD];
+	
 		add(grpNoteSplashes);
 
 
@@ -2150,6 +2150,7 @@ if (!opponentPlayer)
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 		doofM.cameras = [camHUD];
+		strumLines.cameras = [camHUD];
 		if (ClientPrefs.classicStyle){
 			if (!healthBar.leftToRight)
 			healthBar.setColors(0xFFFF0000, 0xFF66FF33);
