@@ -168,6 +168,14 @@ class PluginManager {
             @:privateAccess
             return soundchannel._channel.__source;
         });
+        interp.variables.set("createNewCamera", function(bgColor = null){
+         var camera = new FlxCamera();
+         if (bgColor != null)
+            camera.bgColor = bgColor;
+         else
+            camera.bgColor.alpha = 0;
+            return camera;
+        });
         #if flxanimate
         interp.variables.set("FlxAnimate", flxanimate.FlxAnimate);
         interp.variables.set("FlxAnim", flxanimate.animate.FlxAnim);

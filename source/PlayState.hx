@@ -10,6 +10,7 @@ import llua.LuaL;
 import llua.State;
 import llua.Convert;
 #end
+import math.Vector3;
 import customlize.VoicesGroup;
 import customlize.SoundGroup;
 import flixel.ui.FlxButton;
@@ -1917,11 +1918,12 @@ if (OpenFlAssets.exists(file)) {
 		totalComboBreak = new FlxTypedGroup<FlxSprite>();
 		add(totalComboBreak);
 		totalComboBreak.cameras = [camHUD];
-		generateSong(SONG.song);
+		
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		add(strumLineNotes);
-		strumLines = new StrumLine(strumLineNotes,notes);
-		add(strumLines);
+		generateSong(SONG.song);
+		//strumLines = new StrumLine(strumLineNotes,notes);
+		//add(strumLines);
 	
 		add(grpNoteSplashes);
 
@@ -2150,7 +2152,7 @@ if (!opponentPlayer)
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 		doofM.cameras = [camHUD];
-		strumLines.cameras = [camHUD];
+		//strumLines.cameras = [camHUD];
 		if (ClientPrefs.classicStyle){
 			if (!healthBar.leftToRight)
 			healthBar.setColors(0xFFFF0000, 0xFF66FF33);
@@ -2323,6 +2325,7 @@ if (!opponentPlayer)
 		{
 			startCountdown();
 		}
+		
 		RecalculateRating();
 
 		//PRECACHING MISS SOUNDS BECAUSE I THINK THEY CAN LAG PEOPLE AND FUCK THEM UP IDK HOW HAXE WORKS
@@ -3697,6 +3700,7 @@ if (!dadChar.beingControlled)
 				daNote.kill();
 				unspawnNotes.remove(daNote);
 				daNote.destroy();
+
 			}
 			--i;
 		}
@@ -3713,6 +3717,7 @@ if (!dadChar.beingControlled)
 				daNote.kill();
 				notes.remove(daNote, true);
 				daNote.destroy();
+				callAllHScript('onNoteDestroy', [daNote]);
 			}
 			--i;
 		}
@@ -5667,7 +5672,18 @@ if (opponentPlayer){
 			}
 
 			var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
-		
+			if (!modchartMode){
+				for (strum in strumLineNotes.members){
+					if (strum.vec3Cache == null)
+						strum.vec3Cache = new Vector3();
+	
+					var pos = strum.vec3Cache;
+					pos.x = strum.x;
+					pos.y = strum.y;
+					pos.z = 0;
+				}
+				
+			}
 			notes.forEachAlive(function(daNote:Note)
 			{
 				var strumGroup:FlxTypedGroup<StrumNote> = currentStrums[daNote.currentStrum];
@@ -5708,9 +5724,18 @@ if (opponentPlayer){
 					else
 						daNote.mAngle = 0;
 				}
-			}else
+			}else{
 				daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate,SONG.bpm);
 
+					if (daNote.vec3Cache == null)
+						daNote.vec3Cache = new Vector3();
+	
+					var pos = daNote.vec3Cache;
+					pos.x = daNote.x;
+					pos.y = daNote.y;
+					pos.z = 0;
+				
+			}
 				var coolMustPress = daNote.mustPress;
 				//if (opponentPlayer)
 				//	coolMustPress = !daNote.mustPress;
@@ -5756,6 +5781,7 @@ if (opponentPlayer){
 					daNote.kill();
 					notes.remove(daNote, true);
 					daNote.destroy();
+					callAllHScript('onNoteDestroy', [daNote]);
 				}else{
 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
 				{
@@ -5770,6 +5796,7 @@ if (opponentPlayer){
 					daNote.kill();
 					notes.remove(daNote, true);
 					daNote.destroy();
+					callAllHScript('onNoteDestroy', [daNote]);
 				}
 			}
 			});
@@ -7016,6 +7043,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 			daNote.kill();
 			notes.remove(daNote, true);
 			daNote.destroy();
+			callAllHScript('onNoteDestroy', [daNote]);
 		}
 		unspawnNotes = [];
 		eventNotes = [];
