@@ -754,8 +754,6 @@ else{
 			if (copyAngle)
 				angle = strumDirection - 90 + strumAngle + offsetAngle;
 	
-			if(copyAlpha)
-				alpha = strumAlpha * multAlpha;
 	
 			if(copyX)
 				x = strumX + offsetX + Math.cos(angleDir) * distance;

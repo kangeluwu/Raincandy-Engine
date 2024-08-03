@@ -17,11 +17,11 @@ class ConfusionModifier extends NoteModifier {
             note.angle = note.mAngle;
     }
 
-    override function updateReceptor(beat:Float, receptor:StrumNote , pos:Vector3, player:Int)
+    override function updateReceptor(beat:Float, receptor:StrumNote , pos:Vector3, player:Int){
 		receptor.angle = (getValue(player)
 		+ getSubmodValue('confusion${receptor.noteData}', player)
 			+ getSubmodValue('receptor${receptor.noteData}Angle', player));
-    
+    }
 
     override function getSubmods(){
         var subMods:Array<String> = ["noteAngle","receptorAngle"];

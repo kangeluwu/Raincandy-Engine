@@ -5618,7 +5618,7 @@ if (opponentPlayer){
 		strumTADA.forEachAlive(function(strum:StrumNote)
 			{
 				var pos = modManager.getPos(0, 0, 0, curDecBeat, strum.noteData, 1, strum, [], strum.vec3Cache);
-				modManager.updateObject(curDecBeat, strum, pos, 0);
+				modManager.updateObject(curDecBeat, strum, pos, 1);
 				strum.x = pos.x;
 				strum.y = pos.y;
 				strum.z = pos.z;
@@ -5736,6 +5736,10 @@ if (opponentPlayer){
 					pos.z = 0;
 				
 			}
+			
+			if(daNote.copyAlpha)
+				daNote.alpha = strum.alpha * daNote.multAlpha;//Alpha is working in modchart mode idk why auishsacni0osacnioascniocnsaionikvionsadvioniodvnisdoavmoip colorswap buggy 9iadshiojaiocjniocsajiaoscjioasicojioascnuiovsdnfwqertyuiopasdfghjklzxcvbnm123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
 				var coolMustPress = daNote.mustPress;
 				//if (opponentPlayer)
 				//	coolMustPress = !daNote.mustPress;
