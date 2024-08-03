@@ -93,18 +93,18 @@ class CameraFrontEnd
             list.insert(Pos,NewCamera);
             if (DefaultDrawTarget)
                 defaults.insert(Pos,NewCamera);
-            
-            resetCameraIds();
+            for (camera in list)
+                {
+                    if (camera.ID >= Pos)
+                        camera.ID = camera.ID+1;
+                }
+            NewCamera.ID = Pos;
+           
             cameraAdded.dispatch(NewCamera);
             return NewCamera;
         }
 
-    function resetCameraIds(){
-        for (camera in 0...list.length)
-            {
-                list[camera].ID = camera;
-            }
-    }
+   
 	/**
 	 * Remove a camera from the game.
 	 *
