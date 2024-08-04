@@ -5627,7 +5627,7 @@ if (opponentPlayer){
 			strumTADA.forEachAlive(function(strum:StrumNote)
 			{
 				var pos = modManager.getPos(0, 0, 0, curDecBeat, strum.noteData, strum.player, strum, [], strum.vec3Cache);
-				modManager.updateObject(curDecBeat, strum, pos, 0);
+				modManager.updateObject(curDecBeat, strum, pos, strum.player);
 				strum.x = pos.x;
 				strum.y = pos.y;
 				strum.z = pos.z;
@@ -6447,11 +6447,14 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				}
 				else
 				{
-					songSpeedTween = FlxTween.tween(this, {songSpeed: newValue}, val2, {ease: FlxEase.linear, onComplete:
+					songSpeedTween = 
+					FlxTween.num(songSpeed, newValue, val2, {ease: FlxEase.linear, onComplete:
 						function (twn:FlxTween)
 						{
 							songSpeedTween = null;
 						}
+					},function(speed:Float){
+						songSpeed=speed;
 					});
 				}
 

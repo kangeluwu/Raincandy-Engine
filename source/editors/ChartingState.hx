@@ -1158,14 +1158,18 @@ Left/Right - Go to the previous/next section
 		var check_notesSec:FlxUICheckBox = null;
 		var copyButton:FlxButton = new FlxButton(10, 170, "Copy Section", function()
 		{
+		
 			notesCopied = [];
 			sectionToCopy = curSec;
+			if(check_notesSec.checked)
+				{
 			for (i in 0..._song.notes[curSec].sectionNotes.length)
 			{
 				var note:Array<Dynamic> = _song.notes[curSec].sectionNotes[i];
 				notesCopied.push(note);
 			}
-
+		}if(check_eventsSec.checked)
+		{
 			var startThing:Float = sectionStartTime();
 			var endThing:Float = sectionStartTime(1);
 			for (event in _song.events)
@@ -1182,6 +1186,7 @@ Left/Right - Go to the previous/next section
 					notesCopied.push([strumTime, -1, copiedEventArray]);
 				}
 			}
+		}
 		});
 
 		var pasteButton:FlxButton = new FlxButton(copyButton.x + 100, copyButton.y, "Paste Section", function()
@@ -1230,10 +1235,11 @@ Left/Right - Go to the previous/next section
 
 		var clearSectionButton:FlxButton = new FlxButton(pasteButton.x + 100, pasteButton.y, "Clear", function()
 		{
-			for (note in _song.notes[curSec].sectionNotes)
-			notes.remove(note);
+		
 			if(check_notesSec.checked)
 			{
+				for (note in _song.notes[curSec].sectionNotes)
+					notes.remove(note);
 				_song.notes[curSec].sectionNotes = [];
 			}
 

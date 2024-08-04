@@ -39,7 +39,7 @@ class ModManager {
 		quickRegister(new RotateModifier(this, 'center', new Vector3((FlxG.width* 0.5) - (Note.swagWidth/2), (FlxG.height* 0.5) - Note.swagWidth/2)));
 		quickRegister(new LocalRotateModifier(this, 'local'));
 		quickRegister(new SubModifier("noteSpawnTime", this));
-		setValue("noteSpawnTime", 2000);
+		setValue("noteSpawnTime", 3000);
 		setValue("xmod", 1);
 		for(i in 0...4)
 			setValue('xmod$i', 1);
@@ -214,6 +214,7 @@ class ModManager {
 	}
 
 	public function updateObject(beat:Float, obj:FlxSprite, pos:Vector3, player:Int){
+		if (obj != null){
 		for (name in activeMods[player])
 		{
 			var mod:Modifier = notemodRegister.get(name);
@@ -238,6 +239,7 @@ class ModManager {
 			cum.offset.x += cum.typeOffsetX;
 			cum.offset.y += cum.typeOffsetY;
 		}
+	}
     }
 
 	public inline function getVisPos(songPos:Float=0, strumTime:Float=0, songSpeed:Float=1){
