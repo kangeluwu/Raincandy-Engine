@@ -19,6 +19,7 @@ import flixel.math.FlxRect;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import math.*;
+import flixel.addons.effects.FlxSkewedSprite;
 typedef EventNote = {
 	strumTime:Float,
 	event:String,
@@ -27,7 +28,7 @@ typedef EventNote = {
 	value3:String
 }
 
-class Note extends FlxSprite
+class Note extends FlxSkewedSprite
 {
 	public var vec3Cache:Vector3 = new Vector3(); // for vector3 operations in modchart code
 	public var defScale:FlxPoint = FlxPoint.get(); // for modcharts to keep the scaling
@@ -339,7 +340,7 @@ class Note extends FlxSprite
 
 	public function resizeByRatio(ratio:Float) //haha funny twitter shit
 	{
-		if(isSustainNote && !animation.curAnim.name.endsWith('end'))
+		if(frames != null && isSustainNote && !animation.curAnim.name.endsWith('end'))
 		{
 			scale.y *= ratio;
 			updateHitbox();
@@ -753,8 +754,6 @@ else{
 			if (copyAngle)
 				angle = strumDirection - 90 + strumAngle + offsetAngle;
 	
-			if(copyAlpha)
-				alpha = strumAlpha * multAlpha;
 	
 			if(copyX)
 				x = strumX + offsetX + Math.cos(angleDir) * distance;

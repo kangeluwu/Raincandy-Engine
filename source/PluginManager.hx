@@ -17,6 +17,7 @@ import flixel.text.FlxText;
 import flixel.FlxState;
 import openfl.filters.ShaderFilter;
 import openfl.display.Stage;
+import flixel.system.scaleModes.*;
 import flixel.FlxGame;
 import flixel.input.gamepad.FlxGamepadManager;
 import flixel.addons.display.FlxBackdrop;
@@ -144,6 +145,14 @@ class PluginManager {
 		return interp.createScriptClassInstance(classname, args);
 	}
     static function addingBasicStuffsIthink<T:Interp>(interp:T):T{
+        interp.variables.set("BaseScaleMode", BaseScaleMode);
+        interp.variables.set("FillScaleMode", FillScaleMode);
+        interp.variables.set("FixedScaleAdjustSizeScaleMode", FixedScaleAdjustSizeScaleMode);
+        interp.variables.set("FixedScaleMode", FixedScaleMode);
+        interp.variables.set("PixelPerfectScaleMode", PixelPerfectScaleMode);
+        interp.variables.set("RatioScaleMode", RatioScaleMode);
+        interp.variables.set("RelativeScaleMode", RelativeScaleMode);
+        interp.variables.set("StageSizeScaleMode", StageSizeScaleMode);
         interp.variables.set("FlxPoint", FlxPoint);
         interp.variables.set("FlxEffectSprite", FlxEffectSprite);
         interp.variables.set("AttachedFlxText", editors.ChartingState.AttachedFlxText);
@@ -167,6 +176,14 @@ class PluginManager {
         interp.variables.set("getSoundChannel", function(soundchannel){
             @:privateAccess
             return soundchannel._channel.__source;
+        });
+        interp.variables.set("createNewCamera", function(bgColor = null){
+         var camera = new FlxCamera();
+         if (bgColor != null)
+            camera.bgColor = bgColor;
+         else
+            camera.bgColor.alpha = 0;
+            return camera;
         });
         #if flxanimate
         interp.variables.set("FlxAnimate", flxanimate.FlxAnimate);

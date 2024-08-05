@@ -10,6 +10,7 @@ import llua.LuaL;
 import llua.State;
 import llua.Convert;
 #end
+import math.Vector3;
 import customlize.VoicesGroup;
 import customlize.SoundGroup;
 import flixel.ui.FlxButton;
@@ -228,7 +229,7 @@ class PlayState extends MusicBeatState
 	public var eventNotes:Array<EventNote> = [];
 
 	private var strumLine:FlxSprite;
-
+    public var strumLines:StrumLine = null;
 	//Handles the new epic mega sexy cam code that i've done
 	public var camFollow:FlxPoint;
 	public var camFollowPos:FlxObject;
@@ -427,7 +428,7 @@ class PlayState extends MusicBeatState
 	public var disabledchangecolor:Bool = false;
 	public var hideFUCKINGhealthBarBG:Bool = false;
 	
-	var hscriptStates:Map<String, InterpEx> = new Map<String, InterpEx>();
+	var hscriptStates:Map<String, Interp> = new Map<String, Interp>();
 	var exInterp:InterpEx = new InterpEx();
 	var haxeFunctions:Map<String, Void->Void> = [];
 	var haxeVars:Map<String, Dynamic> = [];
@@ -522,28 +523,8 @@ return returnVal;
 		}
 	}
 	public var funni:Bool = false;
-	public function setAllHaxeModule(paths:String,name:String) {
-		try
-			{
-				for (key in hscriptStates.keys())
-				hscriptStates.get(key).addModule(FNFAssets.getText(SUtil.getPath() + paths + name));
-	}
-	catch (e)
-	{
 
-	}
-}
-	public function setHaxeModule(paths:String,name:String, usehaxe:String) {
-		try
-			{
-				hscriptStates.get(usehaxe).addModule(FNFAssets.getText(SUtil.getPath() + paths + name));
-	}
-	catch (e)
-	{
 
-	}
-		
-}
 function camerabgAlphaShits(cam:FlxCamera)
 	{
 		cam.bgColor.alpha = 0;
@@ -607,7 +588,6 @@ function camerabgAlphaShits(cam:FlxCamera)
 	parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 
 		var program;
-		parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
 		if (isArray){
 			program = parser.parseString(FNFAssets.getText(SUtil.getPath() + path + filename));
 			
@@ -617,7 +597,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		}	
 	
 
-		var interp = PluginManager.createSimpleInterpEx();
+		var interp = PluginManager.createSimpleInterp();
 		// set vars
 		interp.variables.set("variables", variables);
 		interp.variables.set("BEHIND_GF", BEHIND_GF);
@@ -625,8 +605,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("camerabgAlphaShits", camerabgAlphaShits);
 		interp.variables.set("FlxCamera", FlxCamera);
 		interp.variables.set("FlxObject", FlxObject);
-		interp.variables.set("setAllHaxeModule", setAllHaxeModule);
-		interp.variables.set("setHaxeModule", setHaxeModule);
+		
 		interp.variables.set("BEHIND_BF", BEHIND_BF);
 		interp.variables.set("BEHIND_DAD", BEHIND_DAD);
 		interp.variables.set("BEHIND_ALL", BEHIND_ALL);
@@ -649,6 +628,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		interp.variables.set("FlxPexParser", FlxPexParser);
 		interp.variables.set("FlxTrail", FlxTrail);
 		interp.variables.set("FlxTrailArea", FlxTrailArea);
+
 		interp.variables.set("FlxEmitter", FlxEmitter);
 		interp.variables.set("FlxParticle", FlxParticle);
 		interp.variables.set("playerComboBreak", playerComboBreak);
@@ -908,6 +888,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		});
 		//Fow Ending Cutscenes lol
 		interp.variables.set("endSong", endSong);
+		interp.variables.set("StrumLine", StrumLine);
         for (name in variables.keys())
 			interp.variables.set(name, variables.get(name));
 
@@ -1937,9 +1918,13 @@ if (OpenFlAssets.exists(file)) {
 		totalComboBreak = new FlxTypedGroup<FlxSprite>();
 		add(totalComboBreak);
 		totalComboBreak.cameras = [camHUD];
-
+		
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		add(strumLineNotes);
+		generateSong(SONG.song);
+		//strumLines = new StrumLine(strumLineNotes,notes);
+		//add(strumLines);
+	
 		add(grpNoteSplashes);
 
 
@@ -1956,7 +1941,7 @@ if (OpenFlAssets.exists(file)) {
 		// startCountdown();
 		
 		
-		generateSong(SONG.song);
+		
 		modManager = new ModManager(this);
 		
 		var eventhaxefilesPushed:Array<String> = [];
@@ -2167,6 +2152,7 @@ if (!opponentPlayer)
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 		doofM.cameras = [camHUD];
+		//strumLines.cameras = [camHUD];
 		if (ClientPrefs.classicStyle){
 			if (!healthBar.leftToRight)
 			healthBar.setColors(0xFFFF0000, 0xFF66FF33);
@@ -2339,6 +2325,7 @@ if (!opponentPlayer)
 		{
 			startCountdown();
 		}
+		
 		RecalculateRating();
 
 		//PRECACHING MISS SOUNDS BECAUSE I THINK THEY CAN LAG PEOPLE AND FUCK THEM UP IDK HOW HAXE WORKS
@@ -3434,11 +3421,7 @@ if (!dadChar.beingControlled)
 						makeHaxeState(file.substr(0, file.length - 8), folder, file,true);
 						haxefilesPushed2.push(file);
 					}
-					if(file.endsWith('.hx') && !haxeModulePushed.contains(file))
-						{
-							setAllHaxeModule(folder, file);
-							haxeModulePushed.push(file);
-						}
+			
 				}
 			}
 		}
@@ -3717,6 +3700,7 @@ if (!dadChar.beingControlled)
 				daNote.kill();
 				unspawnNotes.remove(daNote);
 				daNote.destroy();
+
 			}
 			--i;
 		}
@@ -3733,6 +3717,7 @@ if (!dadChar.beingControlled)
 				daNote.kill();
 				notes.remove(daNote, true);
 				daNote.destroy();
+				callAllHScript('onNoteDestroy', [daNote]);
 			}
 			--i;
 		}
@@ -5633,7 +5618,7 @@ if (opponentPlayer){
 		strumTADA.forEachAlive(function(strum:StrumNote)
 			{
 				var pos = modManager.getPos(0, 0, 0, curDecBeat, strum.noteData, 1, strum, [], strum.vec3Cache);
-				modManager.updateObject(curDecBeat, strum, pos, 0);
+				modManager.updateObject(curDecBeat, strum, pos, 1);
 				strum.x = pos.x;
 				strum.y = pos.y;
 				strum.z = pos.z;
@@ -5642,7 +5627,7 @@ if (opponentPlayer){
 			strumTADA.forEachAlive(function(strum:StrumNote)
 			{
 				var pos = modManager.getPos(0, 0, 0, curDecBeat, strum.noteData, strum.player, strum, [], strum.vec3Cache);
-				modManager.updateObject(curDecBeat, strum, pos, 0);
+				modManager.updateObject(curDecBeat, strum, pos, strum.player);
 				strum.x = pos.x;
 				strum.y = pos.y;
 				strum.z = pos.z;
@@ -5687,7 +5672,18 @@ if (opponentPlayer){
 			}
 
 			var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
-		
+			if (!modchartMode){
+				for (strum in strumLineNotes.members){
+					if (strum.vec3Cache == null)
+						strum.vec3Cache = new Vector3();
+	
+					var pos = strum.vec3Cache;
+					pos.x = strum.x;
+					pos.y = strum.y;
+					pos.z = 0;
+				}
+				
+			}
 			notes.forEachAlive(function(daNote:Note)
 			{
 				var strumGroup:FlxTypedGroup<StrumNote> = currentStrums[daNote.currentStrum];
@@ -5728,8 +5724,21 @@ if (opponentPlayer){
 					else
 						daNote.mAngle = 0;
 				}
-			}else
+			}else{
 				daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate,SONG.bpm);
+
+					if (daNote.vec3Cache == null)
+						daNote.vec3Cache = new Vector3();
+	
+					var pos = daNote.vec3Cache;
+					pos.x = daNote.x;
+					pos.y = daNote.y;
+					pos.z = 0;
+				
+			}
+			
+			if(daNote.copyAlpha)
+				daNote.alpha = strum.alpha * daNote.multAlpha;//Alpha is working in modchart mode idk why auishsacni0osacnioascniocnsaionikvionsadvioniodvnisdoavmoip colorswap buggy 9iadshiojaiocjniocsajiaoscjioasicojioascnuiovsdnfwqertyuiopasdfghjklzxcvbnm123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
 
 				var coolMustPress = daNote.mustPress;
 				//if (opponentPlayer)
@@ -5776,6 +5785,7 @@ if (opponentPlayer){
 					daNote.kill();
 					notes.remove(daNote, true);
 					daNote.destroy();
+					callAllHScript('onNoteDestroy', [daNote]);
 				}else{
 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
 				{
@@ -5790,6 +5800,7 @@ if (opponentPlayer){
 					daNote.kill();
 					notes.remove(daNote, true);
 					daNote.destroy();
+					callAllHScript('onNoteDestroy', [daNote]);
 				}
 			}
 			});
@@ -6436,11 +6447,14 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				}
 				else
 				{
-					songSpeedTween = FlxTween.tween(this, {songSpeed: newValue}, val2, {ease: FlxEase.linear, onComplete:
+					songSpeedTween = 
+					FlxTween.num(songSpeed, newValue, val2, {ease: FlxEase.linear, onComplete:
 						function (twn:FlxTween)
 						{
 							songSpeedTween = null;
 						}
+					},function(speed:Float){
+						songSpeed=speed;
 					});
 				}
 
@@ -7036,6 +7050,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 			daNote.kill();
 			notes.remove(daNote, true);
 			daNote.destroy();
+			callAllHScript('onNoteDestroy', [daNote]);
 		}
 		unspawnNotes = [];
 		eventNotes = [];
