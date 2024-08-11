@@ -218,6 +218,8 @@ class PlayState extends MusicBeatState
 	public var spawnTime:Float = 3000;
 
 	public var vocals:VoicesGroup;
+	public var vocalsFinished:Bool = false;
+	public var sfxFinished:Bool = false;
 	public var sfx:SoundGroup;
 	public var dad:Character = null;
 	public var gf:Character = null;
@@ -3836,6 +3838,7 @@ if (!dadChar.beingControlled)
     function generateSongF(){
 		
 		vocals = new VoicesGroup();
+
 var igroneSpilt:Bool = true;
 		if (SONG.needsVoices){
         if (SONG.playerVocalFiles.length>0){
@@ -3870,16 +3873,21 @@ var igroneSpilt:Bool = true;
 		vocals.add(snd);
 		trace(snd);
 			}
-			
+			vocals.onCompletes = function(){
+				vocalsFinished = true;
+			};
 		}
 		add(vocals);
 
 
 
 		sfx = new SoundGroup();
-		if (SONG.needsSFX)
+		if (SONG.needsSFX){
 			SoundGroup.build(SONG.song,SONG.sfxFiles);
-
+			sfx.onCompletes = function(){
+				sfxFinished = true;
+			};
+}
 			add(sfx);
 			
 	
@@ -4008,13 +4016,18 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 				   var snd:FlxSound = new FlxSound();
 				   snd.loadEmbedded(Paths.songStuffer(songData.song,songData.songFileNames[1]));
 				   preVocal.add(snd);
+				   preVocal.onCompletes = function(){
+					vocalsFinished = true;
+				};
 			   }
 			   
 		   
 		   var presfx = new SoundGroup();
 		   if (songData.needsSFX){
 			SoundGroup.build(songData.song,songData.sfxFiles);
-			   
+			presfx.onCompletes = function(){
+				sfxFinished = true;
+			};
 			   }
 
 			FlxG.sound.list.add(preInst);
@@ -4394,7 +4407,8 @@ var preNotesToSpawn:Array<Array<Note>> = [];
 	Conductor.changeBPM(songData.bpm);
 	stopAutoMoving = songData.disPlayAutoMovingCam;
 	songSpeedType = ClientPrefs.getGameplaySetting('scrolltype','multiplicative');
-
+	vocalsFinished = false;
+	sfxFinished = false;
 	switch(songSpeedType)
 	{
 		case "multiplicative":
@@ -5050,7 +5064,7 @@ function eventPushed(event:EventNote) {
 			}
 			callOnLuas('onResume', []);
 
-			setAllHaxeVar('onResume', []);
+			callAllHScript('onResume', []);
 			#if desktop
 			if (startTimer != null && startTimer.finished)
 			{
@@ -5106,7 +5120,7 @@ function eventPushed(event:EventNote) {
 
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
-
+        if (!vocalsFinished){
 		vocals.forEachAlive(function(sound:FlxSound) {
 			if (Conductor.songPosition <= sound.length)
 				{
@@ -5115,8 +5129,8 @@ function eventPushed(event:EventNote) {
 		  });
 		
 		vocals.play();
-
-
+		}
+		if (!sfxFinished){
 		sfx.forEachAlive(function(sound:FlxSound) {
 			if (Conductor.songPosition <= sfx.length)
 				{
@@ -5124,6 +5138,7 @@ function eventPushed(event:EventNote) {
 				}
 		  });
 		sfx.play();
+		}
 	}
 	
 	public var paused:Bool = false;
@@ -7273,7 +7288,7 @@ coolText.x = FlxG.width * 0.55;
 
 			numScore.x += ClientPrefs.comboOffset[2];
 			numScore.y -= ClientPrefs.comboOffset[3];
-
+		
 			if (!PlayState.isPixelStage)
 			{
 				numScore.antialiasing = ClientPrefs.globalAntialiasing;
@@ -7319,6 +7334,7 @@ coolText.x = FlxG.width * 0.55;
 
 			daLoop++;
 			if(numScore.x > xThing) xThing = numScore.x;
+			seperatedScores.push(numScore);
 		}
 		comboSpr.x = xThing + 50;
 		/*
