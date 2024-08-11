@@ -289,6 +289,7 @@ class PlayState extends MusicBeatState
 	public var instakillOnMiss:Bool = false;
 	public var botplay:Bool = false;
 	public var opponentPlayer:Bool = false;
+	public var downscroll:Bool = false;
 	public var practiceMode:Bool = false;
 
 	public var botplaySine:Float = 0;
@@ -1036,6 +1037,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 			FlxG.sound.music.stop();
 
 		// Gameplay settings
+		downscroll = ClientPrefs.downScroll;
 		healthGain = ClientPrefs.getGameplaySetting('healthgain', 1);
 		healthLoss = ClientPrefs.getGameplaySetting('healthloss', 1);
 		instakillOnMiss = ClientPrefs.getGameplaySetting('instakill', false);
@@ -1856,7 +1858,7 @@ if (OpenFlAssets.exists(file)) {
 		Conductor.songPosition = -5000;
 		var showTime:Bool = (ClientPrefs.timeBarType != 'Disabled');
 		strumLine = new FlxSprite(ClientPrefs.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, 50).makeGraphic(FlxG.width, 10);
-		if(ClientPrefs.downScroll) strumLine.y = FlxG.height - 150;
+		if(downscroll) strumLine.y = FlxG.height - 150;
 		strumLine.scrollFactor.set();
 
 
@@ -1871,7 +1873,7 @@ if (OpenFlAssets.exists(file)) {
 		instanceTimeBarBG.xAdd = -4;
 		instanceTimeBarBG.yAdd = -4;
 //preload？？？？
-		if (ClientPrefs.downScroll)
+		if (downscroll)
 			instanceTimeBarBG.y = FlxG.height * 0.9 + 45;
 
 		timeTxt = new FlxText(0, instanceTimeBarBG.y + 6, 0, "", 16);
@@ -2063,7 +2065,7 @@ if (OpenFlAssets.exists(file)) {
 		
 
 
-		healthBar = new HealthBar(0, FlxG.height * (!ClientPrefs.downScroll ? 0.89 : 0.11), 'custom_ui/' + uiSmelly.uses + '/'  + 'healthBar', function() return healthInstance, 0, 2);
+		healthBar = new HealthBar(0, FlxG.height * (!downscroll ? 0.89 : 0.11), 'custom_ui/' + uiSmelly.uses + '/'  + 'healthBar', function() return healthInstance, 0, 2);
 if (!opponentPlayer)
 		healthBar.leftToRight = false;
 		healthBar.screenCenter(X);
@@ -3377,6 +3379,7 @@ if (!dadChar.beingControlled)
 	
 	public static var startOnTime:Float = 0;
     public var summonNotesAlready:Bool = false;
+	public var copyAlphas:Bool = false;
 	public function startCountdown():Void
 	{
 		if(startedCountdown) {
@@ -3609,10 +3612,15 @@ if (!dadChar.beingControlled)
 					var coolMustPress = note.mustPress;
 					if(ClientPrefs.opponentStrums || coolMustPress)
 					{
+						if (!copyAlphas){
 						note.copyAlpha = false;
 						note.alpha = note.multAlpha;
+						}
 						if(ClientPrefs.middleScroll && !coolMustPress) {
-							note.alpha *= 0.35;
+							if (!copyAlphas)
+								note.alpha *= 0.35;
+								else
+								note.multAlpha *= 0.35;
 						}
 					}
 				});
@@ -3620,10 +3628,15 @@ if (!dadChar.beingControlled)
 					var coolMustPress = note.mustPress;
 					if(ClientPrefs.opponentStrums || coolMustPress)
 					{
-						note.copyAlpha = false;
-						note.alpha = note.multAlpha;
+						if (!copyAlphas){
+							note.copyAlpha = false;
+							note.alpha = note.multAlpha;
+							}
 						if(ClientPrefs.middleScroll && !coolMustPress) {
+							if (!copyAlphas)
 							note.alpha *= 0.35;
+							else
+							note.multAlpha *= 0.35;
 						}
 					}
 				}
@@ -4902,7 +4915,7 @@ function eventPushed(event:EventNote) {
 					else if(ClientPrefs.middleScroll) targetAlpha = 0.35;
 				}
 			var babyArrow:StrumNote = new StrumNote(ClientPrefs.middleScroll ? STRUM_X_MIDDLESCROLL : (ClientPrefs.classicStyle ? 0 : STRUM_X), strumLine.y, i, player,strumNum);
-			babyArrow.downScroll = ClientPrefs.downScroll;
+			babyArrow.downScroll = downscroll;
 
 			if (!isStoryMode && !skipArrowStartTween)
 			{
@@ -5076,7 +5089,7 @@ function eventPushed(event:EventNote) {
 	override public function onFocusLost():Void
 	{
 		#if desktop
-		if (health > 0 && !paused)
+		if (health > MIN_HEALTH && !paused)
 		{
 			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
 		}
@@ -5419,12 +5432,12 @@ if (iconMovingType == 'Left'){
 		- iconOfset * 2);*/
 		
 }
-		if (health < 0)
-			health = 0;
+		if (health < MIN_HEALTH)
+			health = MIN_HEALTH;
 		if (!genocideMode)
 			{
-			if (health > 2)
-				health = 2;
+			if (health > MAX_HEALTH)
+				health = MAX_HEALTH;
 
 			} else {
 			var p2ToUse:Float = healthBar.barCenter - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
@@ -5439,8 +5452,8 @@ if (iconMovingType == 'Left'){
 			(healthBar.width * (FlxMath.remapToRange((health / 2 * 100), 0, 100, 100, 0) * 0.01)) 
 			+ (150 * iconP1.scale.x - 150) / 2 - iconOffset;
 			iconP2.x = p2ToUse;
-			if (health > 3)
-				health = 3;
+			if (health > MAX_HEALTH+1)
+				health = MAX_HEALTH+1;
 			}
 
 var iconP1s = iconP1;
@@ -5880,9 +5893,10 @@ if (opponentPlayer){
 
 	public var isDead:Bool = false; //Don't mess with this on Lua!!!
 	public static var gameOverChar:String;
-	public static var endHealth:Float = 0;
+	public static var MIN_HEALTH:Float = 0;
+	public static var MAX_HEALTH:Float = 2;
 	function doDeathCheck(?skipHealthCheck:Bool = false) {
-		if (((skipHealthCheck && instakillOnMiss) || health <= endHealth) && !practiceMode && !isDead)
+		if (((skipHealthCheck && instakillOnMiss) || health <= MIN_HEALTH) && !practiceMode && !isDead)
 		{
 			
 
@@ -7218,9 +7232,13 @@ coolText.x = FlxG.width * 0.55;
 
 		var seperatedScore:Array<Int> = [];
 
+		if(combo >= 10000) {
+			seperatedScore.push(Math.floor(combo / 10000) % 10);
+		}
 		if(combo >= 1000) {
 			seperatedScore.push(Math.floor(combo / 1000) % 10);
 		}
+		
 		seperatedScore.push(Math.floor(combo / 100) % 10);
 		seperatedScore.push(Math.floor(combo / 10) % 10);
 		seperatedScore.push(combo % 10);
@@ -7242,6 +7260,7 @@ coolText.x = FlxG.width * 0.55;
 				add(comboSpr);
 			grpRatings.get('combos').push(comboSpr);
 		}
+		var seperatedScores=[];
 		for (i in seperatedScore)
 		{
 			var numScore:FlxSprite = new FlxSprite().loadGraphic(
@@ -7339,6 +7358,7 @@ currentTimingShown.cameras = [camHUD];
 			},
 			startDelay: Conductor.crochet * 0.002
 		});
+		callAllHScript('popUpScore', [note,comboSpr,rating,seperatedScores]);
 	}
 
 	private function onKeyPress(event:KeyboardEvent):Void
@@ -8001,7 +8021,7 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 				if (!note.isSustainNote)
 				{
 					combo += 1;
-					if(combo > 9999) combo = 9999;
+					if(combo > 99999) combo = 99999;
 					popUpScore(note, playerOne);
 				}
 				
@@ -8386,6 +8406,7 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 			lua.call('onDestroy', []);
 			lua.stop();
 		}
+		callAllHScript("onDestroy", []);
 		luaArray = [];
 		if(FunkinLua.hscript != null) FunkinLua.hscript = null;
 		if(!ClientPrefs.controllerMode)
@@ -8472,7 +8493,7 @@ function defaultNoteHit(note:Note, strum:Int = 2):Void
 	
 		if (generatedMusic)
 		{
-			notes.sort(FlxSort.byY, ClientPrefs.downScroll ? FlxSort.ASCENDING : FlxSort.DESCENDING);
+			notes.sort(FlxSort.byY, downscroll ? FlxSort.ASCENDING : FlxSort.DESCENDING);
 		}
 
 

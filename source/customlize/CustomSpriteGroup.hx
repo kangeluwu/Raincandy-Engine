@@ -105,32 +105,33 @@ import android.FlxVirtualPad;
 #if VIDEOS_ALLOWED
 import hxcodec.flixel.FlxVideo as FlxVideo;
 #end
-
-class CustomSprite extends DynamicSprite{
+import flixel.group.FlxSpriteGroup;
+class CustomSpriteGroup extends FlxSpriteGroup{
     public var interp:Interp = new Interp();
-    public static var instance:CustomSprite;
-    override public function new(?X:Float = 0, ?Y:Float = 0, ?SimpleGraphic:FlxGraphicAsset, ?ScriptName:String = '',args:Array<Dynamic>){
+    public static var instance:CustomSpriteGroup;
+    override public function new(?X:Float = 0, ?Y:Float = 0, ?MaxSize:Int=0, ?ScriptName:String = '',args:Array<Dynamic>){
         instance = this;
-        super(X, Y,SimpleGraphic);
+        super(X, Y,MaxSize);
         if (ScriptName != null && ScriptName != '')
             interp = initHScript(ScriptName);
+       
         callInterp("init", args);
         callInterp("onCreate", args);
-      
+       
     }
     public function initHScript(name:String){
         var interp = PluginManager.createSimpleInterp();
 		var parser = new hscript.Parser();
 		var program:Expr = null;
         if(Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0)
-        if (FNFAssets.exists(SUtil.getPath() + 'mods'+Paths.currentModDirectory + '/scripts/custom_sprites/' + name, Hscript))
+        if (FNFAssets.exists(SUtil.getPath() + 'mods'+Paths.currentModDirectory + '/scripts/custom_sprites/Groups/' + name, Hscript))
 			program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + 'mods'+Paths.currentModDirectory + '/scripts/custom_sprites/' + name));
 
         if (FNFAssets.exists(SUtil.getPath() + 'mods/scripts/custom_sprites/' + name, Hscript))
-			program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + 'mods/scripts/custom_sprites/' + name));
+			program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + 'mods/scripts/custom_sprites/Groups/' + name));
         
         if (FNFAssets.exists(SUtil.getPath() + 'windose_data/scripts/custom_sprites/' + name, Hscript))
-			program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + 'windose_data/scripts/custom_sprites/' + name));
+			program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + 'windose_data/scripts/custom_sprites/Groups/' + name));
 
        
 
@@ -149,6 +150,8 @@ class CustomSprite extends DynamicSprite{
         interp.variables.set("graphic", graphic);
         interp.variables.set("bakedRotationAngle", bakedRotationAngle);
         interp.variables.set("alpha", alpha);
+        interp.variables.set("setPosition", setPosition);
+        interp.variables.set("revive", revive);
         interp.variables.set("facing", facing);
         interp.variables.set("flipX", flipX);
         interp.variables.set("flipY", flipY);
@@ -157,17 +160,38 @@ class CustomSprite extends DynamicSprite{
         interp.variables.set("scale", scale);
         interp.variables.set("this", this);
         interp.variables.set("blend", blend);
-        interp.variables.set("colorTransform", colorTransform);
+        interp.variables.set("group", group);
+        interp.variables.set("members", members);
+        interp.variables.set("length", length);
+        interp.variables.set("directAlpha", directAlpha);
+        interp.variables.set("maxSize", maxSize);
+        interp.variables.set("_skipTransformChildren", _skipTransformChildren);
+        interp.variables.set("_sprites", _sprites);
         interp.variables.set("useColorTransform", useColorTransform);
         interp.variables.set("clipRect", clipRect);
         interp.variables.set("shader", shader);
         interp.variables.set("pixels", pixels);
+        interp.variables.set("initVars", initVars);
         interp.variables.set("dirty", dirty);
         interp.variables.set("antialiasing", antialiasing);
         interp.variables.set("useFramePixels", useFramePixels);
         interp.variables.set("framePixels", framePixels);
         interp.variables.set("animation", animation);
         interp.variables.set("getFrames", getFrames);
+        interp.variables.set("replace", replace);
+        interp.variables.set("add", add);
+        interp.variables.set("insert", insert);
+        interp.variables.set("remove", remove);
+        interp.variables.set("sort", sort);
+        interp.variables.set("reset", reset);
+        interp.variables.set("revive", revive);
+        interp.variables.set("kill", kill);
+        interp.variables.set("clear", clear);
+        interp.variables.set("forEach", forEach);
+        interp.variables.set("forEachAlive", forEachAlive);
+        interp.variables.set("forEachDead", forEachDead);
+        interp.variables.set("forEachExists", forEachExists);
+        interp.variables.set("forEachOfType", forEachOfType);
         interp.variables.set("initHScript", initHScript);
         interp.variables.set("mixtex", mixtex);
         interp.variables.set('addHaxeLibrary', function (libName:String, ?libFolder:String = '') {
@@ -198,12 +222,48 @@ class CustomSprite extends DynamicSprite{
         {
             callInterp("graphicLoaded", []);
             super.graphicLoaded();
-        }
+        }  
+        override public function kill():Void
+            {
+                callInterp("kill", []);
+                super.kill();
+                callInterp("killed", []);
+            }  
+            override public function revive():Void
+                {
+                    callInterp("revive", []);
+                    super.revive();
+                    callInterp("revived", []);
+                }  
+                override public function reset(X:Float, Y:Float):Void
+                    {
+                        callInterp("reset", [X,Y]);
+                        super.reset(X,Y);
+                        callInterp("reseted", [X,Y]);
+                    }  
+        override public function add(Sprite:FlxSprite):FlxSprite
+            {
+                callInterp("add", [Sprite]);
+                return super.add(Sprite);
+                
+            }
+            override public function insert(Position:Int, Sprite:FlxSprite):FlxSprite
+                {
+                    callInterp("insert", [Position,Sprite]);
+                    return super.insert(Position,Sprite);
+                  
+                }
         override public function setGraphicSize(w:Int = 0,h:Int = 0):Void
             {
                 callInterp("setGraphicSize", [w,h]);
                 super.setGraphicSize(w,h);
             }
+            override public function remove(Sprite:FlxSprite, Splice:Bool = false):FlxSprite
+                {
+                    callInterp("remove", [Sprite,Splice]);
+                  return super.remove(Sprite,Splice);
+              
+                }
         override public function getGraphicMidpoint(?p:FlxPoint):FlxPoint
             {
                 callInterp("getGraphicMidpoint", []);
@@ -225,7 +285,7 @@ class CustomSprite extends DynamicSprite{
            callInterp("loadGraphicFromSprite", [Sprite]);
            return super.loadGraphicFromSprite(Sprite);
         }
-    override public function clone():FlxSprite
+    override public function clone():FlxTypedSpriteGroup<FlxSprite>
         {
             callInterp("clone", []);
             return super.clone();
@@ -253,6 +313,7 @@ class CustomSprite extends DynamicSprite{
 		var method = interp.variables.get(func_name);
         Reflect.callMethod(null,method,args);
 	}
+  
 	function mixtex(frames1:FlxAtlasFrames, frames2:FlxAtlasFrames) {
 		for (frame in frames2.frames){
 			frames1.pushFrame(frame);

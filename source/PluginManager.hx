@@ -154,6 +154,8 @@ class PluginManager {
         interp.variables.set("RelativeScaleMode", RelativeScaleMode);
         interp.variables.set("StageSizeScaleMode", StageSizeScaleMode);
         interp.variables.set("FlxPoint", FlxPoint);
+        interp.variables.set("FlxTweenUtil", util.FlxTweenUtil);
+        interp.variables.set("FlxTiledSprite", flixel.addons.display.FlxTiledSprite);
         interp.variables.set("FlxEffectSprite", FlxEffectSprite);
         interp.variables.set("AttachedFlxText", editors.ChartingState.AttachedFlxText);
 		interp.variables.set("FlxOutlineEffect", FlxOutlineEffect);
@@ -161,6 +163,7 @@ class PluginManager {
         interp.variables.set("WindowUtil", util.WindowUtil);
         interp.variables.set("FlxShakeEffect", FlxShakeEffect);
         interp.variables.set("FlxTrailEffect", FlxTrailEffect);
+        interp.variables.set("CustomSpriteGroup", customlize.CustomSpriteGroup);
 		interp.variables.set("FlxWaveEffect", FlxWaveEffect);
         interp.variables.set("IFlxEffect", IFlxEffect);
         interp.variables.set("SpectralAnalyzer", funkin.vis.dsp.SpectralAnalyzer);

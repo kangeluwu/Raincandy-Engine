@@ -77,6 +77,7 @@ class ReverseModifier extends NoteModifier {
 			if (shitGotHit)
 			{
 				var center:Float = strumLine.y + Note.swagWidth* 0.5;
+				if (!PlayState.instance.downscroll)PlayState.instance.downscroll = true;
 				if (revPerc >= 0.5)
 				{
 					if (y - daNote.offset.y * daNote.scale.y + daNote.height >= center)
@@ -90,6 +91,7 @@ class ReverseModifier extends NoteModifier {
 				}
 				else
 				{
+					if (PlayState.instance.downscroll)PlayState.instance.downscroll = false;
 					if (y + daNote.offset.y * daNote.scale.y <= center)
 					{
 						var swagRect = new FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
