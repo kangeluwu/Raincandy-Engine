@@ -95,7 +95,7 @@ class SoundGroup extends FlxTypedGroup<FlxSound>
     FlxG.sound.list.add(result);
     return result;
   }
-  public static var onCompletes:Void->Void = null;
+  public var onCompletes:Void->Void = null;
   public dynamic function onComplete():Void {
     if (onCompletes != null)
     onCompletes();
