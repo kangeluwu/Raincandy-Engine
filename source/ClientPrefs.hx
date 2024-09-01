@@ -5,7 +5,7 @@ import flixel.util.FlxSave;
 import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
-
+import flixel.util.FlxColor;
 class ClientPrefs {
 	public static var vibration:Bool = false;
 	public static var cacheOnGPU:Bool = true; //From Stilic
@@ -37,12 +37,24 @@ class ClientPrefs {
 	public static var hideHud:Bool = false;
 	public static var noteOffset:Int = 0;
 	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+	public static var arrowRGB:Array<Array<FlxColor>> = [
+		[0xFFC24B99, 0xFFFFFFFF, 0xFF3C1F56],
+		[0xFF00FFFF, 0xFFFFFFFF, 0xFF1542B7],
+		[0xFF12FA05, 0xFFFFFFFF, 0xFF0A4447],
+		[0xFFF9393F, 0xFFFFFFFF, 0xFF651038]];
+	public static var arrowRGBPixel:Array<Array<FlxColor>> = [
+		[0xFFE276FF, 0xFFFFF9FF, 0xFF60008D],
+		[0xFF3DCAFF, 0xFFF4FFFF, 0xFF003060],
+		[0xFF71E300, 0xFFF6FFE6, 0xFF003100],
+		[0xFFFF884E, 0xFFFFFAF5, 0xFF6C0000]];
+
 	public static var imagesPersist:Bool = false;
 	public static var usingOldNoteColorStuffer:Bool = true;
 	public static var splashAlpha:Int = 1;
 	public static var langType:String = 'English';
 	public static var timeBarType:String = 'Time Left';
 	public static var scoreZoom:Bool = true;
+	public static var newRGB:Bool = false;
 	public static var noReset:Bool = false;
 	public static var healthBarAlpha:Float = 1;
 	public static var controllerMode:Bool = false;
@@ -114,6 +126,7 @@ class ClientPrefs {
 		FlxG.save.data.showComboCounter = showComboCounter;
 		FlxG.save.data.vibration = vibration;
 		FlxG.save.data.cacheOnGPU = cacheOnGPU;
+		FlxG.save.data.newRGB = newRGB;
 		FlxG.save.data.showComboBreaks = showComboBreaks;
 		FlxG.save.data.downScroll = downScroll;
 		FlxG.save.data.skipChartTypeMenu = skipChartTypeMenu;
@@ -211,6 +224,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.opponentStrums != null) {
 			opponentStrums = FlxG.save.data.opponentStrums;
+		}
+		if(FlxG.save.data.newRGB != null) {
+			newRGB = FlxG.save.data.newRGB;
 		}
 		if(FlxG.save.data.showFPS != null) {
 			showFPS = FlxG.save.data.showFPS;

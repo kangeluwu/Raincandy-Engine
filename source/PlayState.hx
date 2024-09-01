@@ -1926,8 +1926,8 @@ if (OpenFlAssets.exists(file)) {
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		add(strumLineNotes);
 		generateSong(SONG.song);
-		//strumLines = new StrumLine(strumLineNotes,notes);
-		//add(strumLines);
+		strumLines = new StrumLine(strumLineNotes,notes);
+		add(strumLines);
 	
 		add(grpNoteSplashes);
 
@@ -2156,7 +2156,7 @@ if (!opponentPlayer)
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 		doofM.cameras = [camHUD];
-		//strumLines.cameras = [camHUD];
+		strumLines.cameras = [camHUD];
 		if (ClientPrefs.classicStyle){
 			if (!healthBar.leftToRight)
 			healthBar.setColors(0xFFFF0000, 0xFF66FF33);

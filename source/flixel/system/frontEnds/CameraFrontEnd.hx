@@ -85,6 +85,7 @@ class CameraFrontEnd
 	 *                            `FlxBasics` will not render to it unless you add it to their `cameras` list.
      * @param	Pos The FlxCamera place.
 	 * @return	This FlxCamera instance.
+	 * @since Yuki.Change.This.Into.a.stupid.fnf.engine
 	 */
 	public function insert<T:FlxCamera>(NewCamera:T, DefaultDrawTarget:Bool = true,Pos:Int = 0):T
         {

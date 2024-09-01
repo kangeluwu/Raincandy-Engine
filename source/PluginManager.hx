@@ -11,10 +11,12 @@ import openfl.display.DisplayObject;
 import flixel.input.keyboard.FlxKeyboard;
 import flixel.system.frontEnds.InputFrontEnd;
 import flixel.graphics.frames.FlxAtlasFrames;
+import lime.utils.Assets;
 import flixel.math.FlxRect;
 import animateatlas.AtlasFrameMaker;
 import flixel.text.FlxText;
 import flixel.FlxState;
+import Shaders;
 import openfl.filters.ShaderFilter;
 import openfl.display.Stage;
 import flixel.system.scaleModes.*;
@@ -27,6 +29,8 @@ import flixel.tweens.FlxEase;
 import flixel.addons.effects.FlxTrail;
 import hscript.InterpEx;
 import hscript.Interp;
+import Type.ValueType;
+import openfl.utils.Assets as OpenFlAssets;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxGlitchEffect;
 import flixel.addons.effects.chainable.FlxOutlineEffect;
@@ -55,6 +59,7 @@ import android.FlxVirtualPad;
 import flixel.ui.FlxButton;
 #end
 import hscript.Parser;
+import openfl.utils.AssetType;
 import hscript.ParserEx;
 import hscript.ClassDeclEx;
 import plugins.tools.MetroSprite;
@@ -147,6 +152,8 @@ class PluginManager {
     static function addingBasicStuffsIthink<T:Interp>(interp:T):T{
         interp.variables.set("BaseScaleMode", BaseScaleMode);
         interp.variables.set("FillScaleMode", FillScaleMode);
+        interp.variables.set("BuildingEffect", BuildingEffect);
+        interp.variables.set("BuildingShader", BuildingShader);
         interp.variables.set("FixedScaleAdjustSizeScaleMode", FixedScaleAdjustSizeScaleMode);
         interp.variables.set("FixedScaleMode", FixedScaleMode);
         interp.variables.set("PixelPerfectScaleMode", PixelPerfectScaleMode);
@@ -154,6 +161,9 @@ class PluginManager {
         interp.variables.set("RelativeScaleMode", RelativeScaleMode);
         interp.variables.set("StageSizeScaleMode", StageSizeScaleMode);
         interp.variables.set("FlxPoint", FlxPoint);
+        interp.variables.set("Sound", flash.media.Sound);
+        interp.variables.set("OpenFlAssets", OpenFlAssets);
+        interp.variables.set("Assets", Assets);
         interp.variables.set("FlxTweenUtil", util.FlxTweenUtil);
         interp.variables.set("FlxTiledSprite", flixel.addons.display.FlxTiledSprite);
         interp.variables.set("FlxEffectSprite", FlxEffectSprite);
