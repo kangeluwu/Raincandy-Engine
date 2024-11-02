@@ -46,7 +46,7 @@ import hscript.ParserEx;
 import hscript.InterpEx;
 import openfl.Lib;
 using StringTools;
-#if mobile
+#if (mobile || PCMOBILETEST)
 import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
 import android.FlxVirtualPad;
@@ -127,7 +127,7 @@ var titleEaster = true;
 #else
 var titleEaster = false;
 #end
-#if mobile
+#if (mobile || PCMOBILETEST)
 var mobile = true;
 #else
 var mobile = false;
@@ -279,7 +279,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("interpolate", interpolate);
 		interp.variables.set("remove", remove);
 		interp.variables.set("controls", controls);
-		#if mobile
+		#if (mobile || PCMOBILETEST)
 		interp.variables.set("addVirtualPad", addVirtualPad);
 		interp.variables.set("removeVirtualPad", removeVirtualPad);
 		interp.variables.set("addPadCamera", addPadCamera);

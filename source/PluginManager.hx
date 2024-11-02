@@ -56,7 +56,7 @@ import hxvlc.flixel.FlxVideo as Video;
 import hxvlc.flixel.FlxVideoSprite as VideoSprite;
 #end
 #end
-#if mobile
+#if (mobile || PCMOBILETEST)
 import flixel.group.FlxGroup;
 import android.FlxHitbox;
 import android.FlxVirtualPad;
@@ -267,7 +267,7 @@ class PluginManager {
 		interp.variables.set("FlxAngle", flixel.math.FlxAngle);
 		interp.variables.set("FlxMath", flixel.math.FlxMath);
 		interp.variables.set("TitleState", TitleState);
-        #if mobile
+        #if (mobile || PCMOBILETEST)
         interp.variables.set("FlxActionMode", FlxActionMode);
         interp.variables.set("FlxDPadMode", FlxDPadMode);
         interp.variables.set("FlxVirtualPad", FlxVirtualPad);

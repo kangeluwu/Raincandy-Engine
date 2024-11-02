@@ -128,7 +128,7 @@ import openfl.display.Sprite;
 import openfl.utils.Assets;
 import flixel.addons.display.FlxRuntimeShader;
 import openfl.filters.ShaderFilter;
-#if mobile
+#if (mobile || PCMOBILETEST)
 import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
 import android.FlxVirtualPad;
@@ -533,21 +533,21 @@ function camerabgAlphaShits(cam:FlxCamera)
 		cam.bgColor.alpha = 0;
 	}
 	function addVirtualPads(dPad:String,act:String){
-		#if mobile
+		#if (mobile || PCMOBILETEST)
 		addVirtualPad(dPadModeFromString(dPad),actionModeModeFromString(act));
 		#end
 	}
 	
 	function getHaxeVirtualPad(dumbass:String = ''):FlxButton
 		{
-			#if mobile
+			#if (mobile || PCMOBILETEST)
 			var lmao =  Reflect.field(_virtualpad, 'button' + dumbass);
 			return lmao;
 			#else
 			return null;
 			#end
 		}
-		#if mobile
+		#if (mobile || PCMOBILETEST)
 	public function dPadModeFromString(lmao:String):FlxDPadMode{
 	switch (lmao){
 	case 'up_down':return FlxDPadMode.UP_DOWN;
@@ -578,7 +578,7 @@ function camerabgAlphaShits(cam:FlxCamera)
 		}
 	#end
 	public function visPressed(dumbass:String = ''):Bool{
-		#if mobile
+		#if (mobile || PCMOBILETEST)
 		
 		return _virtualpad.returnPressed(dumbass);
 		#else
@@ -2182,7 +2182,7 @@ if (!opponentPlayer)
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
 		// UI_camera.zoom = 1;
-		#if mobile
+		#if (mobile || PCMOBILETEST)
 		addAndroidControls();
 		#end
 		// cameras = [FlxG.cameras.list[1]];
@@ -3459,7 +3459,7 @@ if (!dadChar.beingControlled)
 		var ret2:Dynamic = callAllHScript('onStartCountdown', [],false);
 		if(ret != FunkinLua.Function_Stop && ret2 != FunkinLua.Function_Stop) {
 			if (skipCountdown || startOnTime > 0) skipArrowStartTween = true;
-			#if mobile 
+			#if (mobile || PCMOBILETEST)
 			androidc.visible = true;
 			#end
 			if (!summonNotesAlready){
@@ -6937,7 +6937,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 			}
 		}
 
-		#if mobile 
+		#if (mobile || PCMOBILETEST)
 			androidc.visible = false;
 		#end
 		timeBar.visible = false;

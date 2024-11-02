@@ -114,7 +114,7 @@
 		<section if="MODS_ALLOWED">
 		<assets path='example_mods' rename='mods' embed='false'/>
 	</section>
-		<section if="mobile">
+		<section if="mobile || PCMOBILETEST">
 		<assets path='mobilePortStuffsIGuess' rename='windose_data/images' embed='false'/>
 		</section>
 	<!-- assets path="CHANGELOG.md" rename='changelog.txt' -->
