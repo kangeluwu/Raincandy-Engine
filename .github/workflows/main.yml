@@ -47,8 +47,8 @@ jobs:
 
       - name: Install Libraries
         run: |
-          haxelib install hmm
-          haxelib run hmm install
+          haxelib --global install hmm --quiet
+          haxelib --global run hmm install --quiet
 
       - name: Compile (Windows)
         if: startsWith(matrix.os, 'windows')
@@ -123,8 +123,8 @@ jobs:
 
       - name: Install Libraries
         run: |
-          haxelib install hmm
-          haxelib run hmm install
+          haxelib --global install hmm --quiet
+          haxelib --global run hmm install --quiet
 
       - name: Configure Android
         if: startsWith(matrix.os, 'ubuntu')
