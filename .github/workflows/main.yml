@@ -48,7 +48,11 @@ jobs:
       - name: Install Libraries
         run: |
           haxelib setup ~/haxelib
+      - name: Install Hmm
+        run: |
           haxelib --global install hmm --quiet
+      - name: Install Libs
+        run: |         
           haxelib --global run hmm install --quiet
 
       - name: Compile (Windows)
@@ -125,7 +129,11 @@ jobs:
       - name: Install Libraries
         run: |
           haxelib setup ~/haxelib
+      - name: Install Hmm
+        run: |
           haxelib --global install hmm --quiet
+      - name: Install Libs
+        run: |         
           haxelib --global run hmm install --quiet
 
       - name: Configure Android
