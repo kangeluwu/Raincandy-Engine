@@ -32,6 +32,10 @@ jobs:
         with: 
           haxe-version: 4.2.5
 
+      - name: Set lib path
+        run: |
+            haxelib setup ~/haxelib
+
       - name: Restore Previous PC Build Caches
         id: cache-pc-build-restore
         uses: actions/cache@v4
@@ -120,6 +124,10 @@ jobs:
               export/release/ios/haxe
               export/release/ios/obj
             key: cache-mobile-build
+
+      - name: Set lib path
+        run: |
+          haxelib setup ~/haxelib
 
       - name: Install Libraries
         run: |
