@@ -47,10 +47,10 @@
 	<define name="HAD_DIFFERNET_LANGS"/>
 	<define name="ACHIEVEMENTS_ALLOWED" />
 	<define name="VIDEOS_ALLOWED" if="web || windows || mobile" unless="NOVIDEO"/>
-	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
+	<define name="RCE_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
 	<define name="TITLE_SCREEN_EASTER_EGG" if="officialBuild"/> <!-- DELETE THE if="officialBuild" for enabling this on an unofficial build -->
 	<define name="CRASH_HANDLER" if="desktop release" />
-
+	<define name="SHOW_LOADING_SCREEN"/>
 	<assets path="windose_data/preload" rename="windose_data" exclude="*.ogg" if="web"/>
 	<assets path="windose_data/preload" rename="windose_data" exclude="*.mp3"  unless="web"/>
 	<section if="TITLE_SCREEN_EASTER_EGG">

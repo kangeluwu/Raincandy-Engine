@@ -184,6 +184,40 @@ class Paths
 		return getPreloadPath(file);
 	}
 
+	public static function getPathEX(file:String, ?library:Null<String> = null, ?modsAllowed:Bool = false)
+		{
+			#if MODS_ALLOWED
+			if(modsAllowed)
+			{
+				var customFile:String = file;
+				if (library != null)
+					customFile = '$library/$file';
+	
+				var modded:String = modFolders(customFile);
+				if(FileSystem.exists(modded)) return modded;
+			}
+			#end
+	
+			if (library != null)
+				return 'windose_data/$library/$file';
+	
+			if (currentLevel != null)
+			{
+				var levelPath:String = '';
+				if(currentLevel != 'shared') {
+					levelPath = 'windose_data/$currentLevel/$file';
+					if (FNFAssets.exists(levelPath))
+						return levelPath;
+				}
+	
+				levelPath = 'windose_data/shared/$file';
+				if (FNFAssets.exists(levelPath))
+					return levelPath;
+			}
+	
+			return getPreloadPath(file);
+		}
+
 	static public function getLibraryPath(file:String, library = "preload")
 	{
 		return if (library == "preload" || library == "default") getPreloadPath(file); else getLibraryPathForce(file, library);

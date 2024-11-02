@@ -107,6 +107,8 @@ class Song
 	public var player2:String = 'dad';
 	public var gfVersion:String = 'gf';
 	public var cutsceneType:String = "none";
+	public static var chartPath:String;
+	public static var loadedSongName:String;
 	private static function onLoadJson(songJson:Dynamic) // Convert old charts to newest format
 	{
 	
@@ -152,8 +154,10 @@ class Song
 		var formattedSong:String = Paths.formatToSongPath(daSong);
 		#if MODS_ALLOWED
 		var moddyFile:String = Paths.modsJson(formattedFolder + '/' + formattedSong+backend);
+
 		if(FileSystem.exists(moddyFile)) {
 			rawJson = File.getContent(moddyFile).trim();
+			_lastPath = Paths.modsJson('$formattedFolder/$formattedSong'+backend);
 		}
 		#end
 
@@ -161,8 +165,10 @@ class Song
 			#if sys
 			rawJson = File.getContent(SUtil.getPath() + Paths.json(formattedFolder + '/' + formattedSong+backend)).trim();
 			#else
-			rawJson = Assets.getText(Paths.json(formattedFolder + '/' + formattedSong+backend)).trim();
+			rawJson = Assets.getText(SUtil.getPath() + Paths.json(formattedFolder + '/' + formattedSong+backend)).trim();
 			#end
+			if (rawJson != null)
+			_lastPath = SUtil.getPath() + Paths.json('$formattedFolder/$formattedSong'+backend);
 		}
 
 		while (!rawJson.endsWith("}"))
@@ -180,6 +186,7 @@ class Song
 		}
 		return fuck;
 	}
+	static var _lastPath:String;
 	public static function loadFromNewJson(daSong:String = '', ?folder:String = '',difficu:String = 'normal'):SwagSong
 		{
 
@@ -208,6 +215,7 @@ class Song
 					difficu = '';
 				else
 					difficu = '-'+difficu;
+				loadedSongName = daSong;
 				return loadFromJson(daSong+difficu.toLowerCase(),folder);
 				}
 			}
@@ -420,6 +428,8 @@ class Song
 					for (i in eventList.keys())
 					data.events.push([Std.parseFloat(i),eventList.get(i)]);
 				}
+		loadedSongName = daSong;
+		chartPath = _lastPath.replace('/', '\\');
 					return data;
 		}
 		
@@ -606,6 +616,7 @@ class Song
 		}
 
 	}
+	chartPath = _lastPath.replace('/', '\\');
 		return songJson;
 	}
 

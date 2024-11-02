@@ -26,6 +26,9 @@ typedef StageFile = {
 	var camera_opponent:Array<Float>;
 	var camera_girlfriend:Array<Float>;
 	var camera_speed:Null<Float>;
+	@:optional var preload:Dynamic;
+	@:optional var objects:Array<Dynamic>;
+	@:optional var _editorMeta:Dynamic;
 }
 enum abstract LoadFilters(Int) from Int from UInt to Int to UInt
 {

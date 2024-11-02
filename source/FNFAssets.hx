@@ -428,7 +428,7 @@ class FNFAssets {
 	 public static function getGraphicData(id:String,?allowGPU:Bool = true):Null<FlxGraphic>
 		{
 			if(FileSystem.exists(id)) {
-				if(!currentTrackedAssets.exists(id)) {
+				if(!Paths.currentTrackedAssets.exists(id)) {
 					var newBitmap:BitmapData = BitmapData.fromFile(id);
 					if (newBitmap != null){
 					if (allowGPU && ClientPrefs.cacheOnGPU)
@@ -444,9 +444,9 @@ class FNFAssets {
 					var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(newBitmap, false, id);
 					newGraphic.persist = true;
 			        newGraphic.destroyOnNoUse = false;
-					currentTrackedAssets.set(id, newGraphic);
+					Paths.currentTrackedAssets.set(id, newGraphic);
 				}
-				return currentTrackedAssets.get(id);
+				return Paths.currentTrackedAssets.get(id);
 			}
 	
 			return null;

@@ -95,7 +95,7 @@ var luaallowed = true;
 #else
 var luaallowed = false;
 #end
-#if PSYCH_WATERMARKS
+#if (PSYCH_WATERMARKS || RCE_WATERMARKS)
 var watermark = true;
 #else
 var watermark = false;
