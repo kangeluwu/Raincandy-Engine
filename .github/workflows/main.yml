@@ -48,13 +48,9 @@ jobs:
       - name: Install Libraries
         run: |
           haxelib setup ~/haxelib
-      - name: Install Hmm
-        run: |
-          haxelib --global install hmm --quiet
-      - name: Install Libs
-        run: |         
-          haxelib --global run hmm install --quiet
-
+          haxelib haxelib --global install hmm --quiet
+          haxelib run hmm install --quiet
+        shell: cmd
       - name: Compile (Windows)
         if: startsWith(matrix.os, 'windows')
         run: haxelib run lime build windows
@@ -129,13 +125,9 @@ jobs:
       - name: Install Libraries
         run: |
           haxelib setup ~/haxelib
-      - name: Install Hmm
-        run: |
-          haxelib --global install hmm --quiet
-      - name: Install Libs
-        run: |         
-          haxelib --global run hmm install --quiet
-
+          haxelib install hmm --quiet
+          haxelib run hmm install --quiet
+        shell: cmd
       - name: Configure Android
         if: startsWith(matrix.os, 'ubuntu')
         run: |
