@@ -47,6 +47,7 @@ jobs:
 
       - name: Install Libraries
         run: |
+          haxelib setup ~/haxelib
           haxelib --global install hmm --quiet
           haxelib --global run hmm install --quiet
 
@@ -123,6 +124,7 @@ jobs:
 
       - name: Install Libraries
         run: |
+          haxelib setup ~/haxelib
           haxelib --global install hmm --quiet
           haxelib --global run hmm install --quiet
 
