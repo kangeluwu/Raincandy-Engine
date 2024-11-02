@@ -88,55 +88,60 @@ class Paths
 		'windose_data/shared/music/tea-time.$SOUND_EXT',
 	];
 	/// haya I love you for the base cache dump I took to the max
-	public static function clearUnusedMemory() {
-		// clear non local assets in the tracked assets list
-		for (key in currentTrackedAssets.keys()) {
-			// if it is not currently contained within the used local assets
-			if (!localTrackedAssets.contains(key)
-				&& !dumpExclusions.contains(key)) {
-				// get rid of it
-				var obj = currentTrackedAssets.get(key);
-				@:privateAccess
-				if (obj != null) {
-					openfl.Assets.cache.removeBitmapData(key);
-					FlxG.bitmap._cache.remove(key);
-					obj.destroy();
-					currentTrackedAssets.remove(key);
+	public static function clearUnusedMemory()
+		{
+			// clear non local assets in the tracked assets list
+			for (key in currentTrackedAssets.keys())
+			{
+				// if it is not currently contained within the used local assets
+				if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key))
+				{
+					destroyGraphic(currentTrackedAssets.get(key)); // get rid of the graphic
+					currentTrackedAssets.remove(key); // and remove the key from local cache map
 				}
 			}
+	
+			// run the garbage collector for good measure lmfao
+			System.gc();
 		}
-		// run the garbage collector for good measure lmfao
-		System.gc();
-	}
-
-	// define the locally tracked assets
-	public static var localTrackedAssets:Array<String> = [];
-	public static function clearStoredMemory(?cleanUnused:Bool = false) {
-		// clear anything not in the tracked assets list
-		@:privateAccess
-		for (key in FlxG.bitmap._cache.keys())
+	
+		// define the locally tracked assets
+		public static var localTrackedAssets:Array<String> = [];
+	
+		@:access(flixel.system.frontEnds.BitmapFrontEnd._cache)
+		public static function clearStoredMemory()
 		{
-			var obj = FlxG.bitmap._cache.get(key);
-			if (obj != null && !currentTrackedAssets.exists(key)) {
-				openfl.Assets.cache.removeBitmapData(key);
-				FlxG.bitmap._cache.remove(key);
-				obj.destroy();
+			// clear anything not in the tracked assets list
+			for (key in FlxG.bitmap._cache.keys())
+			{
+				if (!currentTrackedAssets.exists(key))
+					destroyGraphic(FlxG.bitmap.get(key));
 			}
-		}
-
-		// clear all sounds that are cached
-		for (key in currentTrackedSounds.keys()) {
-			if (!localTrackedAssets.contains(key)
-			&& !dumpExclusions.contains(key) && key != null) {
-				//trace('test: ' + dumpExclusions, key);
-				Assets.cache.clear(key);
-				currentTrackedSounds.remove(key);
+	
+			// clear all sounds that are cached
+			for (key => asset in currentTrackedSounds)
+			{
+				if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key) && asset != null)
+				{
+					Assets.cache.clear(key);
+					currentTrackedSounds.remove(key);
+				}
 			}
+			// flags everything to be cleared out next unused memory clear
+			localTrackedAssets = [];
+			#if !html5 openfl.Assets.cache.clear("songs"); #end
 		}
-		// flags everything to be cleared out next unused memory clear
-		localTrackedAssets = [];
-		openfl.Assets.cache.clear("songs");
-	}
+	
+		inline static function destroyGraphic(graphic:FlxGraphic)
+		{
+			// free some gpu memory
+			@:privateAccess{
+			if (graphic != null && graphic.bitmap != null && graphic.bitmap.__texture != null)
+				graphic.bitmap.__texture.dispose();
+		}
+			FlxG.bitmap.remove(graphic);
+		}
+		
 
 	static public var currentModDirectory:String = '';
 	static public var currentLevel:String;
@@ -270,9 +275,9 @@ class Paths
 		return SUtil.getPath() + 'windose_data/videos/$key.$VIDEO_EXT';
 	}
 
-	static public function sound(key:String, ?library:String):Sound
+	static public function sound(key:String, ?library:String,exclude:Bool = false):Sound
 	{
-		var sound:Sound = returnSound('sounds', key, library);
+		var sound:Sound = returnSound('sounds', key, library,exclude);
 		return sound;
 	}
 
@@ -343,10 +348,10 @@ class Paths
 				var inst = returnSound('music', songKey, library);
 				return inst;
 			}
-	inline static public function image(key:String, ?library:String, ?allowGPU:Bool = true):FlxGraphic
+	inline static public function image(key:String, ?library:String, ?allowGPU:Bool = true,exclude:Bool = false):FlxGraphic
 	{
 		// streamlined the assets process more
-		var returnAsset:FlxGraphic = returnGraphic(key, library, allowGPU);
+		var returnAsset:FlxGraphic = returnGraphic(key, library, allowGPU,exclude);
 		return returnAsset;
 	}
 
@@ -482,15 +487,23 @@ class Paths
 			}
 	
 			localTrackedAssets.push(file);
-			if (allowGPU && ClientPrefs.cacheOnGPU)
+			
+		if (allowGPU && ClientPrefs.cacheOnGPU && bitmap.image != null)
 			{
-				var texture:RectangleTexture = FlxG.stage.context3D.createRectangleTexture(bitmap.width, bitmap.height, BGRA, true);
-				texture.uploadFromBitmapData(bitmap);
-				bitmap.image.data = null;
-				bitmap.dispose();
+				@:privateAccess{
+				bitmap.lock();
+				if (bitmap.__texture == null)
+				{
+					bitmap.image.premultiplied = true;
+					bitmap.getTexture(FlxG.stage.context3D);
+				}
+				bitmap.getSurface();
 				bitmap.disposeImage();
-				bitmap = BitmapData.fromTexture(texture);
+				bitmap.image.data = null;
+				bitmap.image = null;
+				bitmap.readable = true;
 			}
+		}
 			var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, file);
 			newGraphic.persist = true;
 			newGraphic.destroyOnNoUse = false;
@@ -600,10 +613,11 @@ class Paths
 				}
 				return getPackerAtlas(key, library);
 			}
-
+			inline static public function getFolderPath(file:String, folder = "shared")
+				return 'assets/$folder/$file';
 	// completely rewritten asset loading? fuck!
 	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
-	public static function returnGraphic(key:String, ?library:String,?allowGPU:Bool = true) {
+	public static function returnGraphic(key:String, ?library:String,?allowGPU:Bool = true,exclude:Bool = false) {
 		var bitmap:BitmapData = null;
 		var file:String = null;
 
@@ -620,26 +634,38 @@ class Paths
 		#end
 		{
 			file = getPath('images/$key.png', IMAGE, library);
+		
 			if (currentTrackedAssets.exists(file))
 			{
 				localTrackedAssets.push(file);
 				return currentTrackedAssets.get(file);
 			}
-			else if (OpenFlAssets.exists(file, IMAGE))
+			else if (OpenFlAssets.exists(file, IMAGE)){
 				bitmap = OpenFlAssets.getBitmapData(file);
+			}
 		}
-
+		
 		if (bitmap != null)
 		{
 			localTrackedAssets.push(file);
-			if (allowGPU && ClientPrefs.cacheOnGPU)
+			if (exclude)
+				excludeAsset(file);
+			if (allowGPU && ClientPrefs.cacheOnGPU && bitmap.image != null)
 			{
-				var texture:RectangleTexture = FlxG.stage.context3D.createRectangleTexture(bitmap.width, bitmap.height, BGRA, true);
-				texture.uploadFromBitmapData(bitmap);
-				bitmap.image.data = null;
-				bitmap.dispose();
+				bitmap.lock();
+				@:privateAccess{
+				if (bitmap.__texture == null)
+				{
+					bitmap.image.premultiplied = true;
+					bitmap.getTexture(FlxG.stage.context3D);
+				}
+			
+				bitmap.getSurface();
 				bitmap.disposeImage();
-				bitmap = BitmapData.fromTexture(texture);
+				bitmap.image.data = null;
+				bitmap.image = null;
+				bitmap.readable = true;
+			}
 			}
 			var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, file);
 			newGraphic.persist = true;
@@ -816,5 +842,71 @@ class Paths
 		}
 		return list;
 	}
+
+	
+	inline public static function directoriesWithFile(path:String, fileToFind:String, mods:Bool = true)
+		{
+			var foldersToCheck:Array<String> = [];
+			if(FileSystem.exists(path + fileToFind))
+				foldersToCheck.push(path + fileToFind);
+	
+			if(Paths.currentLevel != null && Paths.currentLevel != path)
+			{
+				var pth:String = Paths.getFolderPath(fileToFind, Paths.currentLevel);
+				if(FileSystem.exists(pth))
+					foldersToCheck.push(pth);
+			}
+	
+			#if MODS_ALLOWED
+			if(mods)
+			{
+				// Global mods first
+				for(mod in getGlobalMods())
+				{
+					var folder:String = Paths.mods(mod + '/' + fileToFind);
+					if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
+				}
+	
+				// Then "RCE/mods/" main folder
+				var folder:String = Paths.mods(fileToFind);
+				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(Paths.mods(fileToFind));
+	
+				// And lastly, the loaded mod's folder
+				if(Paths.currentModDirectory != null && currentModDirectory.length > 0)
+				{
+					var folder:String = Paths.mods(currentModDirectory + '/' + fileToFind);
+					if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
+				}
+			}
+			#end
+			return foldersToCheck;
+		}
+
+		inline public static function mergeAllTextsNamed(path:String, ?defaultDirectory:String = null, allowDuplicates:Bool = false)
+			{
+				if(defaultDirectory == null) defaultDirectory = '';
+				defaultDirectory = defaultDirectory.trim();
+				if(!defaultDirectory.endsWith('/')) defaultDirectory += '/';
+				if(!defaultDirectory.startsWith(SUtil.getPath() + 'windose_data/')) defaultDirectory = SUtil.getPath() + 'windose_data/$defaultDirectory';
+		
+				var mergedList:Array<String> = [];
+				var paths:Array<String> = directoriesWithFile(defaultDirectory, path);
+		
+				var defaultPath:String = defaultDirectory + path;
+				if(paths.contains(defaultPath))
+				{
+					paths.remove(defaultPath);
+					paths.insert(0, defaultPath);
+				}
+		
+				for (file in paths)
+				{
+					var list:Array<String> = CoolUtil.coolTextFile(file);
+					for (value in list)
+						if((allowDuplicates || !mergedList.contains(value)) && value.length > 0)
+							mergedList.push(value);
+				}
+				return mergedList;
+			}
 	#end
 }

@@ -28,11 +28,11 @@ typedef EventNote = {
 	value3:String
 }
 
-class Note extends FlxSkewedSprite
+class Note extends NoteObject
 {
 	public var vec3Cache:Vector3 = new Vector3(); // for vector3 operations in modchart code
 	public var defScale:FlxPoint = FlxPoint.get(); // for modcharts to keep the scaling
-
+	public static var defaultNoteSkin:String = 'NOTE_assets';
 	override function destroy()
 	{
 		defScale.put();
@@ -265,7 +265,6 @@ class Note extends FlxSkewedSprite
 	public var eventVal2:String = '';
 	public var eventVal3:String = '';
 
-	public var colorSwap:ColorSwap;
 	public var inEditor:Bool = false;
 
 	public var animSuffix:String = '';
@@ -356,7 +355,10 @@ class Note extends FlxSkewedSprite
 		return value;
 	}
 	private function set_noteType(value:String):String {
+		if (PlayState.SONG != null)
 		noteSplashTexture = PlayState.SONG.splashSkin;
+		else
+		noteSplashTexture = 'noteSplashes';
 		colorSwap.hue = ClientPrefs.arrowHSV[noteData % 4][0] / 360;
 		colorSwap.saturation = ClientPrefs.arrowHSV[noteData % 4][1] / 100;
 		colorSwap.brightness = ClientPrefs.arrowHSV[noteData % 4][2] / 100;
@@ -580,7 +582,7 @@ else{
 
 		var skin:String = texture;
 		if(texture.length < 1) {
-			skin = PlayState.SONG.arrowSkin;
+			if (PlayState.SONG != null) skin = PlayState.SONG.arrowSkin;
 			if(skin == null || skin.length < 1) {
 				skin = 'NOTE_assets';
 			}
@@ -689,26 +691,14 @@ else{
 		}
 		callAllHScript('onloadPixelNoteAnims', [this,noteType]);
 	}
-
+    public var autoSustainCenter:Bool = true;
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		if (isSustainNote)
-			{
-				if (prevNote != null && prevNote.isSustainNote)
-					zIndex = Math.floor(z + prevNote.zIndex);
-				else if (prevNote != null && !prevNote.isSustainNote)
-					zIndex = Math.floor(z + prevNote.zIndex - 1);
-			}
-			else
-				zIndex = Math.floor(z);
-	
-			zIndex += Math.floor(desiredZIndex);
-			zIndex -= currentStrum;
 	
 			colorSwap.daAlpha = alphaMod * alphaMod2;
 		callAllHScript('update', [elapsed,this]);
-		if ((mustPress && !oppMode) || (oppMode && !mustPress))
+		if (mustPress && !oppMode)
 		{
 			// ok river
 			if (strumTime > Conductor.songPosition - (Conductor.safeZoneOffset * lateHitMult)
@@ -736,6 +726,7 @@ else{
 			if (alpha > 0.3)
 				alpha = 0.3;
 		}
+		
 		callAllHScript('updatePost', [elapsed,this]);
 	}
 	public var correctionOffset:Float = 0; //dont mess with this

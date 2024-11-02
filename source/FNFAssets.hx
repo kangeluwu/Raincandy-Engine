@@ -60,10 +60,16 @@ class FNFAssets {
                 path = id;
 			else
 				return Assets.getText(id);
+			var voj = '';
 			try {
-			return File.getContent(path);
+				if(exists(path)) {
+			voj = File.getContent(path);
+			return voj;
+				}else
+				return '';
 			} catch (e:Any) {
 				throw 'File $path doesn\'t exist or cannot be read.';
+				return '';
 			}
             
         #else

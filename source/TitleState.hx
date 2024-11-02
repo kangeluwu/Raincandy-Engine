@@ -497,6 +497,10 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		MusicBeatState.switchState(new FreeplayState());
 		#elseif CHARTING
 		MusicBeatState.switchState(new ChartingState());
+		#elseif PLAYING
+		Paths.setCurrentLevel('shared');
+		PlayState.SONG = Song.loadFromNewJson('test', 'test');
+		MusicBeatState.switchState(new PlayState());
 		#else
 		if(FlxG.save.data.flashing == null && !FlashingState.leftState) {
 			FlxTransitionableState.skipNextTransIn = true;

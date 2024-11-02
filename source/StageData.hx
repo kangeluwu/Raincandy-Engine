@@ -27,7 +27,14 @@ typedef StageFile = {
 	var camera_girlfriend:Array<Float>;
 	var camera_speed:Null<Float>;
 }
+enum abstract LoadFilters(Int) from Int from UInt to Int to UInt
+{
+	var LOW_QUALITY:Int = (1 << 0);
+	var HIGH_QUALITY:Int = (1 << 1);
 
+	var STORY_MODE:Int = (1 << 2);
+	var FREEPLAY:Int = (1 << 3);
+}
 class StageData {
 	public static var forceNextDirectory:String = null;
 	public static function loadDirectory(SONG:SwagSong) {
@@ -90,4 +97,15 @@ class StageData {
 		}
 		return cast Json.parse(rawJson);
 	}
+	
+	public static function validateVisibility(filters:LoadFilters)
+		{
+			if((filters & STORY_MODE) == STORY_MODE)
+				if(!PlayState.isStoryMode) return false;
+			else if((filters & FREEPLAY) == FREEPLAY)
+				if(PlayState.isStoryMode) return false;
+	
+			return ((ClientPrefs.lowQuality && (filters & LOW_QUALITY) == LOW_QUALITY) ||
+				(!ClientPrefs.lowQuality && (filters & HIGH_QUALITY) == HIGH_QUALITY));
+		}
 }

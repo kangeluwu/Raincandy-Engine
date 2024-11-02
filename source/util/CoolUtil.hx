@@ -134,6 +134,10 @@ class CoolUtil
 		return difficulties[PlayState.storyDifficulty].toUpperCase();
 	}
 
+	public static function getDiffString(num:Null<Int> = null):String
+		{
+			return difficulties[num == null ? PlayState.storyDifficulty : num].toUpperCase();
+		}
 
 	public static function coolTextFile(path:String):Array<String>
 	{

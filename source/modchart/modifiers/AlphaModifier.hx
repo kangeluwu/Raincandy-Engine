@@ -116,7 +116,6 @@ class AlphaModifier extends NoteModifier {
 		if (getSubmodValue("dark", player) != 0 || getSubmodValue('dark${receptor.noteData}',player)!=0){
 			alpha = alpha * (1 - getSubmodValue("dark", player)) * (1 - getSubmodValue('dark${receptor.noteData}',player));
     }
-    @:privateAccess
 		receptor.colorSwap.daAlpha = alpha;
 
   }

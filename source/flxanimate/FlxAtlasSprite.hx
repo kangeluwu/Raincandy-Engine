@@ -35,10 +35,26 @@ class FlxAtlasSprite extends FlxAnimate
 
   public function new(x:Float, y:Float, ?path:String, ?settings:Settings)
   {
+    if (settings == null) settings = SETTINGS;
+
+    if (path == null)
+    {
+      trace ('Null path specified for FlxAtlasSprite!');
+    }
 
     super(x, y, path, settings);
 
+    if (this.anim.curInstance == null)
+    {
+      trace('FlxAtlasSprite not initialized properly. Are you sure the path (${path}) exists?');
+    }
 
+    onAnimationFinish.add(cleanupAnimation);
+
+    // This defaults the sprite to play the first animation in the atlas,
+    // then pauses it. This ensures symbols are intialized properly.
+    this.anim.play('');
+    this.anim.pause();
   }
 
   /**
@@ -47,7 +63,7 @@ class FlxAtlasSprite extends FlxAnimate
   public function listAnimations():Array<String>
   {
     if (this.anim == null) return [];
-    return this.anim.getFrameLabelNames();
+    return this.anim.getFrameLabels().map(frame -> frame.name);
     // return [""];
   }
 
@@ -122,12 +138,11 @@ class FlxAtlasSprite extends FlxAnimate
       trace('Animation ' + id + ' not found');
       return;
     }
-
-    anim.callback = function(_, frame:Int) {
+    anim.addCallbackTo(id,() -> {
       var offset = loop ? 0 : -1;
 
       var frameLabel = anim.getFrameLabel(id);
-      if (frame == (frameLabel.duration + offset) + frameLabel.index)
+      if (anim.curFrame == (frameLabel.duration + offset) + frameLabel.index)
       {
         if (loop)
         {
@@ -138,7 +153,7 @@ class FlxAtlasSprite extends FlxAnimate
           onAnimationFinish.dispatch(id);
         }
       }
-    };
+    }); // TODO
 
     // Prevent other animations from playing if `ignoreOther` is true.
     if (ignoreOther) canPlayOtherAnims = false;
@@ -197,5 +212,6 @@ class FlxAtlasSprite extends FlxAnimate
     // this.currentAnimation = null;
     this.anim.pause();
   }
+
 }
 #end

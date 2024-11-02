@@ -176,9 +176,9 @@ class ModManager {
 		}
     }
 
-    public function new(state:PlayState) {
+    public function new(state:PlayState,strums:Int = 2) {
         this.state=state;
-		for (i in 0...PlayState.SONG.strums)
+		for (i in 0...strums)
 			activeMods.push([]);
     }
 

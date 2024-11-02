@@ -25,6 +25,7 @@ class ClientPrefs {
 	public static var showCombosRatings:Bool = true;
 	public static var hideMs:Bool = false;
 	public static var noteSplashes:Bool = true;
+	public static var noteCovers:Bool = true;
 	public static var lowQuality:Bool = false;
 	public static var ghostTapping:Bool = true;
 	public static var msDisabled:Bool = false;
@@ -140,6 +141,7 @@ class ClientPrefs {
 		FlxG.save.data.skipSplash = skipSplash;
 		FlxG.save.data.lowQuality = lowQuality;
 		FlxG.save.data.classicStyle = classicStyle;
+		FlxG.save.data.noteCovers = noteCovers;
 		FlxG.save.data.framerate = framerate;
 		FlxG.save.data.creditMenuTheme = creditMenuTheme;
 		//FlxG.save.data.cursing = cursing;
@@ -215,6 +217,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.vibration != null) {
 			vibration = FlxG.save.data.vibration;
+		}
+		if(FlxG.save.data.noteCovers != null) {
+			noteCovers = FlxG.save.data.noteCovers;
 		}
 		if(FlxG.save.data.splashAlpha != null) {
 			splashAlpha = FlxG.save.data.splashAlpha;

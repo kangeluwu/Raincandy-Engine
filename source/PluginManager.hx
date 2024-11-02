@@ -16,9 +16,13 @@ import flixel.math.FlxRect;
 import animateatlas.AtlasFrameMaker;
 import flixel.text.FlxText;
 import flixel.FlxState;
+import flixel.util.FlxAxes;
 import Shaders;
 import openfl.filters.ShaderFilter;
 import openfl.display.Stage;
+import sys.thread.Thread;
+import sys.thread.Mutex;
+import sys.thread.EventLoop;
 import flixel.system.scaleModes.*;
 import flixel.FlxGame;
 import flixel.input.gamepad.FlxGamepadManager;
@@ -41,7 +45,7 @@ import flixel.addons.effects.chainable.FlxWaveEffect;
 import flixel.addons.effects.chainable.IFlxEffect;
 import flixel.FlxG;
 #if VIDEOS_ALLOWED
-#if !ios
+#if !hxvlc
 #if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideo as FlxVideo;
 #elseif (hxCodec >= "2.6.1") import hxcodec.VideoHandler as FlxVideo;
 #elseif (hxCodec == "2.6.0") import VideoHandler as FlxVideo;
@@ -64,8 +68,8 @@ import hscript.ParserEx;
 import hscript.ClassDeclEx;
 import plugins.tools.MetroSprite;
 import flixel.math.FlxPoint;
-#if ios
-#if VIDEOS_ALLOWED
+
+#if hxvlc
 class FlxVideo extends Video
 {
 var path:String = "";
@@ -104,7 +108,6 @@ var loaded:Bool = false;
          return super.play();
         }
 }
-#end
 #end
 class PluginManager {
     public static var interp = new InterpEx();
@@ -153,9 +156,15 @@ class PluginManager {
         interp.variables.set("BaseScaleMode", BaseScaleMode);
         interp.variables.set("FillScaleMode", FillScaleMode);
         interp.variables.set("BuildingEffect", BuildingEffect);
+        interp.variables.set("FlxBackdropNEW", flixel.addons.display.FlxBackdrop);
+        interp.variables.set("FlxBackdrop", flixel.addons.display.FlxBackdropOld);
         interp.variables.set("BuildingShader", BuildingShader);
         interp.variables.set("FixedScaleAdjustSizeScaleMode", FixedScaleAdjustSizeScaleMode);
         interp.variables.set("FixedScaleMode", FixedScaleMode);
+        interp.variables.set("FlxTypedGroup", FlxTypedGroup);
+        interp.variables.set("Note", Note);
+        interp.variables.set("EReg", EReg);
+        interp.variables.set("StrumNote", StrumNote);
         interp.variables.set("PixelPerfectScaleMode", PixelPerfectScaleMode);
         interp.variables.set("RatioScaleMode", RatioScaleMode);
         interp.variables.set("RelativeScaleMode", RelativeScaleMode);
@@ -170,6 +179,14 @@ class PluginManager {
         interp.variables.set("AttachedFlxText", editors.ChartingState.AttachedFlxText);
 		interp.variables.set("FlxOutlineEffect", FlxOutlineEffect);
         interp.variables.set("FlxRainbowEffect", FlxRainbowEffect);
+        interp.variables.set("Thread", {
+            current:Thread.current,
+            create:Thread.create,
+            runWithEventLoop:Thread.runWithEventLoop,
+            createWithEventLoop:Thread.createWithEventLoop,
+            readMessage:Thread.readMessage
+        });
+        interp.variables.set("Mutex", Mutex);
         interp.variables.set("WindowUtil", util.WindowUtil);
         interp.variables.set("FlxShakeEffect", FlxShakeEffect);
         interp.variables.set("FlxTrailEffect", FlxTrailEffect);
@@ -185,6 +202,17 @@ class PluginManager {
         interp.variables.set("FlxGlitchEffect", FlxGlitchEffect);
         interp.variables.set("StickerSubState", StickerSubState);
         interp.variables.set("ColorSwap", ColorSwap);
+        interp.variables.set("FlxAxes", {
+			X:FlxAxes.X,
+			Y:FlxAxes.Y,
+			XY:FlxAxes.XY,
+			toString:function(axes:FlxAxes = X){return axes.toString();},
+			fromBools:FlxAxes.fromBools,
+			fromString:FlxAxes.fromString,
+			NONE:FlxAxes.NONE,
+			getX:function(axe:FlxAxes = X){return axe.x;},
+			getY:function(axe:FlxAxes = Y){return axe.y;},
+		});
         interp.variables.set("Lambda", Lambda);
         interp.variables.set("getSoundChannel", function(soundchannel){
             @:privateAccess
@@ -289,11 +317,12 @@ interp.variables.set("android", true);
 #else
 interp.variables.set("android", false);
 #end
+        interp.variables.set("getAudiosampleRate", getAudiosampleRate);
         interp.variables.set("FlxBackdrop", FlxBackdrop);
         interp.variables.set("privateAccess", privateAccess);
         interp.variables.set("FlxRect", FlxRect);
         interp.variables.set("FlixG", FlxG);
-        interp.variables.set("getAudiosampleRate", getAudiosampleRate);
+
         interp.variables.set("PluginManager", PluginManager);
         interp.variables.set("callExternClass", instanceExClass); //Call modules?? :D
 

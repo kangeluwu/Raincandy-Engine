@@ -82,7 +82,7 @@ class StickerSubState extends MusicBeatSubstate
     for (i in 0...sounds.length)
     {
       sounds[i] = sounds[i].substring(0, sounds[i].lastIndexOf('.'));
-      Paths.sound(sounds[i]);
+      Paths.sound(sounds[i],null,true);
     }
     
     trace(sounds);
@@ -314,7 +314,7 @@ class StickerSprite extends DynamicSprite
   public function new(x:Float, y:Float, stickerSet:String, stickerName:String):Void
   {
     super(x, y);
-    loadGraphic(Paths.image('transitionSwag/' + stickerSet + '/' + stickerName));
+    loadGraphic(Paths.image('transitionSwag/' + stickerSet + '/' + stickerName,null,true,true));
     updateHitbox();
     scrollFactor.set();
   }

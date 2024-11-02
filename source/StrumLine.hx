@@ -65,12 +65,17 @@ class StrumLine extends FlxSprite
 {
     public var strumGroup:FlxTypedGroup<StrumNote>;
     public var notes:FlxTypedGroup<Note>;
+    public var curSplash:FlxTypedGroup<NoteSplash> = null;
     public var drawQueue:Array<FlxSprite> = [];
-    public function new(daStrumGroup:FlxTypedGroup<StrumNote>, daNotes:FlxTypedGroup<Note>) 
+    public function new(daStrumGroup:FlxTypedGroup<StrumNote>, daNotes:FlxTypedGroup<Note>,splashes:FlxTypedGroup<NoteSplash>=null)
     {
         super(0,0);
         strumGroup = daStrumGroup;
         notes = daNotes;
+        if (splashes != null){
+            curSplash = splashes;
+            splashes.visible = false;
+        }
         daStrumGroup.visible = false;
         daNotes.visible = false;
     }
@@ -96,7 +101,12 @@ class StrumLine extends FlxSprite
             note.cameras = this.cameras;
             }
         }
-
+        for (spla in curSplash.members){
+            if (spla !=null && spla.alive){
+            drawQueue.push(spla);
+            spla.cameras = this.cameras;
+            }
+        }
     }
         catch(e) {
             trace(e);
@@ -158,7 +168,7 @@ class StrumLine extends FlxSprite
     }
     public function copyStrumLine():StrumLine
         {
-           var newStrum = new StrumLine(this.strumGroup,this.notes);
+           var newStrum = new StrumLine(this.strumGroup,this.notes,this.curSplash);
            newStrum.cameras = this.cameras;
             return newStrum;
         }/*

@@ -12,6 +12,10 @@ import sys.FileSystem;
 
 using StringTools;
 
+
+import flixel.math.FlxMath;
+import flixel.util.FlxSort;
+
 typedef SongFilesOMG =
 {
 	var fileName:Null<String>;
@@ -19,8 +23,6 @@ typedef SongFilesOMG =
 	var wasOpponent:Null<Bool>;
 	var wasBGM:Null<Bool>;
 }
-
-
 typedef PlayData = {
 	var characters:CharData;
 	var stage:String;
@@ -41,6 +43,7 @@ typedef SwagSong =
 	var songNameChinese:String;
 	var events:Array<Dynamic>;
 	var bpm:Float;
+	var charter:String;
 	var uiType:String;
 	var needsVoices:Bool;
 	var disPlayAutoMovingCam:Null<Bool>;
@@ -57,6 +60,7 @@ typedef SwagSong =
 	var composer:String;
 	var igorAutoFix:Null<Bool>;
 	var strums:Null<Int>;
+	var songName:String;
 	//var mania:Null<Int>;
 }
 
@@ -86,6 +90,8 @@ class Song
 	public var basedOldMode:Bool = false;
 	public var igorAutoFix:Bool = false;
 	public var songNameChinese:String = '';
+	public var songName:String = '';
+	public var charter:String = '';
 	public var composer:String = null;
 	public var notes:Array<SwagSection>;
 	public var events:Array<Dynamic>;
@@ -139,11 +145,11 @@ class Song
 		this.bpm = bpm;
 		this.basedOldMode = basedOldMode;
 	}
-    public static function parse(jsonInput:String, ?folder:String,backend:String = ''){
+    public static function parse(daSong:String, ?folder:String,backend:String = ''){
 		var rawJson = null;
 		
 		var formattedFolder:String = Paths.formatToSongPath(folder);
-		var formattedSong:String = Paths.formatToSongPath(jsonInput);
+		var formattedSong:String = Paths.formatToSongPath(daSong);
 		#if MODS_ALLOWED
 		var moddyFile:String = Paths.modsJson(formattedFolder + '/' + formattedSong+backend);
 		if(FileSystem.exists(moddyFile)) {
@@ -167,7 +173,14 @@ class Song
 
 	return rawJson;
 	}
-	public static function loadFromNewJson(jsonInput:String = '', ?folder:String = '',difficu:String = 'normal'):SwagSong
+	public static function characterCheck(fuck:String){
+		switch(fuck){
+			case 'pico-playable' | 'pico-player':
+				fuck = 'pico';
+		}
+		return fuck;
+	}
+	public static function loadFromNewJson(daSong:String = '', ?folder:String = '',difficu:String = 'normal'):SwagSong
 		{
 
 			var songJsonDA = null;
@@ -175,22 +188,30 @@ class Song
 			var songJson = null;
 			var metaData = null;
 			try{
-				songJsonDA = parse(jsonInput,folder,'-chart');
-			    metaDataDA = parse(jsonInput,folder,'-metadata');
+				songJsonDA = parse(daSong,folder,'-chart-'+difficu);
+			    metaDataDA = parse(daSong,folder,'-metadata-'+difficu);
 				songJson = Json.parse(songJsonDA);
 				metaData = Json.parse(metaDataDA);
-				trace(metaData);
+				
 			}
 			catch(e){
+				try{
+					songJsonDA = parse(daSong,folder,'-chart');
+					metaDataDA = parse(daSong,folder,'-metadata');
+					songJson = Json.parse(songJsonDA);
+					metaData = Json.parse(metaDataDA);
+					trace(metaData);
+				}
+				catch(e){
 				trace('NEW CHARTING FILE NOT EXISTS! USING OLD ONE...');
 				if (difficu.toLowerCase() == 'normal' || difficu == '')
 					difficu = '';
 				else
 					difficu = '-'+difficu;
-				return loadFromJson(jsonInput+difficu.toLowerCase(),folder);
-				
+				return loadFromJson(daSong+difficu.toLowerCase(),folder);
+				}
 			}
-			var fuck  = metaData;
+		var fuck  = metaData;
 			var playData = fuck.playData;
 			trace(playData);
 			var phantomFear = fuck.playerVocalFiles;
@@ -198,14 +219,39 @@ class Song
 			var charData = playData.characters;
 			var oF = fuck.opponentVocalFiles;
 			if (phantomFear == null) {
-				phantomFear = [charData.player];
+				phantomFear = [characterCheck(charData.player)];
 			}
-			if (oF == null) oF = [charData.opponent];
+			
+		var stage:Null<String> = playData.stage;
+		switch(stage) //Psych and VSlice use different names for some stages
+		{
+			case 'mainStage':
+				stage = 'stage';
+			case 'spookyMansion':
+				stage = 'spooky';
+			case 'phillyTrain':
+				stage = 'philly';
+			case 'limoRide':
+				stage = 'limo';
+			case 'mallXmas':
+				stage = 'mall';
+			case 'tankmanBattlefield':
+				stage = 'tank';
+		}
+			if (oF == null) oF = [characterCheck(charData.opponent)];
+			var II = '';
+			if (Reflect.hasField(charData,'instrumental'))
+				II = '-'+Reflect.getProperty(charData,'instrumental');
+			var III = '';
+			if (Reflect.hasField(charData,'voices'))
+				III= '-'+Reflect.getProperty(charData,'voices');
+			else if (Reflect.hasField(charData,'instrumental'))
+				III = '-'+Reflect.getProperty(charData,'instrumental');
 			var data:SwagSong = {
-				song: fuck.songName,
+				song: daSong,
 				notes: [],
 				events: [],
-				songFileNames: ['Inst','Voices'],
+				songFileNames: ['Inst' + II,'Voices' + III],
 				playerVocalFiles:phantomFear,
 				sfxFiles: [],
 				opponentVocalFiles: oF,
@@ -213,37 +259,33 @@ class Song
 				needsVoices: true,
 				disPlayAutoMovingCam: true,
 				needsSFX: false,
-				igorAutoFix: false,
+				igorAutoFix: true,
 				arrowSkin: '',
 				splashSkin: 'noteSplashes',//idk it would crash if i didn't
 				player1: charData.player,
 				player2: charData.opponent,
 				gfVersion: charData.girlfriend,
 				cutsceneType: "none",
-				uiType: 'normal',
+				uiType: 'defualt',
 				speed: Reflect.getProperty(songJson.scrollSpeed,difficu.toLowerCase()),
 				composer: fuck.artist,
 				songNameChinese: fuck.songName,
-				stage: playData.stage,
+				stage: stage,
 				validScore: false,
-				strums: 2
+				strums: 2,
+				songName:  fuck.songName,
+				charter:fuck.charter
 			};
-       var sec:SwagSection = {
-		sectionBeats: 4.0,
-		bpm: fuck.timeChanges[0].bpm,
-		changeBPM: false,
-		mustHitSection: true,
-		gfSection: false,
-		sectionNotes: [],
-		typeOfSection: 0,
-		altAnim: false,
-		altAnimNum: 0,
-	crossfadeBf: false,
-	crossfadeDad: false
-};
+
+		var lastNoteTime:Float = 0;
 			if (Reflect.hasField(songJson.notes,difficu.toLowerCase()))
 				{
                     var lmfao:Array<Dynamic> = Reflect.getProperty(songJson.notes,difficu.toLowerCase());
+					var lastNote:Dynamic = lmfao[lmfao.length - 1];
+					if(lmfao.length > 0 && lastNote.t > lastNoteTime)
+						lastNoteTime = lastNote.t;
+
+					var sectionData:Array<SwagSection> = [];
 					for (fuckyou in lmfao){
 						if (fuckyou.l == null)fuckyou.l = 0;
 						if (fuckyou.k == null)fuckyou.k = '';
@@ -252,10 +294,92 @@ class Song
 							case 'normal':
 								kind = '';
 						}
-						sec.sectionNotes.push([fuckyou.t,fuckyou.d,fuckyou.l,kind]);
+						//sec.sectionNotes.push([fuckyou.t,fuckyou.d,fuckyou.l,kind]);
 					}
-				}
-				var ev:Array<Dynamic> = songJson.events;
+					
+
+						var baseSections:Array<SwagSection> = [];
+						var sectionTimes:Array<Float> = [];
+						var bpm:Float =  fuck.timeChanges[0].bpm;
+						var lastBpm:Float =  fuck.timeChanges[0].bpm;
+						var time:Float = 0;
+						while (time < lastNoteTime)
+						{
+							var sectionTime:Float = 0;
+							if(fuck.timeChanges.length > 0)
+							{
+								for (bpmChange in fuck.timeChanges)
+								{
+									if(time < bpmChange.t) break;
+									bpm = bpmChange.bpm;
+								}
+							}
+							sectionTime = Conductor.calculateCrochet(bpm) * 4;
+							sectionTimes.push(time);
+							time += sectionTime;
+				
+							var sec:SwagSection = {
+								sectionBeats: 4.0,
+								bpm: lastBpm,
+								changeBPM: false,
+								mustHitSection: true,
+								gfSection: false,
+								sectionNotes: [],
+								typeOfSection: 0,
+								altAnim: false,
+								altAnimNum: 0,
+							crossfadeBf: false,
+							crossfadeDad: false
+						};		
+							sec.mustHitSection = false;
+							if(lastBpm != bpm)
+							{
+								sec.changeBPM = true;
+								sec.bpm = bpm;
+								lastBpm = bpm;
+							}
+							baseSections.push(sec);
+						}
+
+						for (section in baseSections) //clone sections
+							{
+								var sec:SwagSection = {
+									sectionBeats: 4.0,
+									bpm: section.bpm,
+									changeBPM: false,
+									mustHitSection: true,
+									gfSection: false,
+									sectionNotes: [],
+									typeOfSection: 0,
+									altAnim: false,
+									altAnimNum: 0,
+								crossfadeBf: false,
+								crossfadeDad: false
+							};		
+								sec.mustHitSection = section.mustHitSection;
+								if(Reflect.hasField(section, 'changeBPM'))
+								{
+									sec.changeBPM = section.changeBPM;
+									sec.bpm = section.bpm;
+								}
+								sectionData.push(sec);
+							}
+				
+							var noteSec:Int = 0;
+							var time:Float = 0;
+							for (note in lmfao)
+							{
+								while(noteSec + 1 < sectionTimes.length && sectionTimes[noteSec + 1] <= note.t)
+									noteSec++;
+				
+								var normalNote:Array<Dynamic> = [note.t, note.d, (note.l != null ? note.l : 0)];
+								if(note.k != null && note.k.length > 0 && note.k != 'normal') normalNote.push(note.k);
+				
+								if(sectionData[noteSec] != null)
+									sectionData[noteSec].sectionNotes.push(normalNote);
+							}
+							data.notes = sectionData;
+							var ev:Array<Dynamic> = songJson.events;
 
 				var eventList:Map<String,Array<Array<String>>> = new Map<String,Array<Array<String>>>();
 						for (fuckyou in ev){
@@ -270,6 +394,7 @@ class Song
 									value1 = Std.string(Reflect.field(fuckyou.v,'char'));
 									if (Reflect.hasField(fuckyou.v,'x')) value2 = Std.string(Reflect.field(fuckyou.v,'x'));
 									if (Reflect.hasField(fuckyou.v,'y')) value3 = Std.string(Reflect.field(fuckyou.v,'y'));
+				
 								default:
 							switch (values.length){
 								case 1:
@@ -284,23 +409,26 @@ class Song
 									
 							}
 							}
+						
 						if (!eventList.exists(Std.string(fuckyou.t)))
 							eventList.set(Std.string(fuckyou.t),[]);
 
 						eventList.get(Std.string(fuckyou.t)).push([fuckyou.e,value1,value2,value3]);
+					
 					}
+					
 					for (i in eventList.keys())
 					data.events.push([Std.parseFloat(i),eventList.get(i)]);
-					data.notes.push(sec);
+				}
 					return data;
 		}
 		
-	public static function loadFromJson(jsonInput:String = '', ?folder:String = '',song:Dynamic = null):SwagSong
+	public static function loadFromJson(daSong:String = '', ?folder:String = '',song:Dynamic = null):SwagSong
 	{
 		var songJson = null;
 
 		if (song == null){
-			songJson = parseJSONshit(parse(jsonInput,folder));
+			songJson = parseJSONshit(parse(daSong,folder));
 		}else{
 			songJson = song;
 		}
@@ -321,9 +449,11 @@ class Song
 				daSong = songData.song;
 				daBpm = songData.bpm; */
 
-		if(jsonInput != 'events') StageData.loadDirectory(songJson);
+		if(daSong != 'events') StageData.loadDirectory(songJson);
 		onLoadJson(songJson);
 		if (songJson.song != null){
+			if (songJson.songName == null) songJson.songName = songJson.song;
+			if (songJson.charter == null) songJson.charter = 'unknown';
 			if (songJson.playerVocalFiles == null) songJson.playerVocalFiles = [];
 			if (songJson.opponentVocalFiles == null) songJson.opponentVocalFiles = [];
 			if (songJson.sfxFiles == null) songJson.sfxFiles = [];
@@ -351,11 +481,8 @@ class Song
 					'milf' | 'high' | 'satin panties'| 'satin-panties' |
 					'cocoa' | 'eggnog' |
 					'senpai' | 'roses' | 'thorns' | 
-					'ugh' | 'stress' | 'guns' :
+					'ugh' | 'stress' | 'guns' | 'darnell' | 'lit-up' | 'litup' | 'lits up' | 'lit up' | 'lits-up' | '2hot' | 'blazin':
 					songJson.disPlayAutoMovingCam = false;
-					case 'darnell' | 'lit-up' | 'litup' | 'lits up' | 'lit up' | 'lits-up' | '2hot' | 'blazin':
-						
-					songJson.disPlayAutoMovingCam = true;
 						default:
 							songJson.disPlayAutoMovingCam = false;
 				}
@@ -364,8 +491,17 @@ class Song
 		if (songJson.uiType == null) {
 
 			songJson.uiType = switch (songJson.song.toLowerCase()) {
+				case 'monster' | 'winter horrorland' | 'winter-horrorland' | 'Tutorial' | 'bopeebo' | 'fresh' | 'dad battle' | 'dadbattle' | 'dad-battle' |
+				'spookeez' | 'south' | 
+				'philly-nice' | 'philly nice' | 'pico' | 'blammed' |
+				'milf' | 'high' | 'satin panties'| 'satin-panties' |
+				'cocoa' | 'eggnog' |
+				'senpai' | 'roses' | 'thorns' | 
+				'ugh' | 'stress' | 'guns' |
+				'darnell' | 'lit-up' | 'litup' | 'lits up' | 'lit up' | 'lits-up' | '2hot' | 'blazin':
+				'normal';
 				default:
-					'normal';
+					'default';
 			}
 		}
 		if (songJson.songNameChinese == null){
@@ -437,7 +573,7 @@ class Song
 				'darnell' | 'lit-up' | 'litup' | 'lits up' | 'lit up' | 'lits-up' | '2hot' | 'blazin':
 					songJson.composer = 'Kawai Sprite';
 					default:
-					songJson.composer = 'IDK';
+					songJson.composer = 'Unknown';
 			}
 		}
 
@@ -459,6 +595,9 @@ class Song
 						if (songJson.song.toLowerCase() == "stress") {
 							songJson.gfVersion = "pico-speaker";
 						}
+					case 'phillyStreet'
+					| 'phillyBlazin':
+						songJson.gfVersion = 'nene';
 				
 				default:
 					songJson.gfVersion = 'gf';

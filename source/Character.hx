@@ -55,7 +55,7 @@ typedef CharacterFile = {
 	var scale:Float;
 	var sing_duration:Float;
 	var healthicon:String;
-
+    var danceEveryNumBeats:Null<Int>;
 	var position:Array<Float>;
 	var camera_position:Array<Float>;
 	var hasGunned:Null<Bool>;
@@ -113,7 +113,7 @@ class Character extends FlxSprite
 	public var originalFlipX:Bool = false;
 	public var healthColorArray:Array<Int> = [255, 0, 0];
 	var imagesPath:String = '';
-
+	public var danceEveryNumBeats:Int = 1;
 	private var interp:Interp;
 
 	//hscripts stuff pretty fucked up
@@ -307,7 +307,8 @@ callInterp("init", [this]);
 				crossFadeColor = json.crossColor;
 
 			originalFlipX = (json.flip_x == true);
-	
+			if (json.danceEveryNumBeats != null)
+				danceEveryNumBeats = json.danceEveryNumBeats;
 			// antialiasing
 			noAntialiasing = (json.no_antialiasing == true);
 			antialiasing = ClientPrefs.globalAntialiasing ? !noAntialiasing : false;
@@ -513,18 +514,27 @@ callInterp("init", [this]);
 		{
 			if (interp != null)
 				callInterp("dance", [this]);
-			else if(danceIdle)
+			else 
 			{
-				danced = !danced;
-
-				if (danced)
-					playAnim('danceRight' + idleSuffix);
-				else
-					playAnim('danceLeft' + idleSuffix);
+			switch (danceEveryNumBeats){
+				
+				
+				default:
+					
+					danced = !danced;
+					if(animation.getByName('danceLeft' + idleSuffix) != null && animation.getByName('danceLeft' + idleSuffix) != null) {
+						danceIdle = true;
+					if (danced)
+						playAnim('danceRight' + idleSuffix);
+					else
+						playAnim('danceLeft' + idleSuffix);
+				}else if(animation.getByName('idle' + idleSuffix) != null) {
+					danceIdle = false;
+						playAnim('idle' + idleSuffix);
+				}
 			}
-			else if(animation.getByName('idle' + idleSuffix) != null) {
-					playAnim('idle' + idleSuffix);
 			}
+			
 		}
 	}
 
@@ -595,27 +605,11 @@ callInterp("init", [this]);
 		return FlxSort.byValues(FlxSort.ASCENDING, Obj1[0], Obj2[0]);
 	}
 
-	public var danceEveryNumBeats:Int = 2;
+	
 	private var settingCharacterUp:Bool = true;
 	public function recalculateDanceIdle() {
-		var lastDanceIdle:Bool = danceIdle;
-		danceIdle = (animation.getByName('danceLeft' + idleSuffix) != null && animation.getByName('danceRight' + idleSuffix) != null);
-
-		if(settingCharacterUp)
-		{
-			danceEveryNumBeats = (danceIdle ? 1 : 2);
-		}
-		else if(lastDanceIdle != danceIdle)
-		{
-			var calc:Float = danceEveryNumBeats;
-			if(danceIdle)
-				calc /= 2;
-			else
-				calc *= 2;
-
-			danceEveryNumBeats = Math.round(Math.max(calc, 1));
-		}
-		settingCharacterUp = false;
+		//do nothing lol
+		
 	}
 
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)

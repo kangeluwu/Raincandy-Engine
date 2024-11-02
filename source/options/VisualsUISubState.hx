@@ -41,6 +41,12 @@ class VisualsUISubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 		
+		var option:Option = new Option('Note Cover',
+		"If unchecked, sustain notes won't show cover.",
+		'noteCovers',
+		'bool',
+		true);
+	addOption(option);
 		var option:Option = new Option('Hide HUD',
 			'If checked, hides most HUD elements.',
 			'hideHud',

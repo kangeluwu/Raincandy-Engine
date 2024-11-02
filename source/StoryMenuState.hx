@@ -345,10 +345,10 @@ function togglePersistUpdate(toggle:Bool)
 		}
 	override function create()
 	{
-		if (stickerSubState == null){
+		//if (stickerSubState == null){
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		}
+		//}
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);

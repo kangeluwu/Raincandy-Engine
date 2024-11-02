@@ -103,7 +103,16 @@ import android.AndroidControls.AndroidControls;
 import android.FlxVirtualPad;
 #end
 #if VIDEOS_ALLOWED
-import hxcodec.flixel.FlxVideo as FlxVideo;
+#if !hxvlc
+#if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideo as FlxVideo;
+#elseif (hxCodec >= "2.6.1") import hxcodec.VideoHandler as FlxVideo;
+#elseif (hxCodec == "2.6.0") import VideoHandler as FlxVideo;
+#else import vlc.VideoHandler as FlxVideo; #end
+#if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideoSprite; #end
+#else
+import PluginManager.FlxVideo as FlxVideo;
+import PluginManager.FlxVideoSprite;
+#end
 #end
 
 class CustomSprite extends DynamicSprite{

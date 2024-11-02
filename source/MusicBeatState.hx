@@ -29,6 +29,8 @@ class MusicBeatState extends FlxUIState
 
 	public var curDecStep:Float = 0;
 	public var curDecBeat:Float = 0;
+
+	public var curSecond:Int = 0;
 	public var controls(get, never):Controls;
 	public var controlsPlayerTwo(get, never):Controls;
 	inline function get_controls():Controls
@@ -145,25 +147,33 @@ class MusicBeatState extends FlxUIState
 
 		updateCurStep();
 		updateBeat();
-       
+       var oldSecond:Int = curSecond;
+
+	   if (oldSecond != curSecond)
+			if (curSecond >0) secondHit();
+	   if (oldSecond < curSecond)
+	   updateSeconds();
 		if (oldStep != curStep)
 		{
 			if(curStep > 0)
 				stepHit();
 
-			if(PlayState.SONG != null)
-			{
+			
+			
 				if (oldStep < curStep)
 					updateSection();
-				else
+				else if(PlayState.SONG != null){
 					rollbackSection();
 			}
 		}
 
 		if(FlxG.save.data != null) FlxG.save.data.fullscreen = FlxG.fullscreen;
 		if (FlxG.keys.justPressed.F5){
-			TitleState.initialized = false;
+			if (FlxG.keys.pressed.SHIFT){
 			FlxG.resetGame();
+			}else{
+				MusicBeatState.resetState();
+			}
 		}
 		if (FlxG.keys.justPressed.F7){
 			persistentUpdate = false;
@@ -219,7 +229,10 @@ class MusicBeatState extends FlxUIState
 		curDecStep = lastChange.stepTime + shit;
 		curStep = lastChange.stepTime + Math.floor(shit);
 	}
-
+	private function updateSeconds():Void
+		{
+			curSecond = Math.floor(Conductor.songPosition / 1000);
+		}
 	public static function switchState(nextState:FlxState) {
 		// Custom made Trans in
 		var curState:Dynamic = FlxG.state;
@@ -268,6 +281,11 @@ class MusicBeatState extends FlxUIState
 	{
 		//trace('Section: ' + curSection + ', Beat: ' + curBeat + ', Step: ' + curStep);
 	}
+
+	public function secondHit():Void
+		{
+			
+		}
 
 	function getBeatsOnSection()
 	{

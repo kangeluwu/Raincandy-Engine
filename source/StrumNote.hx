@@ -7,7 +7,7 @@ import math.*;
 import flixel.math.FlxPoint;
 using StringTools;
 import flixel.addons.effects.FlxSkewedSprite;
-class StrumNote extends FlxSkewedSprite
+class StrumNote extends NoteObject
 {
 	public var vec3Cache:Vector3 = new Vector3(); // for vector3 operations in modchart code
 	public var defScale:FlxPoint = FlxPoint.get(); // for modcharts to keep the scaling
@@ -21,7 +21,7 @@ class StrumNote extends FlxSkewedSprite
 		defScale.put();
 		super.destroy();
 	}	
-	private var colorSwap:ColorSwap;
+	
 	public var resetAnim:Float = 0;
 	public var noteData:Int = 0;
 	public var direction:Float = 90;//plan on doing scroll directions soon -bb
@@ -71,6 +71,7 @@ class StrumNote extends FlxSkewedSprite
 		super(x, y);
 
 		var skin:String = 'NOTE_assets';
+		if (PlayState.SONG != null)
 		if(PlayState.SONG.arrowSkin != null && PlayState.SONG.arrowSkin.length > 1) skin = PlayState.SONG.arrowSkin;
 		texture = skin; //Load texture and anims
 
@@ -177,7 +178,7 @@ class StrumNote extends FlxSkewedSprite
 			centerOrigin();
 		//}
 		}
-		updateZIndex();
+		//updateZIndex();
 		super.update(elapsed);
 	}
 
@@ -185,7 +186,7 @@ class StrumNote extends FlxSkewedSprite
 		animation.play(anim, force);
 		centerOffsets();
 		centerOrigin();
-		updateZIndex();
+		//updateZIndex();
 		if(animation.curAnim == null || animation.curAnim.name == 'static') {
 			colorSwap.hue = 0;
 			colorSwap.saturation = 0;

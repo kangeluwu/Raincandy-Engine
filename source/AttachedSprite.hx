@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.system.FlxAssets.FlxGraphicAsset;
 using StringTools;
 
 class AttachedSprite extends FlxSprite
@@ -20,29 +21,22 @@ class AttachedSprite extends FlxSprite
 	{
 		super();
 
+		var ima:FlxGraphicAsset = FNFAssets.getBitmapData(Paths.isModPath('images/' + file + '.png'));
+		if (ima == null)
+			ima = Paths.image(file,library);
 		
 		if(anim != null) {
+			var t = FNFAssets.getText(Paths.isModPath('images/' + file + '.xml'));
+			if (t == null)
+				t = Paths.file('images/$file.xml', library);
 			frames = FlxAtlasFrames.fromSparrow(
-			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.png') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + file + '.png')) ? 
-			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.png') ? 
-			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/' + file + '.png') : 
-			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + file + '.png')):
-			FNFAssets.getBitmapData(Paths.modFolders('images/' + file + '.png')), 
-
-			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.xml') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + file + '.xml')) ? 
-			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.xml') ? 
-			FNFAssets.getText(SUtil.getPath() + 'windose_data/images/' + file + '.xml') : 
-			FNFAssets.getText(SUtil.getPath() + 'windose_data/shared/images/' + file + '.xml')) :
-			FNFAssets.getText(Paths.modFolders('images/' + file + '.xml')));
+				ima,
+			t);
 			animation.addByPrefix('idle', anim, 24, loop);
 			animation.play('idle');
 		} else if(file != null) {
 			loadGraphic(
-				(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.png') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + file + '.png')) ? 
-				(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + file + '.png') ? 
-				FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/' + file + '.png') : 
-				FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + file + '.png')):
-			FNFAssets.getBitmapData(Paths.modFolders('images/' + file + '.png')));
+			ima);
 		}
 		antialiasing = ClientPrefs.globalAntialiasing;
 		scrollFactor.set();

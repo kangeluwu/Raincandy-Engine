@@ -7,6 +7,7 @@ import flixel.util.FlxColor;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.group.FlxSpriteGroup;
+import flixel.system.FlxAssets.FlxGraphicAsset;
 class HealthBar extends FlxSpriteGroup
 {
 	public var leftBar:FlxSprite;
@@ -24,25 +25,24 @@ class HealthBar extends FlxSpriteGroup
 	public var barHeight(default, set):Int = 1;
 	public var barOffset:FlxPoint = new FlxPoint(3, 3);
 
-	public function new(x:Float, y:Float, image:String = 'custom_ui/normal/healthBar', valueFunction:Void->Float = null, boundX:Float = 0, boundY:Float = 1)
+	public function new(x:Float, y:Float, folder:String = 'custom_ui/normal',image:String = 'healthBar', valueFunction:Void->Float = null, boundX:Float = 0, boundY:Float = 1)
 	{
 		super(x, y);
 		
 		if(valueFunction != null) this.valueFunction = valueFunction;
 		setBounds(boundX, boundY);
-		
-		bg = new FlxSprite().loadGraphic(
-			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + image + '.png') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + image + '.png')) ? 
-			(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + image + '.png') ? 
-			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/' + image + '.png') : 
-			FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + image + '.png')):
-		FNFAssets.getBitmapData(Paths.modFolders('images/' + image + '.png')));
+		var grra:FlxGraphicAsset = FNFAssets.getBitmapData(Paths.modFolders('images/'+ folder + '/' + image + '.png'));
+		if (grra == null)
+			grra = Paths.image(folder + '/' + image);
+		if (grra == null)
+			grra = Paths.image(image);
+		bg = new FlxSprite().loadGraphic(grra);
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
-		var gra = (FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + image + 'Post.png') || FNFAssets.exists(SUtil.getPath() + 'windose_data/shared/images/' + image + 'Post.png')) ? 
-		(FNFAssets.exists(SUtil.getPath() + 'windose_data/images/' + image + 'Post.png') ? 
-		FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/images/' + image + 'Post.png') : 
-		FNFAssets.getBitmapData(SUtil.getPath() + 'windose_data/shared/images/' + image + 'Post.png')):
-	FNFAssets.getBitmapData(Paths.modFolders('images/' + image + 'Post.png'));
+		var gra:FlxGraphicAsset = FNFAssets.getBitmapData(Paths.modFolders('images/'+ folder + '/Post.png'));
+		if (gra == null)
+			gra = Paths.image(folder + '/' + image + 'Post');
+		if (gra == null)
+			gra = Paths.image(image + 'Post');
 	
 		post = new FlxSprite();
 		

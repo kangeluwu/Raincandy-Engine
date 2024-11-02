@@ -398,6 +398,7 @@ class CharacterEditorState extends MusicBeatState
 				0,
 				0
 			],
+			"danceEveryNumBeats": 1,
 			"healthicon": "face",
 			"flip_x": false,
 			"healthbar_colors": [
@@ -465,7 +466,7 @@ class CharacterEditorState extends MusicBeatState
 				character.singDuration = parsedJson.sing_duration;
 				character.positionArray = parsedJson.position;
 				character.cameraPosition = parsedJson.camera_position;
-
+				character.danceEveryNumBeats = parsedJson.danceEveryNumBeats;
 				character.imageFile = parsedJson.image;
 				character.jsonScale = parsedJson.scale;
 				character.noAntialiasing = parsedJson.no_antialiasing;
@@ -503,7 +504,7 @@ class CharacterEditorState extends MusicBeatState
 	var positionYStepper:FlxUINumericStepper;
 	var positionCameraXStepper:FlxUINumericStepper;
 	var positionCameraYStepper:FlxUINumericStepper;
-
+	var danceBeatStepperFNF:FlxUINumericStepper;
 	var flipXCheckBox:FlxUICheckBox;
 	var noAntialiasingCheckBox:FlxUICheckBox;
 
@@ -542,6 +543,8 @@ class CharacterEditorState extends MusicBeatState
 
 		scaleStepper = new FlxUINumericStepper(15, singDurationStepper.y + 40, 0.1, 1, 0.05, 10, 1);
 
+	
+
 		flipXCheckBox = new FlxUICheckBox(singDurationStepper.x + 80, singDurationStepper.y, null, null, "Flip X", 50);
 		flipXCheckBox.checked = char.flipX;
 		if(char.isPlayer) flipXCheckBox.checked = !flipXCheckBox.checked;
@@ -552,6 +555,7 @@ class CharacterEditorState extends MusicBeatState
 
 			ghostChar.flipX = char.flipX;
 		};
+		danceBeatStepperFNF = new FlxUINumericStepper(flipXCheckBox.x +10, healthIconInputText.y, 1, char.danceEveryNumBeats, 1, 10, 0);
 
 		noAntialiasingCheckBox = new FlxUICheckBox(flipXCheckBox.x, flipXCheckBox.y + 40, null, null, "No Antialiasing", 80);
 		noAntialiasingCheckBox.checked = char.noAntialiasing;
@@ -582,6 +586,7 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(new FlxText(15, healthIconInputText.y - 18, 0, 'Health icon name:'));
 		tab_group.add(new FlxText(15, singDurationStepper.y - 18, 0, 'Sing Animation length:'));
 		tab_group.add(new FlxText(15, scaleStepper.y - 18, 0, 'Scale:'));
+		tab_group.add(new FlxText(danceBeatStepperFNF.x, danceBeatStepperFNF.y - 18, 0, 'Dance Beat:'));
 		tab_group.add(new FlxText(positionXStepper.x, positionXStepper.y - 18, 0, 'Character X/Y:'));
 		tab_group.add(new FlxText(positionCameraXStepper.x, positionCameraXStepper.y - 18, 0, 'Camera X/Y:'));
 		tab_group.add(new FlxText(healthColorStepperR.x, healthColorStepperR.y - 18, 0, 'Health bar R/G/B:'));
@@ -591,6 +596,7 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(healthIconInputText);
 		tab_group.add(singDurationStepper);
 		tab_group.add(scaleStepper);
+		tab_group.add(danceBeatStepperFNF);
 		tab_group.add(flipXCheckBox);
 		tab_group.add(noAntialiasingCheckBox);
 		tab_group.add(positionXStepper);
@@ -782,6 +788,11 @@ class CharacterEditorState extends MusicBeatState
 				char.x = char.positionArray[0] + OFFSET_X + 100;
 				updatePointerPos();
 			}
+			else if(sender == danceBeatStepperFNF)
+				{
+					danceBeatStepperFNF.value = Math.floor(danceBeatStepperFNF.value);
+					char.danceEveryNumBeats = Std.int(danceBeatStepperFNF.value);
+				}
 			else if(sender == singDurationStepper)
 			{
 				char.singDuration = singDurationStepper.value;//ermm you forgot this??
@@ -997,6 +1008,7 @@ class CharacterEditorState extends MusicBeatState
 			healthIconInputText.text = char.healthIcon;
 			singDurationStepper.value = char.singDuration;
 			scaleStepper.value = char.jsonScale;
+			danceBeatStepperFNF.value = char.danceEveryNumBeats;
 			flipXCheckBox.checked = char.originalFlipX;
 			noAntialiasingCheckBox.checked = char.noAntialiasing;
 			resetHealthBarColor();
@@ -1301,7 +1313,7 @@ class CharacterEditorState extends MusicBeatState
 
 			"position":	char.positionArray,
 			"camera_position": char.cameraPosition,
-
+			"danceEveryNumBeats": char.danceEveryNumBeats,
 			"flip_x": char.originalFlipX,
 			"no_antialiasing": char.noAntialiasing,
 			"healthbar_colors": char.healthColorArray

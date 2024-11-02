@@ -35,7 +35,7 @@ typedef Dialogue =
 class DialogueBoxMPlus extends FlxSpriteGroup
 {
 	public static var _dialogue:Dialogue;
-	var box:FlxSprite;
+	public var box:FlxSprite;
 
 	var camLerp:Float = 0.14;
 
@@ -129,7 +129,7 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 			if (bgFade.alpha > 1)
 				bgFade.alpha = 1;
 		}, bgFIL);
-		if (Paths.fileExists(Paths.font(curFont)))
+		if (FNFAssets.exists(Paths.font(curFont)))
 			curFont = Paths.font(curFont);
 		switch (PlayState.SONG.song.toLowerCase())
 		{
@@ -262,10 +262,10 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 			FlxG.sound.music.volume = FlxMath.lerp(FlxG.sound.music.volume, 0.8 * curVolume / 100,
 			camLerp);
 			}
-			if (curFlip)
+		/*	if (curFlip)
 				portrait.x = FlxMath.lerp(portrait.x, 580 - portrait.width, (camLerp * 2));
 			else
-				portrait.x = FlxMath.lerp(portrait.x, 700, (camLerp * 2));
+				portrait.x = FlxMath.lerp(portrait.x, 700, (camLerp * 2));*/
 		}
 
 		dropText.text = swagDialogue.text;
@@ -422,16 +422,20 @@ for (touch in FlxG.touches.list)
 		if (curCharacter != oldCharacter)
 		{
 			portrait.alpha = 0;
-
-			new FlxTimer().start(fadeInTime, function(tmr:FlxTimer)
-			{
-				portrait.alpha += 1 / fadeInLoop;
-			}, fadeInLoop);
-
 			if (curFlip)
 				portrait.x = 280 - portrait.width;
 			else
 				portrait.x = 1000;
+			new FlxTimer().start(fadeInTime, function(tmr:FlxTimer)
+			{
+				portrait.alpha += 1 / fadeInLoop;
+				if (curFlip)
+				portrait.x += 300 / fadeInLoop;
+				else
+				portrait.x -= 300 / fadeInLoop;
+			}, fadeInLoop);
+
+			
 		}
 		
 

@@ -303,6 +303,8 @@ var voicesStuff:String = '';
 				arrowSkin: '',
 				splashSkin: 'noteSplashes',//idk it would crash if i didn't
 				player1: 'bf',
+				songName: 'Test',
+				charter:'unknown',
 				player2: 'dad',
 				gfVersion: 'gf',
 				cutsceneType: "none",
@@ -312,7 +314,7 @@ var voicesStuff:String = '';
 				composer: '',
 				songNameChinese: '测试',
 				stage: 'stage',
-				validScore: false,
+				validScore: true,
 				strums: 2
 			};
 			addSection();
@@ -1468,6 +1470,18 @@ Left/Right - Go to the previous/next section
 							noteTypeIntMap.set(key, fileToCheck);
 							key++;
 						}
+					}
+					if (!FileSystem.isDirectory(path) && file == 'noteTypeList.txt' ){
+						var noteTs = CoolUtil.coolTextFile(path);
+						for (fileToCheck in noteTs)
+							{
+						if(!noteTypeMap.exists(fileToCheck)) {
+							displayNameList.push(fileToCheck);
+							noteTypeMap.set(fileToCheck, key);
+							noteTypeIntMap.set(key, fileToCheck);
+							key++;
+						}
+					}
 					}
 				}
 			}
@@ -2781,7 +2795,7 @@ case 'Alt Anim Note':
 					note.color = FlxColor.fromRGBFloat(colorVal, colorVal, colorVal, 0.999); //Alpha can't be 100% or the color won't be updated for some reason, guess i will die
 				}
 			}
-
+	
 			if(note.strumTime <= Conductor.songPosition) {
 				note.alpha = 0.4;
 				if(note.strumTime > lastConductorPos && FlxG.sound.music.playing && note.noteData > -1) {
@@ -2855,7 +2869,15 @@ case 'Alt Anim Note':
 						data = note.noteData + 4*note.currentStrum;
 
 					}
+				}else{
+				switch (note.eventName){
+				case 'FocusCamera':
+			var ID = Std.parseInt(note.eventVal1);
+				if(Math.isNaN(ID)) ID = 0;
+				changeCamIcon(ID);
 				}
+			
+			}
 			}
 		});
 
@@ -3377,26 +3399,37 @@ case 'Alt Anim Note':
 		leftIcon.changeIcon(healthIconP2);
 		rightIcon.changeIcon(healthIconP1);
 			if (_song.notes[curSec].gfSection) leftIcon.changeIcon('gf');
+			if (!_song.igorAutoFix){
 		if (!_song.notes[curSec].mustHitSection)
 		{
-			camIcon.changeIcon('dad');
-			if (!_song.igorAutoFix)
-			{
+			changeCamIcon(1);
+		
 				leftIcon.changeIcon(healthIconP1);
 				rightIcon.changeIcon(healthIconP2);
-			}
+			
 	    }
 		else 
 		{
-			if (!_song.igorAutoFix){
+			
 				leftIcon.changeIcon(healthIconP2);
 			rightIcon.changeIcon(healthIconP1);
-			}
-			camIcon.changeIcon('bf');
+			
+			changeCamIcon(0);
 		}
-		if (_song.notes[curSec].gfSection)  camIcon.changeIcon('gf');
+		
+		if (_song.notes[curSec].gfSection)  changeCamIcon(2);
+		}
 	}
-
+	function changeCamIcon(char:Int = 0){
+		switch (char){
+			case 0:
+				camIcon.changeIcon('bf');
+				case 1:
+					camIcon.changeIcon('dad');
+					case 2:
+				camIcon.changeIcon('gf');
+		}
+	}
 	function loadHealthIconFromCharacter(char:String) {
 		var characterPath:String = 'characters/' + char + '.json';
 		#if MODS_ALLOWED
@@ -3579,7 +3612,7 @@ case 'Alt Anim Note':
 		var daNoteInfo = i[1];
 		var daStrumTime = i[0];
 		var daSus:Dynamic = i[2];
-        var danoteStrum = Math.floor(daNoteInfo / Note.NOTE_AMOUNT);
+        var danoteStrum = Math.floor(daNoteInfo / Note.NOTE_AMOUNT) % curStrums;
 
 		var note:Note = new Note(daStrumTime, daNoteInfo, null, null, true);
 		note.currentStrum = danoteStrum;

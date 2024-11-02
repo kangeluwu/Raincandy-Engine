@@ -480,10 +480,10 @@ function coolURL(url:String):String
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
 		#end
-		if (stickerSubState == null){
+		
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		}
+		
 		makeHaxeState("freeplay", "windose_data/scripts/custom_menus/", "FreeplayState");		
 		super.create();
 	}
@@ -521,8 +521,8 @@ class SongMetadata
 	public var songCharacter:String = "";
 	public var color:Int = -7179779;
 	public var folder:String = "";
-
-	public function new(song:String, week:Int, songCharacter:String, color:Int)
+	public var diff:String= '';
+	public function new(song:String, week:Int, songCharacter:String, color:Int,soloingDiff:String = '')
 	{
 		this.songName = song;
 		this.week = week;

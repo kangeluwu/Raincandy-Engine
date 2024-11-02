@@ -13,7 +13,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
-import flixel.addons.display.FlxBackdrop;
+import flixel.addons.display.FlxBackdropOld as FlxBackdrop;
 import seedyrng.Random;
 import flixel.graphics.frames.FlxAtlasFrames;
 using StringTools;

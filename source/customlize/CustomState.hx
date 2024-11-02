@@ -49,11 +49,12 @@ import flixel.util.FlxAxes;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.frames.FlxFrame;
 #if VIDEOS_ALLOWED
-#if !ios
+#if !hxvlc
 #if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideo as FlxVideo;
 #elseif (hxCodec >= "2.6.1") import hxcodec.VideoHandler as FlxVideo;
 #elseif (hxCodec == "2.6.0") import VideoHandler as FlxVideo;
 #else import vlc.VideoHandler as FlxVideo; #end
+#if (hxCodec >= "3.0.0") import hxcodec.flixel.FlxVideoSprite; #end
 #else
 import PluginManager.FlxVideo as FlxVideo;
 import PluginManager.FlxVideoSprite;
@@ -415,7 +416,7 @@ interp.variables.set("ShaderFilter", openfl.filters.ShaderFilter);
 		interp.variables.set("camerabgAlphaShits", camerabgAlphaShits);
 		interp.variables.set("fromRGB", fromRGB);
 		interp.variables.set("FlxFlicker", FlxFlicker);
-		interp.variables.set("FlxAxes", FlxAxes);
+	
 		interp.variables.set("FlxGridOverlay", FlxGridOverlay);
 		interp.variables.set("FlxPoint", FlxPoint);
 		interp.variables.set("chartConfrim", chartConfrim);

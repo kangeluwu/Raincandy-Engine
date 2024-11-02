@@ -148,18 +148,14 @@
 	<!--In case you want to use the ui package-->
 	<haxelib name="flixel-ui" />
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
-	<haxelib name="hxCodec" if="VIDEOS_ALLOWED"  unless="ios"/>
+	<haxelib name="hxCodec" if="VIDEOS_ALLOWED" />
 	<haxelib name="flxanimate" /> <!-- Texture atlas rendering -->
-<section if="ios">
-	<haxelib name="hxvlc" if="VIDEOS_ALLOWED"/>
-		</section>
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="hscript-ex"/>
 	<haxelib name="seedyrng"/> <!--haxelib install seedyrng-->
 	<haxelib name="random"/> <!--haxelib install random-->
 	<haxelib name="polymod"/> 
 	<haxelib name="discord_rpc" if="desktop"/>
-	<haxelib name="linc_luajit" if="windows"/>
 	<haxelib name="haxeui-flixel"/>
 	<haxelib name="extension-videoview" if="android"/>
 	<haxelib name="extension-androidtools" if="android"/>
