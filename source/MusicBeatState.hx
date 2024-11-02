@@ -14,7 +14,7 @@ import flixel.util.FlxGradient;
 import flixel.FlxState;
 import flixel.FlxBasic;
 import flixel.util.FlxSort;
-#if mobile
+#if (mobile || PCMOBILETEST)
 import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
 import android.FlxVirtualPad;

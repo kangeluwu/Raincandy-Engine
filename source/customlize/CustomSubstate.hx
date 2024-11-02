@@ -78,7 +78,7 @@ import hscript.Parser;
 import hscript.ParserEx;
 import hscript.InterpEx;
 import hscript.ClassDeclEx;
-#if mobile
+#if (mobile || PCMOBILETEST)
 import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
 import android.FlxVirtualPad;

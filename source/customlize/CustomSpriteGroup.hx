@@ -97,7 +97,7 @@ import flixel.effects.particles.FlxParticle;
 import haxe.Json;
 import tjson.TJSON;
 using StringTools;
-#if mobile
+#if (mobile || PCMOBILETEST)
 import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
 import android.FlxVirtualPad;

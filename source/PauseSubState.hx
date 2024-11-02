@@ -23,7 +23,7 @@ import hscript.InterpEx;
 import flixel.addons.display.FlxRuntimeShader;
 import sys.FileSystem;
 import sys.io.File;
-#if mobile
+#if (mobile || PCMOBILETEST)
 import flixel.input.actions.FlxActionInput;
 import android.AndroidControls.AndroidControls;
 import android.FlxVirtualPad;
