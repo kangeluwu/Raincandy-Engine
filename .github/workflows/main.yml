@@ -25,16 +25,12 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-12, macos-14]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
 
       - name: Setup Haxe
         uses: krdlab/setup-haxe@master
         with: 
           haxe-version: 4.2.5
-
-      - name: Set lib path
-        run: |
-            haxelib setup ~/haxelib
 
       - name: Restore Previous PC Build Caches
         id: cache-pc-build-restore
@@ -51,8 +47,8 @@ jobs:
 
       - name: Install Libraries
         run: |
-          haxelib install hmm --quiet
-          haxelib run hmm install --quiet
+          haxelib install hmm
+          haxelib run hmm install
 
       - name: Compile (Windows)
         if: startsWith(matrix.os, 'windows')
@@ -105,7 +101,7 @@ jobs:
         os: [ubuntu-latest, macos-14]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
 
       - name: Setup Haxe
         uses: krdlab/setup-haxe@master
@@ -125,14 +121,10 @@ jobs:
               export/release/ios/obj
             key: cache-mobile-build
 
-      - name: Set lib path
-        run: |
-          haxelib setup ~/haxelib
-
       - name: Install Libraries
         run: |
-          haxelib install hmm --quiet
-          haxelib run hmm install --quiet
+          haxelib install hmm
+          haxelib run hmm install
 
       - name: Configure Android
         if: startsWith(matrix.os, 'ubuntu')
