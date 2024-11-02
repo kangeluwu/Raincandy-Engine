@@ -2,8 +2,10 @@
   "dependencies": [
     {
       "name": "lime",
-      "type": "haxelib",
-      "version": "8.0.0"
+      "type": "git",
+      "dir": null,
+      "ref": null,
+      "url": "https://github.com/kangeluwu/lime"
     },
     {
       "name": "openfl",
@@ -92,8 +94,10 @@
     },
     {
       "name": "hxcpp",
-      "type": "haxelib",
-      "version": "4.2.1"
+      "type": "git",
+      "dir": null,
+      "ref": null,
+      "url": "https://github.com/kangeluwu/hxcpp"
     },
     {
       "name": "tjson",

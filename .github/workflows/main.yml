@@ -30,7 +30,7 @@ jobs:
       - name: Setup Haxe
         uses: krdlab/setup-haxe@master
         with: 
-          haxe-version: 4.2.5
+          haxe-version: 4.3.0
 
       - name: Restore Previous PC Build Caches
         id: cache-pc-build-restore
@@ -107,7 +107,7 @@ jobs:
       - name: Setup Haxe
         uses: krdlab/setup-haxe@master
         with:
-          haxe-version: 4.2.5
+          haxe-version: 4.3.0
 
       - name: Restore Previous Mobile Build Caches
         id: cache-mobile-build-restore
@@ -127,7 +127,7 @@ jobs:
           haxelib setup ~/haxelib
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
-          
+
       - name: Configure Android
         if: startsWith(matrix.os, 'ubuntu')
         run: |
