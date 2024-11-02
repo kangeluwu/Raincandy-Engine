@@ -43,6 +43,16 @@
       "version": null
     },
     {
+      "name": "seedyrng",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "random",
+      "type": "haxelib",
+      "version": null
+    },
+    {
       "name": "uniontypes",
       "type": "haxelib",
       "version": null

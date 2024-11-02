@@ -6383,7 +6383,7 @@ FlxTween.tween(FlxG.camera, {zoom: zooms}, time, {onComplete:
 				var oldChar:Character;
 				var charType:Int = 0;
 				var char:Character = null;
-				switch(value1) {
+				switch(value1.toLowerCase() ) {
 					case 'gf' | 'girlfriend':
 						charType = 2;
 						oldChar = gf;
