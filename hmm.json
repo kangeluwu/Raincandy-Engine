@@ -41,6 +41,11 @@
       "version": null
     },
     {
+      "name": "uniontypes",
+      "type": "haxelib",
+      "version": null
+    },
+    {
       "name": "funkin.vis",
       "type": "git",
       "dir": null,
