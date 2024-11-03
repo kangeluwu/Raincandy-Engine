@@ -93,14 +93,14 @@
       "type": "git",
       "dir": "src",
       "ref": "57f5d47f2533fd0c3dcd025a86cb86c0dfa0b6d2",
-      "url": "https://gitlab.com/haxe-grig/grig.audio.git"
+      "url": "https://gitlab.com/haxe-grig/grig.audio"
     },
     {
       "name": "FlxPartialSound",
       "type": "git",
       "dir": null,
       "ref": "f986332ba5ab02abd386ce662578baf04904604a",
-      "url": "https://github.com/FunkinCrew/FlxPartialSound.git"
+      "url": "https://github.com/FunkinCrew/FlxPartialSound"
     },
     {
       "name": "flixel-ui",
@@ -109,10 +109,8 @@
     },
     {
       "name": "hxcpp",
-      "type": "git",
-      "dir": null,
-      "ref": null,
-      "url": "https://github.com/kangeluwu/hxcpp"
+      "type": "haxelib",
+      "version": null
     },
     {
       "name": "tjson",
