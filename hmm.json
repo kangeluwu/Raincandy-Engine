@@ -111,8 +111,8 @@
       "name": "hxcpp",
       "type": "git",
       "dir": null,
-      "ref": "54af892be2ca4c63988c99c9c524431af6c6f036",
-      "url": "https://github.com/HaxeFoundation/hxcpp"
+      "ref": "",
+      "url": "https://github.com/kangeluwu/hxcpp"
     },
     {
       "name": "tjson",
