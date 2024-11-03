@@ -48,6 +48,8 @@ jobs:
           haxelib setup ~/haxelib
           haxelib --global install hmm --quiet
           haxelib run hmm install --quiet
+          haxelib remove hxcpp
+          haxelib git hxcpp https://github.com/kangeluwu/hxcpp
 
       - name: Compile (Windows)
         if: startsWith(matrix.os, 'windows')
@@ -134,6 +136,8 @@ jobs:
           haxelib setup ~/haxelib
           haxelib --global install hmm --quiet
           haxelib run hmm install --quiet
+          haxelib remove hxcpp
+          haxelib git hxcpp https://github.com/kangeluwu/hxcpp
           
       - name: Install Android Only Libs
         if: startsWith(matrix.os, 'ubuntu')
