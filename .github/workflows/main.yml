@@ -51,7 +51,9 @@ jobs:
 
       - name: Compile (Windows)
         if: startsWith(matrix.os, 'windows')
-        run: haxelib --always run lime build windows
+        run: |
+          haxelib --always run lime build windows
+          y
 
       - name: Compile (Linux)
         if: startsWith(matrix.os, 'ubuntu')
