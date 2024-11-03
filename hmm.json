@@ -109,8 +109,10 @@
     },
     {
       "name": "hxcpp",
-      "type": "haxelib",
-      "version": null
+      "type": "git",
+      "dir": null,
+      "ref": "54af892be2ca4c63988c99c9c524431af6c6f036",
+      "url": "https://github.com/FunkinCrew/funkVis"
     },
     {
       "name": "tjson",
