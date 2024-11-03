@@ -51,15 +51,15 @@ jobs:
 
       - name: Compile (Windows)
         if: startsWith(matrix.os, 'windows')
-        run: haxelib --never run lime build windows --quiet
+        run: haxelib --always run lime build windows --quiet
 
       - name: Compile (Linux)
         if: startsWith(matrix.os, 'ubuntu')
-        run: haxelib --never run lime build linux --quiet
+        run: haxelib --always run lime build linux --quiet
 
       - name: Compile (macOS)
         if: startsWith(matrix.os, 'macos')
-        run: haxelib --never run lime build mac --quiet
+        run: haxelib --always run lime build mac --quiet
 
       - name: Upload Artifact (Windows)
         if: startsWith(matrix.os, 'windows')
@@ -152,11 +152,11 @@ jobs:
 
       - name: Compile (Android)
         if: startsWith(matrix.os, 'ubuntu')
-        run: haxelib --never run lime build android --quiet
+        run: haxelib --always run lime build android --quiet
 
       - name: Compile (iOS)
         if: startsWith(matrix.os, 'macos')
-        run: haxelib --never run lime build ios --final --quiet
+        run: haxelib --always run lime build ios --final --quiet
 
       - name: Make Ipa
         if: startsWith(matrix.os, 'macos')
