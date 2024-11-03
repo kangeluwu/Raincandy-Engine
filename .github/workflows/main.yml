@@ -51,16 +51,15 @@ jobs:
 
       - name: Compile (Windows)
         if: startsWith(matrix.os, 'windows')
-        run: haxelib --always run lime build windows --quiet
+        run: haxelib --always run lime build windows
 
       - name: Compile (Linux)
         if: startsWith(matrix.os, 'ubuntu')
-        run: haxelib --always run lime build linux --quiet
+        run: haxelib --always run lime build linux
 
       - name: Compile (macOS)
         if: startsWith(matrix.os, 'macos')
-        run: haxelib --always run lime build mac --quiet
-
+        run: haxelib --always run lime build mac
       - name: Upload Artifact (Windows)
         if: startsWith(matrix.os, 'windows')
         uses: actions/upload-artifact@main
@@ -133,7 +132,7 @@ jobs:
       - name: Install Libraries
         run: |
           haxelib setup ~/haxelib
-          haxelib install hmm --quiet
+          haxelib --global install hmm --quiet
           haxelib run hmm install --quiet
           
       - name: Install Android Only Libs
@@ -152,11 +151,11 @@ jobs:
 
       - name: Compile (Android)
         if: startsWith(matrix.os, 'ubuntu')
-        run: haxelib --always run lime build android --quiet
+        run: haxelib --always run lime build android
 
       - name: Compile (iOS)
         if: startsWith(matrix.os, 'macos')
-        run: haxelib --always run lime build ios --final --quiet
+        run: haxelib --always run lime build ios --final
 
       - name: Make Ipa
         if: startsWith(matrix.os, 'macos')
