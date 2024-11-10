@@ -25,7 +25,7 @@
     {
       "name": "flixel-tools",
       "type": "haxelib",
-      "version": null
+      "version": "1.5.1"
     },
     {
       "name": "hscript-ex",
@@ -105,14 +105,14 @@
     {
       "name": "flixel-ui",
       "type": "haxelib",
-      "version": "2.4.0"
+      "version": "2.5.0"
     },
     {
       "name": "hxcpp",
       "type": "git",
       "dir": null,
       "ref": "",
-      "url": "https://github.com/kangeluwu/hxcpp"
+      "url": "https://github.com/mcagabe19-stuff/hxcpp"
     },
     {
       "name": "tjson",

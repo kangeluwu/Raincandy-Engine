@@ -48,8 +48,6 @@ jobs:
           haxelib setup ~/haxelib
           haxelib --global install hmm --quiet
           haxelib run hmm install --quiet
-          haxelib remove hxcpp
-          haxelib git hxcpp https://github.com/kangeluwu/hxcpp
 
       - name: Compile (Windows)
         if: startsWith(matrix.os, 'windows')
