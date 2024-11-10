@@ -146,7 +146,7 @@
     {
       "name": "hxcpp-debug-server",
       "type": "haxelib",
-      "version": null
+      "version": "1.2.4"
     },
     {
       "name": "discord_rpc",
