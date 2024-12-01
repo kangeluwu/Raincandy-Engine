@@ -872,7 +872,7 @@ Left/Right - Go to the previous/next section
 				_song.songFileNames[0] = text;
 				loadSong();
 			}
-			vocalFileName = new FlxUIInputText(10,  instrumentalFileName.y +20, 70, _song.songFileNames[1], 8);
+			vocalFileName = new FlxUIInputText(10,  instrumentalFileName.y +20, 70, _song.songFileNames[0], 8);
 			vocalFileName.callback = function(text:String,as:String){
 				_song.songFileNames[1] = text;
 				loadSong();
@@ -3258,6 +3258,12 @@ case 'Alt Anim Note':
 			strumNotes.add(note);
 			strumLineNotes.add(note);
 			note.scrollFactor.set(1, 1);
+			if (strumLineNotes.visible = quant.visible = vortex){
+				for (i in 0...8){
+					strumLineNotes.members[i].y = strumLine.y;
+					strumLineNotes.members[i].alpha = inst.playing ? 1 : 0.35;
+				}
+			}
 		}
 		strums.push(strumNotes);
 	}
@@ -3399,7 +3405,7 @@ case 'Alt Anim Note':
 		leftIcon.changeIcon(healthIconP2);
 		rightIcon.changeIcon(healthIconP1);
 			if (_song.notes[curSec].gfSection) leftIcon.changeIcon('gf');
-			if (!_song.igorAutoFix){
+		if (!_song.igorAutoFix){
 		if (!_song.notes[curSec].mustHitSection)
 		{
 			changeCamIcon(1);

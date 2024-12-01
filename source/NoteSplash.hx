@@ -10,6 +10,7 @@ class NoteSplash extends FlxSprite
 	private var idleAnim:String;
 	private var textureLoaded:String = null;
 	public static var DEFAULT_SKIN:String= 'noteSplashes';
+	public var noteData:Int = 0;
 	public function new(x:Float = 0, y:Float = 0, ?note:Int = 0) {
 		super(x, y);
 
@@ -22,13 +23,14 @@ class NoteSplash extends FlxSprite
 		shader = colorSwap.shader;
 
 		setupNoteSplash(x, y, note);
+		
 		antialiasing = ClientPrefs.globalAntialiasing;
 	}
 
 	public function setupNoteSplash(x:Float, y:Float, note:Int = 0, texture:String = null, hueColor:Float = 0, satColor:Float = 0, brtColor:Float = 0) {
 		setPosition(x - Note.swagWidth * 0.95, y - Note.swagWidth);
 		alpha = 0.6;
-
+		noteData = note;
 		if(texture == null) {
 			texture = 'noteSplashes';
 			if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = PlayState.SONG.splashSkin;

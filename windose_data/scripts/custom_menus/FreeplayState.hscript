@@ -21,6 +21,7 @@ var intendedColor;
 var curPlaying = false;
 var colorTween;
 var curSong = null;
+var bf;
 function create()
 {
 	FlixG.mouse.visible = true;
@@ -71,6 +72,8 @@ for (i in 0...WeekData.weeksList.length) {
 		add(bg);
 		bg.screenCenter();
 
+	
+		
 	grpSongs = new FlxTypedGroup();
 	add(grpSongs);
 
@@ -155,15 +158,20 @@ var size = 16;
 		text.setFormat(Paths.font("vcr.ttf"), size, OGcolor, 'right');
 		text.scrollFactor.set();
 		add(text);
+		
 		if (ClientPrefs.classicStyle){
 			textBG.alpha = 0;
 			text.alpha = 0;
 			
 		}
+	//bf = new Character(0,0,'bf-freeplay',true);
+	//	add(bf);
+    //                            bf.playAnim('watchinIntro');
 		if (mobile)
 		addVirtualPads('full', 'a_b_c_x_y_z');
 
 }
+
 function closeSubState() {
 	changeSelection(0, false);
 	togglePersistUpdate(true);
@@ -304,12 +312,12 @@ function update(elapsed)
 					FlixG.sound.music.volume = 0;
 					PlayState.SONG = curSong;
 					if (PlayState.SONG.needsVoices && !ClientPrefs.classicStyle)
-						FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
+						FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,songFileNames[1]));
 					else
 						FreeplayState.vocals = new FlxSound();
 	
 					FlixG.sound.list.add(FreeplayState.vocals);
-					FlixG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[0]), 0.7);
+					FlixG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,songFileNames[0]), 0.7);
 					FreeplayState.vocals.play();
 					FreeplayState.vocals.persist = true;
 					FreeplayState.vocals.looped = true;
@@ -335,7 +343,9 @@ var turns = 0;
 		diff = diff.substr(1, diff.length);
 		if (diff == 'null' || diff == '')
 			diff = 'normal';
-		if (!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songLowercase) + '/' +  poop.toLowerCase() + '.json')))
+		if (!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songLowercase) + '/' +  poop.toLowerCase() + '.json')) &&
+			!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songLowercase) + '/' +  songLowercase + '-chart-' + diff + '.json')) &&
+		!FNFAssets.exists(Paths.isModPath('data/'+Paths.formatToSongPath(songLowercase) + '/' +  songLowercase + '-chart.json')))
 			{
 				// assume we pecked up the difficulty, return to default difficulty
 			
@@ -374,6 +384,8 @@ var turns = 0;
 					playerVocalFiles: [],
 					sfxFiles: [],
 					opponentVocalFiles: [],
+					songName: 'Test',
+					charter:'unknown',
 					bpm: 150.0,
 					strums:2,
 					needsVoices: true,
@@ -453,20 +465,21 @@ function changeDiff(change)
 
 		var songLowercase = Paths.formatToSongPath(songs[curSelected].songName);
 		var poop = Highscore.formatSong(songLowercase, curDifficulty);
-
 		findSongFiles(songLowercase,poop,change);
+		if (ClientPrefs.classicStyle){
+
 		trace(songFileNames);
 		if (curSong != null){
 		if (songFileNames[0] != curSong.songFileNames[0] || songFileNames[1] != curSong.songFileNames[1]){
 		songFileNames = curSong.songFileNames;
-		FlixG.sound.music.volume = 0;
+		FlxG.sound.music.volume = 0;
 		PlayState.SONG = curSong;
-		if (PlayState.SONG.needsVoices && !ClientPrefs.classicStyle)
+		if (PlayState.SONG.needsVoices)
 			FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[1]));
 		else
 			FreeplayState.vocals = new FlxSound();
 
-		FlixG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[0]), 0.7);
+		FlxG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,PlayState.SONG.songFileNames[0]), 0.7);
 		FreeplayState.vocals.play();
 		FreeplayState.vocals.persist = true;
 		FreeplayState.vocals.looped = true;
@@ -474,7 +487,7 @@ function changeDiff(change)
 }
 		}
 
-			
+	}
 		lastDifficultyName = CoolUtil.difficulties[curDifficulty];
 
 		if (!switchTarget){
@@ -484,29 +497,6 @@ function changeDiff(change)
 		PlayState.storyDifficulty = curDifficulty;
 		diffText.text = '< ' + CoolUtil.difficultyString() + ' >';
 		positionHighscore();
-		
-		if (songFileNames != null && (songFileNames[0] != curSong.songFileNames[0] || songFileNames[1] != curSong.songFileNames[1]))
-			{
-				if (preload){
-					destroyFreeplayVocals();
-
-					songFileNames = curSong.songFileNames;
-				FlixG.sound.music.volume = 0;
-				PlayState.SONG = curSong;
-				if (PlayState.SONG.needsVoices && !ClientPrefs.classicStyle)
-					FreeplayState.vocals = new FlxSound().loadEmbedded(Paths.songStuffer(PlayState.SONG.song,curSong.songFileNames[1]));
-				else
-					FreeplayState.vocals = new FlxSound();
-
-				FlixG.sound.list.add(FreeplayState.vocals);
-				FlixG.sound.playMusic(Paths.songStuffer(PlayState.SONG.song,curSong.songFileNames[0]), 0.7);
-				FreeplayState.vocals.play();
-				FreeplayState.vocals.persist = true;
-				FreeplayState.vocals.looped = true;
-				FreeplayState.vocals.volume = 0.7;
-				instPlaying = curSelected;
-}
-			}
 			
 			trace(songFileNames);
 }
@@ -615,7 +605,6 @@ function changeSelection(change, playSound)
 				CoolUtil.difficulties = diffs;
 			}
 		}
-		
 		if(CoolUtil.difficulties.contains(CoolUtil.defaultDifficulty))
 		{
 			curDifficulty = Math.round(Math.max(0, CoolUtil.defaultDifficulties.indexOf(CoolUtil.defaultDifficulty)));

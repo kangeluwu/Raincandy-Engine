@@ -9,7 +9,7 @@ import math.Vector3;
 import modchart.Modifier.ModifierType;
 import modchart.modifiers.*;
 import modchart.events.*;
-
+import modchart.Modifier.RenderInfo; 
 // Weird amalgamation of Schmovin' modifier system, Andromeda modifier system and my own new shit -neb
 
 class ModManager {
@@ -39,10 +39,16 @@ class ModManager {
 		quickRegister(new RotateModifier(this, 'center', new Vector3((FlxG.width* 0.5) - (Note.swagWidth/2), (FlxG.height* 0.5) - Note.swagWidth/2)));
 		quickRegister(new LocalRotateModifier(this, 'local'));
 		quickRegister(new SubModifier("noteSpawnTime", this));
+		quickRegister(new SubModifier("flashR", this));
+		quickRegister(new SubModifier("flashG", this));
+		quickRegister(new SubModifier("flashB", this));
 		setValue("noteSpawnTime", 3000);
 		setValue("xmod", 1);
 		for(i in 0...4)
-			setValue('xmod$i', 1);
+		setValue('xmod$i', 1);
+		setValue("flashR", 1);
+		setValue("flashG", 1);
+		setValue("flashB", 1);
 	}
 
 
@@ -255,9 +261,7 @@ class ModManager {
 		if (!obj.active)return pos;
 
 		pos.x = getBaseX(data, player);
-		var fixpox = 50;
-		if (ClientPrefs.classicStyle)fixpox=0;
-		pos.y = fixpox + diff;
+		pos.y = diff;
 		pos.z = 0;
 		for (name in activeMods[player]){
 			if (exclusions.contains(name))continue; // because some modifiers may want the path without reverse, for example. (which is actually more common than you'd think!)
@@ -268,6 +272,35 @@ class ModManager {
         }
 		return pos;
     }
+
+	
+	public function getExtraInfo(time:Float, diff:Float, tDiff:Float, beat:Float, ?info:RenderInfo, obj:FlxSprite, player:Int, data:Int, ?exclusions:Array<String>):RenderInfo
+		{
+			if (!obj.active)
+				return info;
+	
+			if (exclusions == null)
+				exclusions = [];
+	
+			if (info == null){
+				info = {
+					alpha: 1,
+					glow: 0,
+					scale: flixel.math.FlxPoint.weak(0.7, 0.7)
+				};
+			}
+	
+			for (name in activeMods[player]){
+				if (exclusions.contains(name))continue; // because some modifiers may want the path without reverse, for example. (which is actually more common than you'd think!)
+					continue;
+	
+				var mod:Modifier = notemodRegister.get(name);
+				if (mod != null && mod.isRenderMod())
+					info = mod.getExtraInfo(time, diff, tDiff, beat, info, obj, player, data);
+			}
+	
+			return info;
+		}
 
 	public function queueEaseP(step:Float, endStep:Float, modName:String, percent:Float, style:String = 'linear', player:Int = -1, ?startVal:Float)
 		queueEase(step, endStep, modName, percent * 0.01, style, player, startVal * 0.01);

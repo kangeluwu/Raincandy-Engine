@@ -2,7 +2,10 @@
 ### todo
 - Extra keys????
 - Custom Hscript Charting Editor(would kill me)
-- Vertical Slice Charting BUG FIXING
+
+## [0.2.1] - 2024-11-24
+### Added
+- iforgor
 
 ## [0.2.0] - 2024-6-29
 ### Added

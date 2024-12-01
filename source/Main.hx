@@ -42,11 +42,17 @@ class Main extends Sprite
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
 	public static var fpsVar:FPS;
-	public static var titleName:String= "Friday Night Funkin'";
 	// You can pretty much ignore everything from here on - your code should go in your states.
-
+	static function set_titleName(n:String) {
+		Lib.application.window.title = n;
+		return n;
+	}
+	static function get_titleName():String {
+		return Lib.application.window.title;
+	}
 	public static function main():Void
 	{
+		
 		Lib.current.addChild(new Main());
 	}
 
@@ -104,10 +110,7 @@ class Main extends Sprite
 		
 		Lib.current.stage.align = "tl";
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-		#if !mobile
-		Lib.application.window.title = titleName;
 		
-		#end
 		if(fpsVar != null) {
 			fpsVar.visible = ClientPrefs.showFPS;
 		}

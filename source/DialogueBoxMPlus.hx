@@ -262,10 +262,7 @@ class DialogueBoxMPlus extends FlxSpriteGroup
 			FlxG.sound.music.volume = FlxMath.lerp(FlxG.sound.music.volume, 0.8 * curVolume / 100,
 			camLerp);
 			}
-		/*	if (curFlip)
-				portrait.x = FlxMath.lerp(portrait.x, 580 - portrait.width, (camLerp * 2));
-			else
-				portrait.x = FlxMath.lerp(portrait.x, 700, (camLerp * 2));*/
+		
 		}
 
 		dropText.text = swagDialogue.text;
@@ -426,13 +423,26 @@ for (touch in FlxG.touches.list)
 				portrait.x = 280 - portrait.width;
 			else
 				portrait.x = 1000;
+			var i = fadeInLoop + 1;
 			new FlxTimer().start(fadeInTime, function(tmr:FlxTimer)
 			{
 				portrait.alpha += 1 / fadeInLoop;
-				if (curFlip)
+			/*	if (curFlip)
 				portrait.x += 300 / fadeInLoop;
 				else
-				portrait.x -= 300 / fadeInLoop;
+				portrait.x -= 300 / fadeInLoop;*/
+				i--;
+				if (curFlip){
+					portrait.x = FlxMath.lerp(portrait.x, 580 - portrait.width, camLerp*1.78*i);
+					if (portrait.x > 580 - portrait.width)
+						portrait.x = 580 - portrait.width;
+				}
+				else{
+					
+					portrait.x = FlxMath.lerp(portrait.x, 700, camLerp*1.78*i);
+					if (portrait.x < 700)
+						portrait.x = 700;
+				}
 			}, fadeInLoop);
 
 			

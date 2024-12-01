@@ -4,6 +4,7 @@ import modchart.*;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 import math.*;
+import modchart.Modifier.RenderInfo; 
 import flixel.FlxG;
 class AlphaModifier extends NoteModifier {
 	override function getName()
@@ -85,13 +86,14 @@ class AlphaModifier extends NoteModifier {
   override function shouldExecute(player:Int, val:Float)return true;
 	override function ignoreUpdateReceptor()return false;
 	override function ignoreUpdateNote()return false;
+	override function isRenderMod()return false;
 
 	override function updateNote(beat:Float, note:Note, pos:Vector3, player:Int){
-   /* @:privateAccess
+    @:privateAccess
 		var pos = modMgr.getPos(note.strumTime, modMgr.getVisPos(Conductor.songPosition, note.strumTime, PlayState.instance.songSpeed),
 			note.strumTime - Conductor.songPosition,
 			PlayState.instance.curDecBeat, note.noteData,
-			player, note, ["reverse", "receptorScroll", "transformY"]);*/
+			player, note, ["reverse", "receptorScroll", "transformY"]);
     var speed = PlayState.instance.songSpeed * note.multSpeed;
 		var yPos:Float = modMgr.getVisPos(Conductor.songPosition, note.strumTime, speed) + 50;
 
@@ -119,9 +121,54 @@ class AlphaModifier extends NoteModifier {
 		receptor.colorSwap.daAlpha = alpha;
 
   }
-
+/*
+  override function getExtraInfo(time:Float, diff:Float, tDiff:Float, beat:Float, info:RenderInfo, obj:flixel.FlxSprite, player:Int, data:Int):RenderInfo
+    {
+      var alpha:Float = info.alpha;
+      if (Std.isOfType(obj,Note)){
+        var note:Note = cast obj;
+        var yPos:Float = 50 + diff;
+  
+        var alphaMod = 
+        (1 - getSubmodValue("alpha",player)) * (1 - getSubmodValue('alpha${note.noteData}',player)) * (1 - getSubmodValue("noteAlpha", player))* (1 - getSubmodValue('noteAlpha${note.noteData}', player));
+        var vis = getVisibility(yPos, player, note);
+  
+        if (getSubmodValue("dontUseStealthGlow", player) == 0)
+        {
+          alpha *= getAlpha(vis);
+          info.glow = getGlow(vis);
+        }
+        else
+          alpha *= vis;
+  
+        alpha *= alphaMod;	
+      }
+      else if (Std.isOfType(obj,StrumNote)){
+        var receptor:StrumNote = cast obj;
+        alpha *= (1 - getSubmodValue("alpha", player)) * (1 - getSubmodValue('alpha${receptor.noteData}', player));
+  
+        if (getSubmodValue("dark", player) != 0 || getSubmodValue('dark${receptor.noteData}', player) != 0)
+        {
+          var vis = (1 - getSubmodValue("dark", player)) * (1 - getSubmodValue('dark${receptor.noteData}', player));
+          if (getSubmodValue("hideDarkGlow", player) == 0)
+          {
+            alpha *= getAlpha(vis);
+            info.glow = getGlow(vis);
+          }else
+            alpha *= vis;
+        }
+      }else 
+        alpha *= (1 - getSubmodValue("alpha", player)) * (1 - getSubmodValue('alpha${data}', player));
+          
+      
+  
+      info.alpha = alpha;
+  
+      return info;
+    }
+*/
   override function getSubmods(){
-    var subMods:Array<String> = ["noteAlpha", "alpha", "hidden","hiddenOffset","sudden","suddenOffset","blink","randomVanish","dark","dontUseStealthGlow","stealthPastReceptors"];
+    var subMods:Array<String> = ["noteAlpha", "alpha", "hidden","hiddenOffset","sudden","suddenOffset","blink","randomVanish","dark", "hideDarkGlow","dontUseStealthGlow","stealthPastReceptors"];
     for(i in 0...4){
 			subMods.push('noteAlpha$i');
 			subMods.push('alpha$i');

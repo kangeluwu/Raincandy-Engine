@@ -4,6 +4,7 @@ package modchart;
 
 import flixel.FlxSprite;
 import math.Vector3;
+import flixel.math.FlxPoint;
 // Based on Schmovin' and Andromeda's modifier systems
 
 enum ModifierType {
@@ -20,6 +21,12 @@ abstract ModifierOrder(Int) to Int{
     var DEFAULT = 0;
 	var LAST = 1000;
 	
+}
+@:structInit
+class RenderInfo {
+	public var alpha:Float;
+	public var glow:Float;
+	public var scale:FlxPoint;
 }
 
 class Modifier {
@@ -123,6 +130,7 @@ class Modifier {
     public function updateReceptor(beat:Float, receptor:StrumNote, pos:Vector3, player:Int){}
 	public function updateNote(beat:Float, note:Note, pos:Vector3, player:Int){}
 	public function getPos(time:Float, diff:Float, tDiff:Float, beat:Float, pos:Vector3, data:Int, player:Int, obj:FlxSprite)return pos;
-
+	public function getExtraInfo(time:Float, diff:Float, tDiff:Float, beat:Float, info:RenderInfo, obj:FlxSprite, player:Int, column:Int):RenderInfo{return info;}
+	public function isRenderMod():Bool{return false;} // Override and return true if your modifier uses modifyVert or getExtraInfo
     public function update(elapsed:Float){}
 }

@@ -44,6 +44,8 @@ private typedef FlxDrawItem = #if FLX_DRAW_QUADS flixel.graphics.tile.FlxDrawQua
  */
 class FlxCamera extends FlxBasic
 {
+	public var zoomScaleX:Float = 1;
+	public var zoomScaleY:Float = 1;
 	/**
 	 * While you can alter the zoom of each camera after the fact,
 	 * this variable determines what value the camera will start at when created.
@@ -1825,7 +1827,7 @@ class FlxCamera extends FlxBasic
 	function set_zoom(Zoom:Float):Float
 	{
 		zoom = (Zoom == 0) ? defaultZoom : Zoom;
-		setScale(zoom, zoom);
+		setScale(zoom*zoomScaleX, zoom*zoomScaleY);
 		return zoom;
 	}
 
