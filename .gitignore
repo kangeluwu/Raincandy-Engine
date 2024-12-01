@@ -7,6 +7,8 @@ art/test_x64-debug-officialrelease.bat
 
 ### VS Code
 export/*
+sourceRIP/*
+modchart/*
 .vscode/*
 backup/*
 *.zip
@@ -23,5 +25,4 @@ backup/*
 !.vscode/extensions.json
 
 art/}\]}R\]MX_C56~%UH39$X4NRE.jpg
-vscode-project.hxml
 vscode-project.hxml
